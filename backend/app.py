@@ -47,7 +47,13 @@ ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:5173'
 ]
-CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}}, supports_credentials=True)
+CORS(
+    app,
+    resources={r"/*": {"origins": ALLOWED_ORIGINS}},
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization", "X-Session-ID"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+)
 
 # MongoDB Connection
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/vedarc_internship')
@@ -611,9 +617,11 @@ def hr_login():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/admin/login', methods=['POST'])
+@app.route('/api/admin/login', methods=['POST', 'OPTIONS'])
 def admin_login():
     """Admin login endpoint"""
+    if request.method == 'OPTIONS':
+        return '', 200
     try:
         data = request.json
         username = data.get('username')
