@@ -1,0 +1,139 @@
+/* ===== ULTRA-TECH DARK THEME ===== */
+/* Font Imports (Directly in CSS) */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&family=Inter:wght@400;500;700&display=swap');
+
+/* ===== CORE VARIABLES ===== */
+:root {
+  /* Cyber Backgrounds */
+  --bg-void: #050508;          /* Deepest black */
+  --bg-dark: #0a0a12;          /* Primary background */
+  --bg-light: #161626;         /* Elevated surfaces */
+  
+  /* Neon Cyberpunk Palette */
+  --neon-magenta: #00f9ff ;     /* Primary accent */
+  --neon-cyan:  #ff2d75;        /* Secondary accent */
+  --neon-purple: #7b2dff;      /* Tertiary accent */
+  --neon-orange: #ff2d75;      /* Highlight accent */
+  
+  /* Text Colors */
+  --text-glowing: #ffffff;      /* Pure white */
+  --text-primary: #f0f0f0;      /* Slightly muted */
+  --text-secondary: #b8b8d8;    /* Low priority text */
+  
+  /* Glow Effects */
+  --glow-magenta: 0 0 15px rgba(0, 249, 255, 0.5);
+  --glow-cyan: 0 0 15px rgba(255, 45, 117, 0.7) ;
+  --glow-purple: 0 0 20px rgba(123, 45, 255, 0.6);
+  
+  /* Gradients */
+  --gradient-horizontal: linear-gradient(90deg, var(--neon-magenta), var(--neon-purple));
+  --gradient-diagonal: linear-gradient(45deg, var(--neon-magenta), var(--neon-orange));
+  --gradient-cyber: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+}
+
+/* ===== BASE RESET ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== GLOBAL STYLES ===== */
+html {
+  scroll-behavior: smooth;
+  background: var(--bg-void);
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  text-rendering: optimizeSpeed;
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4 {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  background: var(--gradient-diagonal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: var(--glow-magenta);
+}
+
+h2 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  color: var(--neon-cyan);
+}
+
+p {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  max-width: 65ch;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--bg-void);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-horizontal);
+  border-radius: 5px;
+}
+
+/* ===== SELECTION STYLES ===== */
+::selection {
+  background: var(--neon-magenta);
+  color: var(--text-glowing);
+  text-shadow: none;
+}
+
+/* ===== ANIMATION KEYFRAMES ===== */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes glitch {
+  0% { text-shadow: 2px 0 var(--neon-cyan); }
+  25% { text-shadow: -2px 0 var(--neon-purple); }
+  50% { text-shadow: 2px 0 var(--neon-orange); }
+  75% { text-shadow: -2px 0 var(--neon-magenta); }
+  100% { text-shadow: 2px 0 var(--neon-cyan); }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.glitch-text {
+  animation: glitch 1.5s linear infinite;
+}
+
+.neon-glow {
+  text-shadow: var(--glow-cyan);
+}
+
+.pulse-effect {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ===== FORCE DARK THEME ===== */
+@media (prefers-color-scheme: light) {
+  body {
+    background: var(--bg-dark) !important;
+    color: var(--text-primary) !important;
+  }
+}

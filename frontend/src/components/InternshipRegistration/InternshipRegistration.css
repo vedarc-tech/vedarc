@@ -1,0 +1,556 @@
+.internship-registration {
+  position: relative;
+  padding: 80px 20px;
+  background: var(--bg-dark);
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animated Background */
+.registration-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.circuit-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(0, 249, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 249, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.3;
+}
+
+.neon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle at center,
+    rgba(123, 45, 255, 0.1) 0%,
+    transparent 70%
+  );
+  filter: blur(50px);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Container */
+.registration-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Registration Content */
+.registration-content {
+  background: rgba(10, 10, 18, 0.9);
+  border: 1px solid var(--neon-purple);
+  border-radius: 20px;
+  padding: 40px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Registration Header */
+.registration-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.glitch-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  position: relative;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+}
+
+.glitch-title::before {
+  content: attr(data-text);
+  position: absolute;
+  left: -3px;
+  text-shadow: 3px 0 var(--neon-magenta);
+  clip: rect(0, 900px, 0, 0);
+  animation: glitch-effect 3s infinite linear alternate-reverse;
+}
+
+.title-underline {
+  width: 120px;
+  height: 3px;
+  background: var(--gradient-diagonal);
+  margin: 0 auto 20px;
+  border-radius: 2px;
+}
+
+.registration-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Error Banner */
+.error-banner {
+  background: rgba(255, 45, 117, 0.1);
+  border: 1px solid var(--neon-orange);
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  color: var(--neon-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+/* Registration Form */
+.registration-form {
+  margin-bottom: 40px;
+}
+
+/* Form Rows */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.form-row.single-field {
+  grid-template-columns: 1fr;
+  max-width: 50%;
+}
+
+/* Form Groups */
+.form-group {
+  position: relative;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+}
+
+.input-icon {
+  font-size: 1rem;
+  color: var(--neon-magenta);
+  margin-right: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(22, 22, 38, 0.8);
+  border: 1px solid rgba(123, 45, 255, 0.3);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 249, 255, 0.2);
+  background: rgba(22, 22, 38, 0.9);
+}
+
+.form-group input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Error States */
+.form-group input.error,
+.form-group select.error {
+  border-color: var(--neon-orange);
+  box-shadow: 0 0 15px rgba(255, 45, 117, 0.2);
+}
+
+.error-text {
+  color: var(--neon-orange);
+  font-size: 0.85rem;
+  margin-top: 6px;
+  display: block;
+  font-weight: 500;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+}
+
+.loading-spinner svg {
+  animation: spin 1s linear infinite;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 16px 30px;
+  background: var(--gradient-diagonal);
+  color: var(--text-glowing);
+  border: none;
+  border-radius: 50px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  margin-top: 30px;
+  box-shadow: 0 4px 15px rgba(123, 45, 255, 0.3);
+}
+
+.submit-btn:hover:not(:disabled) {
+  box-shadow: 0 0 25px var(--neon-magenta);
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Registration Info */
+.registration-info {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(123, 45, 255, 0.2);
+}
+
+.registration-info h4 {
+  color: var(--neon-cyan);
+  font-size: 1.3rem;
+  margin-bottom: 25px;
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Process Steps */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(22, 22, 38, 0.5);
+  border: 1px solid rgba(123, 45, 255, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.step:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 249, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background: var(--gradient-diagonal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-glowing);
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: 'Rajdhani', sans-serif;
+  flex-shrink: 0;
+}
+
+.step-content h5 {
+  color: var(--neon-cyan);
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+}
+
+.step-content p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Success Content */
+.success-content {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.success-content .success-icon {
+  font-size: 4rem;
+  color: var(--neon-cyan);
+  margin-bottom: 20px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.success-content h2 {
+  color: var(--neon-cyan);
+  font-size: 2rem;
+  margin-bottom: 15px;
+  font-family: 'Rajdhani', sans-serif;
+  text-transform: uppercase;
+}
+
+.success-content p {
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.register-again-btn {
+  background: var(--gradient-diagonal);
+  color: var(--text-glowing);
+  border: none;
+  border-radius: 50px;
+  padding: 14px 28px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(123, 45, 255, 0.3);
+}
+
+.register-again-btn:hover {
+  box-shadow: 0 0 25px var(--neon-magenta);
+  transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes glitch-effect {
+  0% { clip: rect(30px, 9999px, 20px, 0) }
+  20% { clip: rect(10px, 9999px, 80px, 0) }
+  40% { clip: rect(50px, 9999px, 5px, 0) }
+  60% { clip: rect(30px, 9999px, 60px, 0) }
+  80% { clip: rect(70px, 9999px, 20px, 0) }
+  100% { clip: rect(90px, 9999px, 100px, 0) }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .registration-content {
+    padding: 35px 30px;
+  }
+  
+  .form-row {
+    gap: 20px;
+  }
+  
+  .process-steps {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .internship-registration {
+    padding: 60px 15px;
+  }
+  
+  .registration-content {
+    padding: 30px 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .form-row.single-field {
+    max-width: 100%;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 12px 14px;
+  }
+  
+  .submit-btn {
+    padding: 14px 25px;
+    font-size: 1rem;
+  }
+  
+  .process-steps {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .step {
+    padding: 15px;
+  }
+  
+  .step-number {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  
+  .success-content {
+    padding: 30px 15px;
+  }
+  
+  .success-content .success-icon {
+    font-size: 3rem;
+  }
+  
+  .success-content h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .internship-registration {
+    padding: 40px 10px;
+  }
+  
+  .registration-content {
+    padding: 25px 15px;
+  }
+  
+  .glitch-title {
+    font-size: 1.8rem;
+  }
+  
+  .registration-header p {
+    font-size: 1rem;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 11px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .submit-btn {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+  
+  .registration-info h4 {
+    font-size: 1.1rem;
+  }
+  
+  .step-content h5 {
+    font-size: 1rem;
+  }
+  
+  .step-content p {
+    font-size: 0.85rem;
+  }
+}
+
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(7, 7, 16, 0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.user-id-display {
+  background: rgba(0, 249, 255, 0.08);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 8px;
+  padding: 14px 0 10px 0;
+  margin: 18px auto 18px auto;
+  max-width: 350px;
+}
+
+.user-id-display span {
+  display: block;
+  text-align: center;
+}
+
+.user-id {
+  color: var(--neon-cyan);
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  margin-top: 4px;
+  text-shadow: 0 0 10px var(--neon-cyan);
+} 
