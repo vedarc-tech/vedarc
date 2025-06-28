@@ -52,7 +52,7 @@ CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}}, supports_credentials=
 # MongoDB Connection
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/vedarc_internship')
 client = MongoClient(MONGODB_URI)
-db = client.get_database()
+db = client.vedarc_internship  # Explicitly specify database name
 
 # Collections
 users = db['users']
