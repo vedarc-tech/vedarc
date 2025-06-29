@@ -985,7 +985,7 @@ def hr_activate_user():
               <td align='center' style='padding-bottom: 8px;'>
                 <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
                 <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
-                  Vedarc Virtual Technical Drive 2025
+                  Vedarc Virtual Technical Internship Drive 2025
                 </div>
               </td>
             </tr>
