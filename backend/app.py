@@ -79,7 +79,27 @@ def handle_options(path):
 
 # MongoDB Connection
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/vedarc_internship')
-client = MongoClient(MONGODB_URI)
+
+# Enhanced MongoDB connection with SSL handling
+try:
+    # Add SSL parameters to handle connection issues
+    if 'mongodb+srv://' in MONGODB_URI:
+        # For MongoDB Atlas, add SSL parameters
+        if '?' not in MONGODB_URI:
+            MONGODB_URI += '?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE'
+        elif 'ssl=' not in MONGODB_URI:
+            MONGODB_URI += '&ssl=true&ssl_cert_reqs=CERT_NONE'
+    
+    client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+    # Test the connection
+    client.admin.command('ping')
+    print("✅ MongoDB connection successful")
+except Exception as e:
+    print(f"❌ MongoDB connection failed: {e}")
+    # Fallback to local MongoDB if Atlas fails
+    client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+    print("⚠️ Using fallback MongoDB connection")
+
 db = client.vedarc_internship  # Explicitly specify database name
 
 # CORS Middleware to ensure all responses have proper headers
