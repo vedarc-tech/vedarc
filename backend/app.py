@@ -47,18 +47,52 @@ ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:5173'
 ]
+
+# More robust CORS configuration
 CORS(
     app,
-    resources={r"/*": {"origins": ALLOWED_ORIGINS}},
+    origins=ALLOWED_ORIGINS,
     supports_credentials=True,
-    allow_headers=["Content-Type", "Authorization", "X-Session-ID"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_headers=["Content-Type", "Authorization", "X-Session-ID", "Access-Control-Allow-Origin"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    expose_headers=["Content-Type", "Authorization", "X-Session-ID"]
 )
+
+# Global OPTIONS handler for all routes
+@app.route('/', defaults={'path': ''}, methods=['OPTIONS'])
+@app.route('/<path:path>', methods=['OPTIONS'])
+def handle_options(path):
+    """Handle OPTIONS requests for CORS preflight"""
+    origin = request.headers.get('Origin')
+    
+    # Check if origin is allowed
+    if origin in ALLOWED_ORIGINS:
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Session-ID'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Max-Age'] = '86400'  # 24 hours
+        return response
+    else:
+        return jsonify({'error': 'Origin not allowed'}), 403
 
 # MongoDB Connection
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/vedarc_internship')
 client = MongoClient(MONGODB_URI)
 db = client.vedarc_internship  # Explicitly specify database name
+
+# CORS Middleware to ensure all responses have proper headers
+@app.after_request
+def after_request(response):
+    """Add CORS headers to all responses"""
+    origin = request.headers.get('Origin')
+    if origin in ALLOWED_ORIGINS:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Session-ID'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
 
 # Collections
 users = db['users']
