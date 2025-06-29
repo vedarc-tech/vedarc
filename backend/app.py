@@ -2708,7 +2708,7 @@ def health_check():
         "database": {
             "status": db_status,
             "ping": db_ping,
-            "collections_available": bool(db)
+            "collections_available": db is not None
         },
         "mongodb_uri": MONGODB_URI.replace(MONGODB_URI.split('@')[0].split('//')[1].split(':')[0], '***') if '@' in MONGODB_URI else "not_configured"
     }), 200
@@ -4178,7 +4178,7 @@ def student_auto_assign_project():
 
 if __name__ == '__main__':
     # Test database connection at startup
-    if client and db:
+    if client is not None and db is not None:
         try:
             client.admin.command('ping')
             print("✅ Database connection test successful at startup")
