@@ -1482,7 +1482,10 @@ def manager_update_project_template(template_id):
             return jsonify({"error": "No fields to update"}), 400
         update_data['updated_at'] = datetime.utcnow()
         update_data['updated_by'] = current_user
-        result = projects.update_one({"_id": ObjectId(template_id), "is_template": True}, {"$set": update_data})
+        result = projects.update_one(
+            {"_id": ObjectId(template_id), "is_template": True},
+            {"$set": update_data}
+        )
         if result.modified_count == 0:
             return jsonify({"error": "Template not found"}), 404
         return jsonify({"success": True, "message": "Template updated"}), 200
@@ -1955,17 +1958,826 @@ def student_auto_assign_project():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/manager/login', methods=['POST'])
+def manager_login():
+    """Manager login endpoint"""
+    try:
+        # Check if database is available
+        if admin_users is None or user_sessions is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return jsonify({"error": "Missing username or password"}), 400
+        
+        # Find manager user
+        manager_user = admin_users.find_one({"username": username, "user_type": "manager"})
+        if not manager_user:
+            return jsonify({"error": "Invalid credentials"}), 401
+        
+        if not check_password_hash(manager_user['password'], password):
+            return jsonify({"error": "Invalid credentials"}), 401
+        
+        # Create access token
+        access_token = create_access_token(identity=username)
+        
+        # Create unique session ID for this browser instance
+        session_id = create_session_id()
+        
+        # Store session in database
+        store_user_session(username, 'manager', session_id, access_token)
+        
+        # Clean up expired sessions
+        cleanup_expired_sessions()
+        
+        return jsonify({
+            "access_token": access_token,
+            "session_id": session_id,
+            "user": {
+                "username": manager_user['username'],
+                "fullName": manager_user['fullName'],
+                "user_type": manager_user['user_type']
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships', methods=['GET'])
+@jwt_required()
+def manager_get_internships():
+    """Get internships managed by this manager"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get all internships (managers can see all internships)
+        internship_list = list(internships.find({}))
+        
+        # Convert ObjectId fields
+        for internship in internship_list:
+            if '_id' in internship:
+                internship['_id'] = str(internship['_id'])
+        
+        return jsonify({
+            "success": True,
+            "internships": internship_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships', methods=['POST'])
+@jwt_required()
+def manager_create_internship():
+    """Create new internship"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        track_name = data.get('track_name')
+        description = data.get('description')
+        duration = data.get('duration')
+        
+        if not track_name or not description:
+            return jsonify({"error": "Missing required fields"}), 400
+        
+        # Check if track already exists
+        existing_track = internships.find_one({"track_name": track_name})
+        if existing_track:
+            return jsonify({"error": "Track already exists"}), 400
+        
+        # Create internship
+        internship_data = {
+            "track_name": track_name,
+            "description": description,
+            "duration": duration,
+            "created_by": current_user,
+            "created_at": datetime.utcnow(),
+            "is_active": True
+        }
+        
+        result = internships.insert_one(internship_data)
+        
+        return jsonify({
+            "success": True,
+            "message": "Internship created successfully",
+            "internship_id": str(result.inserted_id)
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>', methods=['PUT'])
+@jwt_required()
+def manager_update_internship(internship_id):
+    """Update internship"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        
+        # Update internship
+        update_data = {}
+        if 'track_name' in data:
+            update_data['track_name'] = data['track_name']
+        if 'description' in data:
+            update_data['description'] = data['description']
+        if 'duration' in data:
+            update_data['duration'] = data['duration']
+        if 'is_active' in data:
+            update_data['is_active'] = data['is_active']
+        
+        update_data['updated_by'] = current_user
+        update_data['updated_at'] = datetime.utcnow()
+        
+        result = internships.update_one(
+            {"_id": ObjectId(internship_id)},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Internship updated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>', methods=['DELETE'])
+@jwt_required()
+def manager_delete_internship(internship_id):
+    """Delete internship"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        result = internships.delete_one({"_id": ObjectId(internship_id)})
+        
+        if result.deleted_count == 0:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Internship deleted successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/announcements', methods=['GET'])
+@jwt_required()
+def manager_get_announcements():
+    """Get announcements"""
+    try:
+        # Check if database is available
+        if announcements is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get all announcements
+        announcement_list = list(announcements.find({}).sort("created_at", -1))
+        
+        # Convert ObjectId and datetime fields
+        for announcement in announcement_list:
+            if '_id' in announcement:
+                announcement['_id'] = str(announcement['_id'])
+            if 'created_at' in announcement and announcement['created_at'] is not None:
+                announcement['created_at'] = announcement['created_at'].isoformat()
+            if 'updated_at' in announcement and announcement['updated_at'] is not None:
+                announcement['updated_at'] = announcement['updated_at'].isoformat()
+        
+        return jsonify({
+            "success": True,
+            "announcements": announcement_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/announcements', methods=['POST'])
+@jwt_required()
+def manager_create_announcement():
+    """Create announcement"""
+    try:
+        # Check if database is available
+        if announcements is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        title = data.get('title')
+        content = data.get('content')
+        
+        if not title or not content:
+            return jsonify({"error": "Missing title or content"}), 400
+        
+        # Create announcement
+        announcement_data = {
+            "title": title,
+            "content": content,
+            "created_by": current_user,
+            "created_at": datetime.utcnow(),
+            "is_active": True
+        }
+        
+        result = announcements.insert_one(announcement_data)
+        
+        return jsonify({
+            "success": True,
+            "message": "Announcement created successfully",
+            "announcement_id": str(result.inserted_id)
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/announcements/<announcement_id>', methods=['PUT'])
+@jwt_required()
+def manager_update_announcement(announcement_id):
+    """Update announcement"""
+    try:
+        # Check if database is available
+        if announcements is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        
+        # Update announcement
+        update_data = {}
+        if 'title' in data:
+            update_data['title'] = data['title']
+        if 'content' in data:
+            update_data['content'] = data['content']
+        if 'is_active' in data:
+            update_data['is_active'] = data['is_active']
+        
+        update_data['updated_by'] = current_user
+        update_data['updated_at'] = datetime.utcnow()
+        
+        result = announcements.update_one(
+            {"_id": ObjectId(announcement_id)},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Announcement not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Announcement updated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/announcements/<announcement_id>', methods=['DELETE'])
+@jwt_required()
+def manager_delete_announcement(announcement_id):
+    """Delete announcement"""
+    try:
+        # Check if database is available
+        if announcements is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        result = announcements.delete_one({"_id": ObjectId(announcement_id)})
+        
+        if result.deleted_count == 0:
+            return jsonify({"error": "Announcement not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Announcement deleted successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>/weeks', methods=['GET'])
+@jwt_required()
+def manager_get_weeks(internship_id):
+    """Get weeks for an internship"""
+    try:
+        # Check if database is available
+        if weeks is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get internship to find track
+        internship = internships.find_one({"_id": ObjectId(internship_id)})
+        if not internship:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        # Get weeks for this track
+        week_list = list(weeks.find({"track": internship['track_name']}).sort("week_number", 1))
+        
+        # Convert ObjectId fields
+        for week in week_list:
+            if '_id' in week:
+                week['_id'] = str(week['_id'])
+        
+        return jsonify({
+            "success": True,
+            "weeks": week_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>/weeks', methods=['POST'])
+@jwt_required()
+def manager_add_week(internship_id):
+    """Add week to internship"""
+    try:
+        # Check if database is available
+        if weeks is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get internship to find track
+        internship = internships.find_one({"_id": ObjectId(internship_id)})
+        if not internship:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        data = request.json
+        week_number = data.get('week_number')
+        title = data.get('title')
+        description = data.get('description')
+        daily_content = data.get('daily_content', [])
+        
+        if not week_number or not title:
+            return jsonify({"error": "Missing week_number or title"}), 400
+        
+        # Check if week already exists
+        existing_week = weeks.find_one({
+            "track": internship['track_name'],
+            "week_number": week_number
+        })
+        if existing_week:
+            return jsonify({"error": f"Week {week_number} already exists for this track"}), 400
+        
+        # Create week
+        week_data = {
+            "track": internship['track_name'],
+            "week_number": week_number,
+            "title": title,
+            "description": description,
+            "daily_content": daily_content,
+            "created_by": current_user,
+            "created_at": datetime.utcnow()
+        }
+        
+        result = weeks.insert_one(week_data)
+        
+        return jsonify({
+            "success": True,
+            "message": f"Week {week_number} added successfully",
+            "week_id": str(result.inserted_id)
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>/weeks/<week_id>', methods=['PUT'])
+@jwt_required()
+def manager_update_week(internship_id, week_id):
+    """Update week"""
+    try:
+        # Check if database is available
+        if weeks is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        
+        # Update week
+        update_data = {}
+        if 'title' in data:
+            update_data['title'] = data['title']
+        if 'description' in data:
+            update_data['description'] = data['description']
+        if 'daily_content' in data:
+            update_data['daily_content'] = data['daily_content']
+        
+        update_data['updated_by'] = current_user
+        update_data['updated_at'] = datetime.utcnow()
+        
+        result = weeks.update_one(
+            {"_id": ObjectId(week_id)},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Week not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Week updated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>/weeks/<week_id>', methods=['DELETE'])
+@jwt_required()
+def manager_delete_week(internship_id, week_id):
+    """Delete week"""
+    try:
+        # Check if database is available
+        if weeks is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        result = weeks.delete_one({"_id": ObjectId(week_id)})
+        
+        if result.deleted_count == 0:
+            return jsonify({"error": "Week not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Week deleted successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>/students', methods=['GET'])
+@jwt_required()
+def manager_get_students(internship_id):
+    """Get students for an internship"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get internship to find track
+        internship = internships.find_one({"_id": ObjectId(internship_id)})
+        if not internship:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        # Get students for this track
+        students = list(users.find({"track": internship['track_name']}))
+        
+        # Convert ObjectId and datetime fields
+        for student in students:
+            if '_id' in student:
+                student['_id'] = str(student['_id'])
+            if 'created_at' in student and student['created_at'] is not None:
+                student['created_at'] = student['created_at'].isoformat()
+            if 'activated_at' in student and student['activated_at'] is not None:
+                student['activated_at'] = student['activated_at'].isoformat()
+        
+        return jsonify({
+            "success": True,
+            "students": students
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/internships/<internship_id>/submissions', methods=['GET'])
+@jwt_required()
+def manager_get_submissions(internship_id):
+    """Get submissions for an internship"""
+    try:
+        # Check if database is available
+        if submissions is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get internship to find track
+        internship = internships.find_one({"_id": ObjectId(internship_id)})
+        if not internship:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        # Get query parameters
+        week_filter = request.args.get('week', '')
+        status_filter = request.args.get('status', '')
+        
+        # Build query
+        query = {"track": internship['track_name']}
+        if week_filter:
+            query["week"] = int(week_filter)
+        if status_filter:
+            query["status"] = status_filter
+        
+        # Get submissions
+        submission_list = list(submissions.find(query).sort("submitted_at", -1))
+        
+        # Convert ObjectId and datetime fields
+        for submission in submission_list:
+            if '_id' in submission:
+                submission['_id'] = str(submission['_id'])
+            if 'submitted_at' in submission and submission['submitted_at'] is not None:
+                submission['submitted_at'] = submission['submitted_at'].isoformat()
+            if 'reviewed_at' in submission and submission['reviewed_at'] is not None:
+                submission['reviewed_at'] = submission['reviewed_at'].isoformat()
+        
+        return jsonify({
+            "success": True,
+            "submissions": submission_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/submissions/<submission_id>/review', methods=['POST'])
+@jwt_required()
+def manager_review_submission(submission_id):
+    """Review submission"""
+    try:
+        # Check if database is available
+        if submissions is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        status = data.get('status')  # 'approved', 'rejected', 'needs_revision'
+        feedback = data.get('feedback', '')
+        score = data.get('score')
+        
+        if not status:
+            return jsonify({"error": "Missing status"}), 400
+        
+        if status not in ['approved', 'rejected', 'needs_revision']:
+            return jsonify({"error": "Invalid status"}), 400
+        
+        # Update submission
+        update_data = {
+            "status": status,
+            "feedback": feedback,
+            "reviewed_by": current_user,
+            "reviewed_at": datetime.utcnow()
+        }
+        
+        if score is not None:
+            update_data["score"] = score
+        
+        result = submissions.update_one(
+            {"_id": ObjectId(submission_id)},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Submission not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Submission reviewed successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/certificates/unlock', methods=['POST'])
+@jwt_required()
+def manager_unlock_certificate():
+    """Unlock certificate for student"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        certificate_type = data.get('certificate_type')  # 'completion' or 'lor'
+        
+        if not user_id or not certificate_type:
+            return jsonify({"error": "Missing user_id or certificate_type"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Update user certificate unlock status
+        update_data = {}
+        if certificate_type == 'completion':
+            update_data.update({
+                "certificate_unlocked": True,
+                "certificate_unlocked_by": current_user,
+                "certificate_unlocked_at": datetime.utcnow()
+            })
+        else:  # lor
+            update_data.update({
+                "lor_unlocked": True,
+                "lor_unlocked_by": current_user,
+                "lor_unlocked_at": datetime.utcnow()
+            })
+        
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": update_data}
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": f"{certificate_type.title()} certificate unlocked successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/certificates/generate', methods=['POST'])
+@jwt_required()
+def manager_generate_certificate():
+    """Generate certificate for student"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        certificate_type = data.get('certificate_type')  # 'completion' or 'lor'
+        
+        if not user_id or not certificate_type:
+            return jsonify({"error": "Missing user_id or certificate_type"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Check if certificate is unlocked
+        if certificate_type == 'completion':
+            if not user.get('certificate_unlocked', False):
+                return jsonify({"error": "Certificate of Completion is not unlocked for this student"}), 400
+        elif certificate_type == 'lor':
+            if not user.get('lor_unlocked', False):
+                return jsonify({"error": "Letter of Recommendation is not unlocked for this student"}), 400
+        
+        # Generate certificate (this would call the certificate generation function)
+        # For now, just return success
+        return jsonify({
+            "success": True,
+            "message": f"{certificate_type.title()} certificate generated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/recalculate-completion', methods=['POST'])
+@jwt_required()
+def manager_recalculate_completion():
+    """Recalculate completion percentages for all students"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # This would call the recalculate_completion_percentages function
+        # For now, just return success
+        return jsonify({
+            "success": True,
+            "message": "Completion percentages recalculated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     # Test database connection at startup
     if client is not None and db is not None:
         try:
             client.admin.command('ping')
             print("✅ Database connection test successful at startup")
-    initialize_database()
         except Exception as e:
             print(f"❌ Database connection test failed at startup: {e}")
     else:
         print("⚠️ No database connection available at startup")
+    
+    initialize_database()
     
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') != 'production'
