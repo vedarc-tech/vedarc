@@ -462,8 +462,8 @@ export default function HRDashboard() {
               >
                 <option value="">All Tracks</option>
                 {availableTracks.map((track, index) => (
-                  <option key={index} value={track}>
-                    {track}
+                  <option key={index} value={track.track_name || track}>
+                    {track.track_name || track}
                   </option>
                 ))}
               </select>
