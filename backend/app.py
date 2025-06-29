@@ -18,6 +18,7 @@ from fpdf import FPDF
 from werkzeug.utils import secure_filename
 import base64
 import uuid
+from pymongo.server_api import ServerApi
 
 # Load environment variables
 load_dotenv()
@@ -78,29 +79,30 @@ def handle_options(path):
         return jsonify({'error': 'Origin not allowed'}), 403
 
 # MongoDB Connection
-MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/vedarc_internship')
+MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/?retryWrites=true&w=majority&appName=vedarc')
 
-# Enhanced MongoDB connection with SSL handling
+# Enhanced MongoDB connection with proper Atlas configuration
 try:
-    # Add SSL parameters to handle connection issues
-    if 'mongodb+srv://' in MONGODB_URI:
-        # For MongoDB Atlas, add SSL parameters
-        if '?' not in MONGODB_URI:
-            MONGODB_URI += '?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE'
-        elif 'ssl=' not in MONGODB_URI:
-            MONGODB_URI += '&ssl=true&ssl_cert_reqs=CERT_NONE'
+    # Create a new client and connect to the server
+    client = MongoClient(MONGODB_URI, server_api=ServerApi('1'))
     
-    client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
-    # Test the connection
+    # Send a ping to confirm a successful connection
     client.admin.command('ping')
-    print("✅ MongoDB connection successful")
+    print("✅ MongoDB Atlas connection successful!")
 except Exception as e:
-    print(f"❌ MongoDB connection failed: {e}")
+    print(f"❌ MongoDB Atlas connection failed: {e}")
     # Fallback to local MongoDB if Atlas fails
-    client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
-    print("⚠️ Using fallback MongoDB connection")
+    try:
+        client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+        client.admin.command('ping')
+        print("⚠️ Using fallback local MongoDB connection")
+    except Exception as local_error:
+        print(f"❌ Local MongoDB also failed: {local_error}")
+        # Create a dummy client to prevent crashes
+        client = None
+        print("⚠️ No MongoDB connection available")
 
-db = client.vedarc_internship  # Explicitly specify database name
+db = client.vedarc_internship if client else None  # Explicitly specify database name
 
 # CORS Middleware to ensure all responses have proper headers
 @app.after_request
@@ -115,18 +117,33 @@ def after_request(response):
     return response
 
 # Collections
-users = db['users']
-internships = db['internships']
-weeks = db['weeks']
-submissions = db['submissions']
-payments = db['payments']
-certificates = db['certificates']
-announcements = db['announcements']
-admin_users = db['admin_users']
-student_notifications = db['student_notifications']
-certificate_templates = db['certificate_templates']
-projects = db['projects']
-user_sessions = db['user_sessions']  # New collection for session management
+if db:
+    users = db['users']
+    internships = db['internships']
+    weeks = db['weeks']
+    submissions = db['submissions']
+    payments = db['payments']
+    certificates = db['certificates']
+    announcements = db['announcements']
+    admin_users = db['admin_users']
+    student_notifications = db['student_notifications']
+    certificate_templates = db['certificate_templates']
+    projects = db['projects']
+    user_sessions = db['user_sessions']  # New collection for session management
+else:
+    # Create dummy collections to prevent crashes
+    users = None
+    internships = None
+    weeks = None
+    submissions = None
+    payments = None
+    certificates = None
+    announcements = None
+    admin_users = None
+    student_notifications = None
+    certificate_templates = None
+    projects = None
+    user_sessions = None
 
 # Email Configuration
 SMTP_SERVER = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
@@ -330,6 +347,9 @@ def register():
 def get_internships():
     """Get all available internship tracks"""
     try:
+        if not internships:
+            return jsonify({"error": "Database connection not available"}), 503
+        
         internship_list = list(internships.find({}, {"_id": 0}))
         return jsonify({"internships": internship_list}), 200
     except Exception as e:
