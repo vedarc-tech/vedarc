@@ -1149,16 +1149,20 @@ def hr_get_statistics():
             "activated_at": {"$gte": week_ago}
         })
         
+        # Get today's activations
+        today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_activations = users.count_documents({
+            "status": "Active",
+            "activated_at": {"$gte": today}
+        })
+        
         statistics = {
-            "total_users": total_users,
-            "pending_users": pending_users,
-            "active_users": active_users,
-            "rejected_users": rejected_users,
-            "track_statistics": track_stats,
-            "recent_activity": {
-                "registrations_last_7_days": recent_registrations,
-                "activations_last_7_days": recent_activations
-            }
+            "pending_registrations": pending_users,
+            "activated_accounts": active_users,
+            "total_registrations": total_users,
+            "recent_activations_7_days": recent_activations,
+            "today_activations": today_activations,
+            "track_breakdown": track_stats
         }
         
         return jsonify({
