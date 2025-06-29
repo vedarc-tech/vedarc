@@ -952,11 +952,16 @@ def hr_activate_user():
         if user.get('payment_id'):
             return jsonify({"error": f"User {user_id} has already been activated with payment ID: {user['payment_id']}"}), 400
         
-        # Update user status
+        # Generate password for the user
+        password = generate_password()
+        hashed_password = generate_password_hash(password)
+        
+        # Update user status and password
         update_data = {
             "status": "Active",
             "activated_at": datetime.utcnow(),
-            "activated_by": current_user
+            "activated_by": current_user,
+            "password": hashed_password
         }
         
         if payment_id:
@@ -967,9 +972,35 @@ def hr_activate_user():
             {"$set": update_data}
         )
         
+        # Send email to user with credentials
+        email_subject = "VEDARC Internship Account Activated"
+        email_body = f"""
+Dear {user['fullName']},
+
+Your VEDARC internship account has been successfully activated!
+
+Your login credentials are:
+User ID: {user_id}
+Password: {password}
+
+You can now log in to your student dashboard at: https://vedarc.co.in
+
+Please keep your credentials safe and do not share them with anyone.
+
+Best regards,
+VEDARC Team
+        """
+        
+        try:
+            send_email(user['email'], email_subject, email_body)
+        except Exception as email_error:
+            # Log email error but don't fail the activation
+            print(f"Failed to send email to {user['email']}: {str(email_error)}")
+        
         return jsonify({
             "success": True,
-            "message": f"User {user_id} activated successfully"
+            "message": f"User {user_id} activated successfully. Password: {password}",
+            "password": password
         }), 200
         
     except Exception as e:
