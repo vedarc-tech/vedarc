@@ -80,17 +80,18 @@ def handle_options(path):
         return jsonify({'error': 'Origin not allowed'}), 403
 
 # MongoDB Connection
-MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority')
+MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority&ssl=false')
 
-# Enhanced MongoDB connection with simplified configuration
+# Enhanced MongoDB connection with alternative approach
 try:
     from pymongo.server_api import ServerApi
     
-    # Create a new client with minimal configuration
+    # Try connection without SSL first
     client = MongoClient(
         MONGODB_URI, 
         server_api=ServerApi('1'),
-        serverSelectionTimeoutMS=10000
+        serverSelectionTimeoutMS=10000,
+        directConnection=False
     )
     
     # Send a ping to confirm a successful connection
@@ -98,16 +99,24 @@ try:
     print("✅ MongoDB Atlas connection successful!")
 except Exception as e:
     print(f"❌ MongoDB Atlas connection failed: {e}")
-    # Fallback to local MongoDB if Atlas fails
+    # Try alternative connection string
     try:
-        client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+        alt_uri = "mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority"
+        client = MongoClient(alt_uri, server_api=ServerApi('1'))
         client.admin.command('ping')
-        print("⚠️ Using fallback local MongoDB connection")
-    except Exception as local_error:
-        print(f"❌ Local MongoDB also failed: {local_error}")
-        # Create a dummy client to prevent crashes
-        client = None
-        print("⚠️ No MongoDB connection available")
+        print("✅ MongoDB Atlas connection successful with alternative URI!")
+    except Exception as e2:
+        print(f"❌ Alternative connection also failed: {e2}")
+        # Fallback to local MongoDB if Atlas fails
+        try:
+            client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+            client.admin.command('ping')
+            print("⚠️ Using fallback local MongoDB connection")
+        except Exception as local_error:
+            print(f"❌ Local MongoDB also failed: {local_error}")
+            # Create a dummy client to prevent crashes
+            client = None
+            print("⚠️ No MongoDB connection available")
 
 db = client.vedarc_internship if client else None  # Explicitly specify database name
 
