@@ -2795,6 +2795,144 @@ def manager_recalculate_completion():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/manager/students/<internship_id>', methods=['GET'])
+@jwt_required()
+def manager_get_students_with_certificates(internship_id):
+    """Get students with certificate unlock status"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Find internship
+        internship = internships.find_one({"_id": ObjectId(internship_id)})
+        if not internship:
+            return jsonify({"error": "Internship not found"}), 404
+        
+        # Get students for this internship track
+        track_name = internship['track_name']
+        students = list(users.find({"track": track_name, "status": "Active"}))
+        
+        # Convert ObjectId and datetime fields
+        for student in students:
+            if '_id' in student:
+                student['_id'] = str(student['_id'])
+            if 'created_at' in student and student['created_at'] is not None:
+                student['created_at'] = student['created_at'].isoformat()
+            if 'activated_at' in student and student['activated_at'] is not None:
+                student['activated_at'] = student['activated_at'].isoformat()
+            if 'certificate_unlocked_at' in student and student['certificate_unlocked_at'] is not None:
+                student['certificate_unlocked_at'] = student['certificate_unlocked_at'].isoformat()
+            if 'lor_unlocked_at' in student and student['lor_unlocked_at'] is not None:
+                student['lor_unlocked_at'] = student['lor_unlocked_at'].isoformat()
+        
+        return jsonify({"students": students}), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/manager/certificates/bulk-unlock', methods=['POST'])
+@jwt_required()
+def manager_bulk_unlock_certificates():
+    """Bulk unlock certificates for multiple students"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify manager
+        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
+        if not manager:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_ids = data.get('user_ids', [])
+        certificate_type = data.get('certificate_type')  # 'completion' or 'lor'
+        
+        if not user_ids or not certificate_type:
+            return jsonify({"error": "Missing user_ids or certificate_type"}), 400
+        
+        if certificate_type not in ['completion', 'lor']:
+            return jsonify({"error": "Invalid certificate type"}), 400
+        
+        results = {
+            "successful": [],
+            "failed": [],
+            "requires_admin_approval": []
+        }
+        
+        for user_id in user_ids:
+            try:
+                # Find user
+                user = users.find_one({"user_id": user_id})
+                if not user:
+                    results["failed"].append({
+                        "user_id": user_id,
+                        "error": "User not found"
+                    })
+                    continue
+                
+                # Update user certificate unlock status
+                update_data = {}
+                if certificate_type == 'completion':
+                    update_data.update({
+                        "certificate_unlocked": True,
+                        "certificate_unlocked_by": current_user,
+                        "certificate_unlocked_at": datetime.utcnow()
+                    })
+                else:  # lor
+                    update_data.update({
+                        "lor_unlocked": True,
+                        "lor_unlocked_by": current_user,
+                        "lor_unlocked_at": datetime.utcnow()
+                    })
+                
+                users.update_one(
+                    {"user_id": user_id},
+                    {"$set": update_data}
+                )
+                
+                # Create notification for student
+                certificate_name = "Certificate of Completion" if certificate_type == 'completion' else "Letter of Recommendation"
+                notification_data = {
+                    "user_id": user_id,
+                    "title": f"{certificate_name} Unlocked!",
+                    "content": f"Your {certificate_name} has been unlocked by your internship manager. You can now download it from your dashboard.",
+                    "priority": "high",
+                    "is_read": False,
+                    "created_at": datetime.utcnow()
+                }
+                student_notifications.insert_one(notification_data)
+                
+                results["successful"].append({
+                    "user_id": user_id,
+                    "name": user.get('fullName', 'Unknown')
+                })
+                
+            except Exception as e:
+                results["failed"].append({
+                    "user_id": user_id,
+                    "error": str(e)
+                })
+        
+        return jsonify({
+            "success": True,
+            "results": results,
+            "message": f"Bulk unlock completed. {len(results['successful'])} successful, {len(results['failed'])} failed, {len(results['requires_admin_approval'])} require admin approval."
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     # Test database connection at startup
     if client is not None and db is not None:
