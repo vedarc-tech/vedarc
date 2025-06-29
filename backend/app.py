@@ -174,7 +174,7 @@ def after_request(response):
     return response
 
 # Collections
-if db:
+if db is not None:
     users = db['users']
     internships = db['internships']
     weeks = db['weeks']
@@ -2690,11 +2690,11 @@ def admin_create_internship():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
-    db_status = "connected" if client and db else "disconnected"
+    db_status = "connected" if client is not None and db is not None else "disconnected"
     
     # Try to ping the database if connected
     db_ping = "unknown"
-    if client and db:
+    if client is not None and db is not None:
         try:
             client.admin.command('ping')
             db_ping = "success"
