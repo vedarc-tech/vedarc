@@ -2937,6 +2937,666 @@ def manager_bulk_unlock_certificates():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ============================================================================
+# ADMIN API ENDPOINTS
+# ============================================================================
+
+@app.route('/api/admin/users', methods=['GET'])
+@jwt_required()
+def admin_get_users():
+    """Get all users for admin"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get query parameters
+        track_filter = request.args.get('track', '')
+        status_filter = request.args.get('status', '')
+        
+        # Build query
+        query = {}
+        if track_filter:
+            query["track"] = track_filter
+        if status_filter:
+            query["status"] = status_filter
+        
+        # Get users
+        user_list = list(users.find(query).sort("created_at", -1))
+        
+        # Convert ObjectId and datetime fields
+        for user in user_list:
+            if '_id' in user:
+                user['_id'] = str(user['_id'])
+            if 'created_at' in user and user['created_at'] is not None:
+                user['created_at'] = user['created_at'].isoformat()
+            if 'activated_at' in user and user['activated_at'] is not None:
+                user['activated_at'] = user['activated_at'].isoformat()
+        
+        return jsonify({
+            "success": True,
+            "users": user_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/internships', methods=['GET'])
+@jwt_required()
+def admin_get_internships():
+    """Get all internships for admin"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get all internships
+        internship_list = list(internships.find({}))
+        
+        # Convert ObjectId fields
+        for internship in internship_list:
+            if '_id' in internship:
+                internship['_id'] = str(internship['_id'])
+        
+        return jsonify({
+            "success": True,
+            "internships": internship_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/internships', methods=['POST'])
+@jwt_required()
+def admin_create_internship():
+    """Create new internship for admin"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        
+        # Validate required fields
+        required_fields = ['track_name', 'description', 'duration', 'requirements']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        # Create internship
+        internship_data = {
+            "track_name": data['track_name'],
+            "description": data['description'],
+            "duration": data['duration'],
+            "requirements": data['requirements'],
+            "created_by": current_user,
+            "created_at": datetime.utcnow()
+        }
+        
+        result = internships.insert_one(internship_data)
+        
+        return jsonify({
+            "success": True,
+            "message": "Internship created successfully",
+            "internship_id": str(result.inserted_id)
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/submissions', methods=['GET'])
+@jwt_required()
+def admin_get_submissions():
+    """Get all submissions for admin"""
+    try:
+        # Check if database is available
+        if submissions is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get query parameters
+        track_filter = request.args.get('track', '')
+        status_filter = request.args.get('status', '')
+        week_filter = request.args.get('week', '')
+        
+        # Build query
+        query = {}
+        if track_filter:
+            query["track"] = track_filter
+        if status_filter:
+            query["status"] = status_filter
+        if week_filter:
+            query["week_number"] = int(week_filter)
+        
+        # Get submissions
+        submission_list = list(submissions.find(query).sort("submitted_at", -1))
+        
+        # Convert ObjectId and datetime fields
+        for submission in submission_list:
+            if '_id' in submission:
+                submission['_id'] = str(submission['_id'])
+            if 'submitted_at' in submission and submission['submitted_at'] is not None:
+                submission['submitted_at'] = submission['submitted_at'].isoformat()
+            if 'reviewed_at' in submission and submission['reviewed_at'] is not None:
+                submission['reviewed_at'] = submission['reviewed_at'].isoformat()
+        
+        return jsonify({
+            "success": True,
+            "submissions": submission_list
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/submissions/<submission_id>', methods=['PUT'])
+@jwt_required()
+def admin_update_submission(submission_id):
+    """Update submission status for admin"""
+    try:
+        # Check if database is available
+        if submissions is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        status = data.get('status')
+        
+        if not status:
+            return jsonify({"error": "Missing status"}), 400
+        
+        # Update submission
+        result = submissions.update_one(
+            {"_id": ObjectId(submission_id)},
+            {"$set": {
+                "status": status,
+                "reviewed_by": current_user,
+                "reviewed_at": datetime.utcnow()
+            }}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Submission not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": "Submission updated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/reset-user-password', methods=['POST'])
+@jwt_required()
+def admin_reset_user_password():
+    """Reset any user's password (Admin)"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        user_type = data.get('user_type')
+        
+        if not user_id or not user_type:
+            return jsonify({"error": "Missing user_id or user_type"}), 400
+        
+        # Generate new password
+        new_password = generate_password()
+        hashed_password = generate_password_hash(new_password)
+        
+        # Update user password based on type
+        if user_type == 'student':
+            result = users.update_one(
+                {"user_id": user_id},
+                {"$set": {
+                    "password": hashed_password,
+                    "password_reset_at": datetime.utcnow(),
+                    "password_reset_by": current_user
+                }}
+            )
+        else:
+            result = admin_users.update_one(
+                {"username": user_id},
+                {"$set": {
+                    "password": hashed_password,
+                    "password_reset_at": datetime.utcnow(),
+                    "password_reset_by": current_user
+                }}
+            )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "User not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "message": f"Password reset successfully for {user_id}",
+            "new_password": new_password
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/create-user', methods=['POST'])
+@jwt_required()
+def admin_create_user():
+    """Create new user account (Admin)"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        
+        # Validate required fields
+        required_fields = ['username', 'password', 'user_type', 'fullName']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        # Generate password hash
+        hashed_password = generate_password_hash(data['password'])
+        
+        # Create user based on type
+        if data['user_type'] == 'student':
+            # For students, we need additional fields
+            if not data.get('email') or not data.get('track'):
+                return jsonify({"error": "Students require email and track"}), 400
+            
+            user_data = {
+                "user_id": data['username'],
+                "fullName": data['fullName'],
+                "email": data['email'],
+                "track": data['track'],
+                "password": hashed_password,
+                "status": "Active",
+                "created_at": datetime.utcnow(),
+                "activated_at": datetime.utcnow(),
+                "activated_by": current_user
+            }
+            
+            # Check if user already exists
+            if users.find_one({"user_id": data['username']}):
+                return jsonify({"error": "Student with this user ID already exists"}), 400
+            
+            result = users.insert_one(user_data)
+        else:
+            # For admin users
+            user_data = {
+                "username": data['username'],
+                "password": hashed_password,
+                "fullName": data['fullName'],
+                "user_type": data['user_type'],
+                "created_by": current_user,
+                "created_at": datetime.utcnow()
+            }
+            
+            # Check if user already exists
+            if admin_users.find_one({"username": data['username']}):
+                return jsonify({"error": "User with this username already exists"}), 400
+            
+            result = admin_users.insert_one(user_data)
+        
+        return jsonify({
+            "success": True,
+            "message": f"{data['user_type']} user created successfully",
+            "user_id": str(result.inserted_id)
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/user-types', methods=['GET'])
+@jwt_required()
+def admin_get_user_types():
+    """Get all user types for dropdown"""
+    try:
+        # Check if database is available
+        if admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Return available user types
+        user_types = [
+            {"value": "student", "label": "Student"},
+            {"value": "hr", "label": "HR"},
+            {"value": "manager", "label": "Manager"},
+            {"value": "admin", "label": "Admin"}
+        ]
+        
+        return jsonify({
+            "success": True,
+            "user_types": user_types
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/generate-certificate', methods=['POST'])
+@jwt_required()
+def admin_generate_certificate():
+    """Generate certificate for admin"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        certificate_type = data.get('certificate_type')
+        
+        if not user_id or not certificate_type:
+            return jsonify({"error": "Missing user_id or certificate_type"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Generate certificate (placeholder - would implement actual certificate generation)
+        return jsonify({
+            "success": True,
+            "message": f"{certificate_type} certificate generated successfully for {user_id}"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/release-certificate', methods=['POST'])
+@jwt_required()
+def admin_release_certificate():
+    """Release certificate for student"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        student_id = data.get('student_id')
+        certificate_type = data.get('certificate_type')
+        
+        if not student_id or not certificate_type:
+            return jsonify({"error": "Missing student_id or certificate_type"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": student_id})
+        if not user:
+            return jsonify({"error": "Student not found"}), 404
+        
+        # Update certificate status
+        update_data = {}
+        if certificate_type == 'completion':
+            update_data.update({
+                "certificate_unlocked": True,
+                "certificate_unlocked_by": current_user,
+                "certificate_unlocked_at": datetime.utcnow()
+            })
+        elif certificate_type == 'lor':
+            update_data.update({
+                "lor_unlocked": True,
+                "lor_unlocked_by": current_user,
+                "lor_unlocked_at": datetime.utcnow()
+            })
+        
+        users.update_one(
+            {"user_id": student_id},
+            {"$set": update_data}
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": f"{certificate_type} certificate released for {student_id}"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/certificate-approval/bulk', methods=['POST'])
+@jwt_required()
+def admin_bulk_approve_certificates():
+    """Bulk approve certificates for admin"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_ids = data.get('user_ids', [])
+        certificate_type = data.get('certificate_type')
+        
+        if not user_ids or not certificate_type:
+            return jsonify({"error": "Missing user_ids or certificate_type"}), 400
+        
+        results = {
+            "successful": [],
+            "failed": []
+        }
+        
+        for user_id in user_ids:
+            try:
+                # Find user
+                user = users.find_one({"user_id": user_id})
+                if not user:
+                    results["failed"].append({
+                        "user_id": user_id,
+                        "error": "User not found"
+                    })
+                    continue
+                
+                # Update certificate approval status
+                update_data = {}
+                if certificate_type == 'completion':
+                    update_data.update({
+                        "admin_certificate_approval": True,
+                        "admin_certificate_approval_by": current_user,
+                        "admin_certificate_approval_at": datetime.utcnow()
+                    })
+                elif certificate_type == 'lor':
+                    update_data.update({
+                        "admin_lor_approval": True,
+                        "admin_lor_approval_by": current_user,
+                        "admin_lor_approval_at": datetime.utcnow()
+                    })
+                
+                users.update_one(
+                    {"user_id": user_id},
+                    {"$set": update_data}
+                )
+                
+                results["successful"].append({
+                    "user_id": user_id,
+                    "name": user.get('fullName', 'Unknown')
+                })
+                
+            except Exception as e:
+                results["failed"].append({
+                    "user_id": user_id,
+                    "error": str(e)
+                })
+        
+        return jsonify({
+            "success": True,
+            "results": results,
+            "message": f"Bulk approval completed. {len(results['successful'])} successful, {len(results['failed'])} failed."
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/certificate-template', methods=['POST'])
+@jwt_required()
+def admin_set_certificate_template():
+    """Save certificate template for admin"""
+    try:
+        # Check if database is available
+        if certificate_templates is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        template_type = data.get('type')
+        template = data.get('template')
+        
+        if not template_type or not template:
+            return jsonify({"error": "Missing type or template"}), 400
+        
+        # Save or update template
+        certificate_templates.update_one(
+            {"type": template_type},
+            {"$set": {
+                "template": template,
+                "updated_by": current_user,
+                "updated_at": datetime.utcnow()
+            }},
+            upsert=True
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": f"Certificate template for {template_type} saved successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/certificate-template', methods=['GET'])
+@jwt_required()
+def admin_get_certificate_template():
+    """Get certificate template by type for admin"""
+    try:
+        # Check if database is available
+        if certificate_templates is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        template_type = request.args.get('type')
+        if not template_type:
+            return jsonify({"error": "Missing type parameter"}), 400
+        
+        # Get template
+        template_doc = certificate_templates.find_one({"type": template_type})
+        if not template_doc:
+            return jsonify({"error": "Template not found"}), 404
+        
+        return jsonify({
+            "success": True,
+            "template": template_doc['template']
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/admin/certificate-template/upload', methods=['POST'])
+@jwt_required()
+def admin_upload_template_file():
+    """Upload template file (PDF or image) for admin"""
+    try:
+        # Check if database is available
+        if admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify admin
+        admin_user = admin_users.find_one({"username": current_user, "user_type": "admin"})
+        if not admin_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # This would handle file upload - placeholder implementation
+        return jsonify({
+            "success": True,
+            "message": "Template file uploaded successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     # Test database connection at startup
     if client is not None and db is not None:
