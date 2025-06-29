@@ -82,23 +82,15 @@ def handle_options(path):
 # MongoDB Connection
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/?retryWrites=true&w=majority&appName=vedarc')
 
-# Enhanced MongoDB connection with proper Atlas configuration and SSL handling
+# Enhanced MongoDB connection with proper Atlas configuration and TLS handling
 try:
     from pymongo.server_api import ServerApi
-    import ssl
     
-    # Create SSL context to handle certificate issues
-    ssl_context = ssl.create_default_context()
-    ssl_context.check_hostname = False
-    ssl_context.verify_mode = ssl.CERT_NONE
-    
-    # Create a new client and connect to the server with SSL context
+    # Create a new client and connect to the server with proper TLS settings
     client = MongoClient(
         MONGODB_URI, 
         server_api=ServerApi('1'),
-        ssl=True,
-        ssl_cert_reqs=ssl.CERT_NONE,
-        ssl_ca_certs=None,
+        tls=True,
         tlsAllowInvalidCertificates=True,
         tlsAllowInvalidHostnames=True,
         serverSelectionTimeoutMS=10000
