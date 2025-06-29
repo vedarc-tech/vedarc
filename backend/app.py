@@ -408,7 +408,8 @@ def register():
 def get_internships():
     """Get all available internship tracks"""
     try:
-        if not internships:
+        # Check if database is available
+        if internships is None:
             return jsonify({"error": "Database connection not available"}), 503
         
         internship_list = list(internships.find({}, {"_id": 0}))
@@ -529,6 +530,10 @@ def get_internship_details():
 def student_get_weeks():
     """Get weeks for student's track"""
     try:
+        # Check if database is available
+        if users is None or weeks is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
         current_user = get_jwt_identity()
         
         # Find user
@@ -550,6 +555,10 @@ def student_get_weeks():
 def student_get_announcements():
     """Get announcements for students"""
     try:
+        # Check if database is available
+        if users is None or announcements is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
         current_user = get_jwt_identity()
         
         # Find user
