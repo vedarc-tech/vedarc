@@ -80,19 +80,16 @@ def handle_options(path):
         return jsonify({'error': 'Origin not allowed'}), 403
 
 # MongoDB Connection
-MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/?retryWrites=true&w=majority&appName=vedarc')
+MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority')
 
-# Enhanced MongoDB connection with proper Atlas configuration and TLS handling
+# Enhanced MongoDB connection with simplified configuration
 try:
     from pymongo.server_api import ServerApi
     
-    # Create a new client and connect to the server with proper TLS settings
+    # Create a new client with minimal configuration
     client = MongoClient(
         MONGODB_URI, 
         server_api=ServerApi('1'),
-        tls=True,
-        tlsAllowInvalidCertificates=True,
-        tlsAllowInvalidHostnames=True,
         serverSelectionTimeoutMS=10000
     )
     
