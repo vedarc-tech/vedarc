@@ -80,18 +80,25 @@ def handle_options(path):
         return jsonify({'error': 'Origin not allowed'}), 403
 
 # MongoDB Connection
-MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority&ssl=false')
+MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority')
 
-# Enhanced MongoDB connection with alternative approach
+# Enhanced MongoDB connection with proper SSL/TLS configuration
 try:
     from pymongo.server_api import ServerApi
     
-    # Try connection without SSL first
+    # Try connection with proper SSL configuration
     client = MongoClient(
         MONGODB_URI, 
         server_api=ServerApi('1'),
-        serverSelectionTimeoutMS=10000,
-        directConnection=False
+        serverSelectionTimeoutMS=30000,  # Increased timeout
+        connectTimeoutMS=30000,
+        socketTimeoutMS=30000,
+        tls=True,  # Enable TLS/SSL
+        tlsAllowInvalidCertificates=False,  # Don't allow invalid certificates
+        tlsAllowInvalidHostnames=False,  # Don't allow invalid hostnames
+        directConnection=False,
+        retryWrites=True,
+        w='majority'
     )
     
     # Send a ping to confirm a successful connection
@@ -99,24 +106,58 @@ try:
     print("✅ MongoDB Atlas connection successful!")
 except Exception as e:
     print(f"❌ MongoDB Atlas connection failed: {e}")
-    # Try alternative connection string
+    # Try alternative connection string with different SSL settings
     try:
-        alt_uri = "mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority"
-        client = MongoClient(alt_uri, server_api=ServerApi('1'))
+        alt_uri = "mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
+        client = MongoClient(
+            alt_uri, 
+            server_api=ServerApi('1'),
+            serverSelectionTimeoutMS=30000,
+            connectTimeoutMS=30000,
+            socketTimeoutMS=30000
+        )
         client.admin.command('ping')
-        print("✅ MongoDB Atlas connection successful with alternative URI!")
+        print("✅ MongoDB Atlas connection successful with alternative SSL settings!")
     except Exception as e2:
         print(f"❌ Alternative connection also failed: {e2}")
-        # Fallback to local MongoDB if Atlas fails
+        # Try with minimal SSL requirements and different TLS settings
         try:
-            client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+            minimal_uri = "mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority&ssl=true"
+            client = MongoClient(
+                minimal_uri,
+                server_api=ServerApi('1'),
+                serverSelectionTimeoutMS=30000,
+                tlsAllowInvalidCertificates=True,  # Allow invalid certificates as last resort
+                tlsAllowInvalidHostnames=True,
+                tlsInsecure=True  # Allow insecure TLS connections
+            )
             client.admin.command('ping')
-            print("⚠️ Using fallback local MongoDB connection")
-        except Exception as local_error:
-            print(f"❌ Local MongoDB also failed: {local_error}")
-            # Create a dummy client to prevent crashes
-            client = None
-            print("⚠️ No MongoDB connection available")
+            print("✅ MongoDB Atlas connection successful with minimal SSL requirements!")
+        except Exception as e3:
+            print(f"❌ Minimal SSL connection also failed: {e3}")
+            # Try with no SSL verification at all (last resort)
+            try:
+                no_ssl_uri = "mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority&ssl=false"
+                client = MongoClient(
+                    no_ssl_uri,
+                    server_api=ServerApi('1'),
+                    serverSelectionTimeoutMS=30000,
+                    tls=False
+                )
+                client.admin.command('ping')
+                print("✅ MongoDB Atlas connection successful with SSL disabled!")
+            except Exception as e4:
+                print(f"❌ SSL disabled connection also failed: {e4}")
+                # Fallback to local MongoDB if Atlas fails
+                try:
+                    client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+                    client.admin.command('ping')
+                    print("⚠️ Using fallback local MongoDB connection")
+                except Exception as local_error:
+                    print(f"❌ Local MongoDB also failed: {local_error}")
+                    # Create a dummy client to prevent crashes
+                    client = None
+                    print("⚠️ No MongoDB connection available")
 
 db = client.vedarc_internship if client else None  # Explicitly specify database name
 
@@ -2649,10 +2690,27 @@ def admin_create_internship():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
+    db_status = "connected" if client and db else "disconnected"
+    
+    # Try to ping the database if connected
+    db_ping = "unknown"
+    if client and db:
+        try:
+            client.admin.command('ping')
+            db_ping = "success"
+        except Exception as e:
+            db_ping = f"failed: {str(e)}"
+    
     return jsonify({
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "service": "VEDARC Internship Backend"
+        "service": "VEDARC Internship Backend",
+        "database": {
+            "status": db_status,
+            "ping": db_ping,
+            "collections_available": bool(db)
+        },
+        "mongodb_uri": MONGODB_URI.replace(MONGODB_URI.split('@')[0].split('//')[1].split(':')[0], '***') if '@' in MONGODB_URI else "not_configured"
     }), 200
 
 # ============================================================================
@@ -4119,7 +4177,17 @@ def student_auto_assign_project():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    initialize_database()
+    # Test database connection at startup
+    if client and db:
+        try:
+            client.admin.command('ping')
+            print("✅ Database connection test successful at startup")
+            initialize_database()
+        except Exception as e:
+            print(f"❌ Database connection test failed at startup: {e}")
+    else:
+        print("⚠️ No database connection available at startup")
+    
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') != 'production'
     app.run(debug=debug, host='0.0.0.0', port=port) 
