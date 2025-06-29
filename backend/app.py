@@ -148,16 +148,16 @@ except Exception as e:
                 print("✅ MongoDB Atlas connection successful with SSL disabled!")
             except Exception as e4:
                 print(f"❌ SSL disabled connection also failed: {e4}")
-                # Fallback to local MongoDB if Atlas fails
-                try:
-                    client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
-                    client.admin.command('ping')
-                    print("⚠️ Using fallback local MongoDB connection")
-                except Exception as local_error:
-                    print(f"❌ Local MongoDB also failed: {local_error}")
-                    # Create a dummy client to prevent crashes
-                    client = None
-                    print("⚠️ No MongoDB connection available")
+        # Fallback to local MongoDB if Atlas fails
+        try:
+            client = MongoClient('mongodb://localhost:27017/vedarc_internship', serverSelectionTimeoutMS=5000)
+            client.admin.command('ping')
+            print("⚠️ Using fallback local MongoDB connection")
+        except Exception as local_error:
+            print(f"❌ Local MongoDB also failed: {local_error}")
+            # Create a dummy client to prevent crashes
+            client = None
+            print("⚠️ No MongoDB connection available")
 
 db = client.vedarc_internship if client else None  # Explicitly specify database name
 
@@ -809,7 +809,7 @@ def admin_login():
         
         if not check_password_hash(admin_user['password'], password):
             return jsonify({"error": "Invalid credentials"}), 401
-        
+            
         # Create access token
         access_token = create_access_token(identity=username)
         
@@ -836,135 +836,9 @@ def admin_login():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/hr/pending-registrations', methods=['GET'])
-@app.route('/api/manager/certificates/bulk-unlock', methods=['POST'])
 @jwt_required()
-def manager_bulk_unlock_certificates():
-    """Bulk unlock certificates for multiple students"""
-    try:
-        current_user = get_jwt_identity()
-        
-        # Verify manager
-        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
-        if not manager:
-            return jsonify({"error": "Unauthorized"}), 403
-        
-        data = request.json
-        user_ids = data.get('user_ids', [])
-        certificate_type = data.get('certificate_type')  # 'completion' or 'lor'
-        
-        if not user_ids or not certificate_type:
-            return jsonify({"error": "Missing user_ids or certificate_type"}), 400
-        
-        if certificate_type not in ['completion', 'lor']:
-            return jsonify({"error": "Invalid certificate type"}), 400
-        
-        results = {
-            "successful": [],
-            "failed": [],
-            "requires_admin_approval": []
-        }
-        
-        for user_id in user_ids:
-            try:
-                # Find user
-                user = users.find_one({"user_id": user_id})
-                if not user:
-                    results["failed"].append({"user_id": user_id, "error": "User not found"})
-                    continue
-                
-                # Check course completion for certificate
-                if certificate_type == 'completion':
-                    if user.get('course_completion_percentage', 0) < 100:
-                        results["failed"].append({
-                            "user_id": user_id, 
-                            "error": "Student must have 100% course completion"
-                        })
-                        continue
-                    
-                    # Check admin approval
-                    if not user.get('admin_certificate_approval', False):
-                        results["requires_admin_approval"].append({
-                            "user_id": user_id,
-                            "name": user.get('fullName', 'Unknown'),
-                            "error": "Admin approval required"
-                        })
-                        continue
-                
-                # Check project completion for LOR
-                if certificate_type == 'lor':
-                    project_status = user.get('project_completion_status', 'Not Started')
-                    if project_status not in ['Completed', 'Excellent']:
-                        results["failed"].append({
-                            "user_id": user_id,
-                            "error": f"Project status must be 'Completed' or 'Excellent', current: {project_status}"
-                        })
-                        continue
-                    
-                    # Check admin approval
-                    if not user.get('admin_lor_approval', False):
-                        results["requires_admin_approval"].append({
-                            "user_id": user_id,
-                            "name": user.get('fullName', 'Unknown'),
-                            "error": "Admin approval required"
-                        })
-                        continue
-                
-                # Update user certificate unlock status
-                update_data = {}
-                if certificate_type == 'completion':
-                    update_data.update({
-                        "certificate_unlocked": True,
-                        "certificate_unlocked_by": current_user,
-                        "certificate_unlocked_at": datetime.utcnow()
-                    })
-                else:  # lor
-                    update_data.update({
-                        "lor_unlocked": True,
-                        "lor_unlocked_by": current_user,
-                        "lor_unlocked_at": datetime.utcnow()
-                    })
-                
-                users.update_one(
-                    {"user_id": user_id},
-                    {"$set": update_data}
-                )
-                
-                # Create notification for student
-                certificate_name = "Certificate of Completion" if certificate_type == 'completion' else "Letter of Recommendation"
-                notification_data = {
-                    "user_id": user_id,
-                    "title": f"{certificate_name} Unlocked!",
-                    "content": f"Your {certificate_name} has been unlocked by your internship manager. You can now download it from your dashboard.",
-                    "priority": "high",
-                    "is_read": False,
-                    "created_at": datetime.utcnow()
-                }
-                student_notifications.insert_one(notification_data)
-                
-                results["successful"].append({
-                    "user_id": user_id,
-                    "name": user.get('fullName', 'Unknown')
-                })
-                
-            except Exception as e:
-                results["failed"].append({
-                    "user_id": user_id,
-                    "error": str(e)
-                })
-        
-        return jsonify({
-            "success": True,
-            "results": results,
-            "message": f"Bulk unlock completed. {len(results['successful'])} successful, {len(results['failed'])} failed, {len(results['requires_admin_approval'])} require admin approval."
-        }), 200
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/api/manager/students/<internship_id>', methods=['GET'])
-@jwt_required()
-def manager_get_students_with_certificates(internship_id):
-    """Get students for a specific internship with certificate status"""
+def hr_get_pending_registrations():
+    """Get pending student registrations"""
     try:
         # Check if database is available
         if users is None or admin_users is None:
@@ -972,38 +846,388 @@ def manager_get_students_with_certificates(internship_id):
         
         current_user = get_jwt_identity()
         
-        # Verify manager
-        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
-        if not manager:
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
             return jsonify({"error": "Unauthorized"}), 403
         
-        # Get students for this internship
-        students = list(users.find({"internship_id": internship_id}))
+        # Get query parameters
+        track_filter = request.args.get('track', '')
+        date_filter = request.args.get('date', '')
         
-        # Process students to include certificate status
-        for student in students:
-            # Calculate completion percentage
-            total_weeks = len(student.get('weeks', []))
-            completed_weeks = sum(1 for week in student.get('weeks', []) if week.get('status') == 'completed')
-            completion_percentage = (completed_weeks / total_weeks * 100) if total_weeks > 0 else 0
-            
-            student['completion_percentage'] = round(completion_percentage, 2)
-            
-            # Add certificate eligibility
-            student['certificate_eligible'] = completion_percentage >= 100
-            student['lor_eligible'] = student.get('project_completion_status') in ['Completed', 'Excellent']
-            
-            # Add admin approval status
-            student['admin_certificate_approved'] = student.get('admin_certificate_approval', False)
-            student['admin_lor_approved'] = student.get('admin_lor_approval', False)
-            
-            # Add unlock status
-            student['certificate_unlocked'] = student.get('certificate_unlocked', False)
-            student['lor_unlocked'] = student.get('lor_unlocked', False)
+        # Build query
+        query = {"status": "Pending"}
+        if track_filter:
+            query["track"] = track_filter
+        if date_filter:
+            # Convert date string to datetime for comparison
+            try:
+                filter_date = datetime.strptime(date_filter, '%Y-%m-%d')
+                next_date = filter_date + timedelta(days=1)
+                query["created_at"] = {
+                    "$gte": filter_date,
+                    "$lt": next_date
+                }
+            except ValueError:
+                pass  # Invalid date format, ignore filter
+        
+        # Get pending registrations
+        pending_users = list(users.find(query).sort("created_at", -1))
+        
+        # Convert ObjectId and datetime fields
+        for user in pending_users:
+            if '_id' in user:
+                user['_id'] = str(user['_id'])
+            if 'created_at' in user and user['created_at'] is not None:
+                user['created_at'] = user['created_at'].isoformat()
         
         return jsonify({
             "success": True,
-            "students": fix_object_ids(students)
+            "registrations": pending_users
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/available-tracks', methods=['GET'])
+@jwt_required()
+def hr_get_available_tracks():
+    """Get available internship tracks"""
+    try:
+        # Check if database is available
+        if internships is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get all internship tracks
+        tracks = list(internships.find({}, {"track_name": 1, "description": 1, "_id": 0}))
+        
+        return jsonify({
+            "success": True,
+            "tracks": tracks
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/activate-user', methods=['POST'])
+@jwt_required()
+def hr_activate_user():
+    """Activate a pending user"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        payment_id = data.get('payment_id')
+        
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Check if user is pending
+        if user['status'] != "Pending":
+            return jsonify({"error": "User is not pending"}), 400
+        
+        # Check if user already has a payment ID
+        if user.get('payment_id'):
+            return jsonify({"error": f"User {user_id} has already been activated with payment ID: {user['payment_id']}"}), 400
+        
+        # Update user status
+        update_data = {
+            "status": "Active",
+            "activated_at": datetime.utcnow(),
+            "activated_by": current_user
+        }
+        
+        if payment_id:
+            update_data["payment_id"] = payment_id
+        
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": update_data}
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": f"User {user_id} activated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/deactivate-user', methods=['POST'])
+@jwt_required()
+def hr_deactivate_user():
+    """Deactivate a pending user"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        reason = data.get('reason')
+        
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Check if user is pending
+        if user['status'] != "Pending":
+            return jsonify({"error": "User is not pending"}), 400
+        
+        # Update user status
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "status": "Rejected",
+                "rejected_at": datetime.utcnow(),
+                "rejected_by": current_user,
+                "rejection_reason": reason
+            }}
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": f"User {user_id} deactivated successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/reset-student-password', methods=['POST'])
+@jwt_required()
+def hr_reset_student_password():
+    """Reset student password"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Generate new password
+        new_password = generate_password()
+        hashed_password = generate_password_hash(new_password)
+        
+        # Update user password
+        users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "password": hashed_password,
+                "password_reset_at": datetime.utcnow(),
+                "password_reset_by": current_user
+            }}
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": f"Password reset successfully for user {user_id}",
+            "new_password": new_password
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/statistics', methods=['GET'])
+@jwt_required()
+def hr_get_statistics():
+    """Get HR dashboard statistics"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Calculate statistics
+        total_users = users.count_documents({})
+        pending_users = users.count_documents({"status": "Pending"})
+        active_users = users.count_documents({"status": "Active"})
+        rejected_users = users.count_documents({"status": "Rejected"})
+        
+        # Get track-wise statistics
+        track_stats = {}
+        tracks = list(internships.find({}, {"track_name": 1}))
+        
+        for track in tracks:
+            track_name = track['track_name']
+            track_stats[track_name] = {
+                "total": users.count_documents({"track": track_name}),
+                "pending": users.count_documents({"track": track_name, "status": "Pending"}),
+                "active": users.count_documents({"track": track_name, "status": "Active"}),
+                "rejected": users.count_documents({"track": track_name, "status": "Rejected"})
+            }
+        
+        # Get recent activity (last 7 days)
+        week_ago = datetime.utcnow() - timedelta(days=7)
+        recent_registrations = users.count_documents({
+            "created_at": {"$gte": week_ago}
+        })
+        recent_activations = users.count_documents({
+            "activated_at": {"$gte": week_ago}
+        })
+        
+        statistics = {
+            "total_users": total_users,
+            "pending_users": pending_users,
+            "active_users": active_users,
+            "rejected_users": rejected_users,
+            "track_statistics": track_stats,
+            "recent_activity": {
+                "registrations_last_7_days": recent_registrations,
+                "activations_last_7_days": recent_activations
+            }
+        }
+        
+        return jsonify({
+            "success": True,
+            "statistics": statistics
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/debug-user-status', methods=['GET'])
+@jwt_required()
+def hr_debug_user_status():
+    """Debug user status for HR"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        user_id = request.args.get('user_id')
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Return user status information
+        return jsonify({
+            "success": True,
+            "user_status": {
+                "user_id": user['user_id'],
+                "status": user['status'],
+                "track": user.get('track'),
+                "created_at": user.get('created_at'),
+                "activated_at": user.get('activated_at'),
+                "rejected_at": user.get('rejected_at'),
+                "payment_id": user.get('payment_id'),
+                "rejection_reason": user.get('rejection_reason')
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/fix-inconsistent-users', methods=['POST'])
+@jwt_required()
+def hr_fix_inconsistent_users():
+    """Fix inconsistent user statuses"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Find users with inconsistent statuses
+        inconsistent_users = list(users.find({
+            "$or": [
+                {"status": {"$exists": False}},
+                {"status": ""},
+                {"status": None}
+            ]
+        }))
+        
+        fixed_count = 0
+        for user in inconsistent_users:
+            # Set default status based on other fields
+            if user.get('activated_at'):
+                new_status = "Active"
+            elif user.get('rejected_at'):
+                new_status = "Rejected"
+            else:
+                new_status = "Pending"
+            
+            users.update_one(
+                {"_id": user['_id']},
+                {"$set": {"status": new_status}}
+            )
+            fixed_count += 1
+        
+        return jsonify({
+            "success": True,
+            "message": f"Fixed {fixed_count} inconsistent users",
+            "fixed_count": fixed_count
         }), 200
         
     except Exception as e:
@@ -1737,7 +1961,7 @@ if __name__ == '__main__':
         try:
             client.admin.command('ping')
             print("✅ Database connection test successful at startup")
-            initialize_database()
+    initialize_database()
         except Exception as e:
             print(f"❌ Database connection test failed at startup: {e}")
     else:
