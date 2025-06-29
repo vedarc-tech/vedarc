@@ -974,8 +974,7 @@ def hr_activate_user():
         
         # Send email to user with credentials
         email_subject = "VEDARC Internship Account Activated"
-        email_body = f"""
-Dear {user['fullName']},
+        email_body = f"""Dear {user['fullName']},
 
 Your VEDARC internship account has been successfully activated!
 
@@ -988,8 +987,7 @@ You can now log in to your student dashboard at: https://vedarc.co.in
 Please keep your credentials safe and do not share them with anyone.
 
 Best regards,
-VEDARC Team
-        """
+VEDARC Team"""
         
         try:
             send_email(user['email'], email_subject, email_body)
