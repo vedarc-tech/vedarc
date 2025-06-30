@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file, session, make_response
+from flask import Flask, request, jsonify, send_file, session
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,7 +20,6 @@ import base64
 import uuid
 from pymongo.server_api import ServerApi
 import ssl
-import sys
 
 # Load environment variables
 load_dotenv()
@@ -66,25 +65,19 @@ CORS(
 @app.route('/<path:path>', methods=['OPTIONS'])
 def handle_options(path):
     """Handle OPTIONS requests for CORS preflight"""
-    try:
-        origin = request.headers.get('Origin')
-        print(f"[OPTIONS] Origin: {origin}", file=sys.stderr)
-        print(f"[OPTIONS] ALLOWED_ORIGINS: {ALLOWED_ORIGINS}", file=sys.stderr)
-        if origin in ALLOWED_ORIGINS:
-            response = make_response('', 200)
-            response.headers['Access-Control-Allow-Origin'] = origin
-            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Session-ID'
-            response.headers['Access-Control-Allow-Credentials'] = 'true'
-            response.headers['Access-Control-Max-Age'] = '86400'  # 24 hours
-            print("[OPTIONS] Returning 200 OK with CORS headers", file=sys.stderr)
-            return response
-        else:
-            print("[OPTIONS] Origin not allowed", file=sys.stderr)
-            return jsonify({'error': 'Origin not allowed'}), 403
-    except Exception as e:
-        print(f"[OPTIONS] Exception: {e}", file=sys.stderr)
-        return jsonify({'error': f'OPTIONS handler error: {str(e)}"}), 500
+    origin = request.headers.get('Origin')
+    
+    # Check if origin is allowed
+    if origin in ALLOWED_ORIGINS:
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Session-ID'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Max-Age'] = '86400'  # 24 hours
+        return response
+    else:
+        return jsonify({'error': 'Origin not allowed'}), 403
 
 # MongoDB Connection
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority')
