@@ -3626,49 +3626,6 @@ def admin_upload_template_file():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/manager/students/<internship_id>', methods=['GET'])
-@jwt_required()
-def manager_get_students_with_certificates(internship_id):
-    """Get students with certificate unlock status"""
-    try:
-        # Check if database is available
-        if users is None or admin_users is None:
-            return jsonify({"error": "Database connection not available"}), 503
-        
-        current_user = get_jwt_identity()
-        
-        # Verify manager
-        manager = admin_users.find_one({"username": current_user, "user_type": "manager"})
-        if not manager:
-            return jsonify({"error": "Unauthorized"}), 403
-        
-        # Find internship
-        internship = internships.find_one({"_id": ObjectId(internship_id)})
-        if not internship:
-            return jsonify({"error": "Internship not found"}), 404
-        
-        # Get students for this internship track
-        track_name = internship['track_name']
-        students = list(users.find({"track": track_name, "status": "Active"}))
-        
-        # Convert ObjectId and datetime fields
-        for student in students:
-            if '_id' in student:
-                student['_id'] = str(student['_id'])
-            if 'created_at' in student and student['created_at'] is not None:
-                student['created_at'] = student['created_at'].isoformat()
-            if 'activated_at' in student and student['activated_at'] is not None:
-                student['activated_at'] = student['activated_at'].isoformat()
-            if 'certificate_unlocked_at' in student and student['certificate_unlocked_at'] is not None:
-                student['certificate_unlocked_at'] = student['certificate_unlocked_at'].isoformat()
-            if 'lor_unlocked_at' in student and student['lor_unlocked_at'] is not None:
-                student['lor_unlocked_at'] = student['lor_unlocked_at'].isoformat()
-        
-        return jsonify({"students": students}), 200
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 @app.route('/api/manager/students-export/<internship_id>', methods=['GET'])
 @jwt_required()
 def manager_export_students_csv(internship_id):
