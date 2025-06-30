@@ -349,6 +349,9 @@ export const managerAPI = {
   // Get students with certificate status
   getStudentsWithCertificates: (internshipId) => apiRequest(`/manager/students/${internshipId}`),
 
+  // Export students data for CSV
+  exportStudentsCSV: (internshipId) => apiRequest(`/manager/students-export/${internshipId}`),
+
   // Unlock certificate for student
   unlockCertificate: (data) => apiRequest('/manager/certificates/unlock', {
     method: 'POST',

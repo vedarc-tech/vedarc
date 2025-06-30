@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaUserTie, FaSignOutAlt, FaSpinner, FaCheckCircle, FaTimesCircle, FaPlus, FaEdit, FaTrash, FaCode, FaCalendarAlt, FaTrophy, FaBullhorn, FaUsers, FaLink, FaFile, FaFilter, FaSearch, FaEye, FaCertificate, FaUnlock, FaLock, FaDownload, FaExclamationTriangle } from 'react-icons/fa'
+import { FaUserTie, FaSignOutAlt, FaSpinner, FaCheckCircle, FaTimesCircle, FaPlus, FaEdit, FaTrash, FaCode, FaCalendarAlt, FaTrophy, FaBullhorn, FaUsers, FaLink, FaFile, FaFilter, FaSearch, FaEye, FaCertificate, FaUnlock, FaLock, FaDownload, FaExclamationTriangle, FaFileAlt } from 'react-icons/fa'
+import { saveAs } from 'file-saver'
 import { managerAPI, authService } from '../../services/apiService'
 import './InternshipManagerDashboard.css'
 
@@ -713,6 +714,85 @@ export default function InternshipManagerDashboard() {
     }
   }
 
+  // CSV export function
+  const exportStudentsToCSV = async (internshipId) => {
+    if (!internshipId) {
+      setError('Please select an internship first')
+      return
+    }
+
+    setProcessing(true)
+    try {
+      const response = await managerAPI.exportStudentsCSV(internshipId)
+      
+      if (!response.students || response.students.length === 0) {
+        setError('No students found for this internship track')
+        return
+      }
+
+      // Define CSV headers
+      const headers = [
+        'Full Name',
+        'User ID', 
+        'Email',
+        'Mobile/WhatsApp',
+        'Internship Track',
+        'College',
+        'Year of Study',
+        'Passout Year',
+        'Status',
+        'Registration Date',
+        'Activation Date',
+        'Course Completion %',
+        'Certificate Unlocked',
+        'Certificate Unlocked Date',
+        'LOR Unlocked',
+        'LOR Unlocked Date',
+        'Project Status',
+        'Project Completion Status'
+      ]
+
+      // Create CSV rows
+      const rows = response.students.map(student => [
+        student.fullName || '',
+        student.user_id || '',
+        student.email || '',
+        student.whatsapp || '',
+        response.internship_track || '',
+        student.collegeName || '',
+        student.yearOfStudy || '',
+        student.passoutYear || '',
+        student.status || '',
+        student.created_at ? new Date(student.created_at).toLocaleDateString() : '',
+        student.activated_at ? new Date(student.activated_at).toLocaleDateString() : '',
+        student.course_completion_percentage || 0,
+        student.certificate_unlocked ? 'Yes' : 'No',
+        student.certificate_unlocked_at ? new Date(student.certificate_unlocked_at).toLocaleDateString() : '',
+        student.lor_unlocked ? 'Yes' : 'No',
+        student.lor_unlocked_at ? new Date(student.lor_unlocked_at).toLocaleDateString() : '',
+        student.project_status || 'Not Assigned',
+        student.project_completion_status || 'Not Started'
+      ])
+
+      // Create CSV content
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(val => '"' + (val ?? '') + '"').join(','))
+        .join('\n')
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const filename = `vedarc_students_${response.internship_track.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`
+      saveAs(blob, filename)
+      
+      setError('') // Clear any previous errors
+    } catch (error) {
+      console.error('Error exporting CSV:', error)
+      setError(error.message || 'Failed to export CSV')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   if (!authService.isAuthenticated() || authService.getUserType() !== 'manager') {
     return (
       <div className="unauthorized">
@@ -789,6 +869,13 @@ export default function InternshipManagerDashboard() {
           >
             <FaCertificate />
             Certificates
+          </button>
+          <button
+            className={`nav-tab ${activeTab === 'student-reports' ? 'active' : ''}`}
+            onClick={() => setActiveTab('student-reports')}
+          >
+            <FaFileAlt />
+            Student Reports
           </button>
           <button
             className={`nav-tab ${activeTab === 'announcements' ? 'active' : ''}`}
@@ -1413,6 +1500,70 @@ export default function InternshipManagerDashboard() {
                           </p>
                         </div>
                       )}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {activeTab === 'student-reports' && (
+                <motion.div
+                  key="student-reports"
+                  className="tab-content"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                >
+                  <div className="section-header">
+                    <h2>Student Reports</h2>
+                    <p>Generate reports for enrolled students</p>
+                  </div>
+
+                  {!selectedInternship ? (
+                    <div className="no-internship-selected">
+                      <FaCertificate style={{ fontSize: '3rem', color: 'var(--neon-cyan)', marginBottom: '1rem' }} />
+                      <h3>Select an Internship</h3>
+                      <p>Please select an internship from the Internships tab to generate reports.</p>
+                    </div>
+                  ) : (
+                    <div className="student-reports">
+                      <div className="report-info">
+                        <div className="internship-summary">
+                          <h3>Selected Internship: {selectedInternship.track_name}</h3>
+                          <p><strong>Duration:</strong> {selectedInternship.duration}</p>
+                          <p><strong>Description:</strong> {selectedInternship.description}</p>
+                          <p><strong>Enrolled Students:</strong> {students.length}</p>
+                        </div>
+                        
+                        <div className="report-actions">
+                          <motion.button
+                            className="download-csv-btn"
+                            onClick={() => exportStudentsToCSV(selectedInternship._id)}
+                            disabled={processing}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            {processing ? (
+                              <FaSpinner className="spinner" />
+                            ) : (
+                              <FaDownload />
+                            )}
+                            Download Student Report (CSV)
+                          </motion.button>
+                        </div>
+                      </div>
+
+                      <div className="report-preview">
+                        <h4>Report Preview</h4>
+                        <p>The CSV file will include the following information for each student:</p>
+                        <ul>
+                          <li>Full Name, User ID, Email, Mobile/WhatsApp</li>
+                          <li>Internship Track, College, Year of Study, Passout Year</li>
+                          <li>Status, Registration Date, Activation Date</li>
+                          <li>Course Completion Percentage</li>
+                          <li>Certificate and LOR unlock status and dates</li>
+                          <li>Project status and completion status</li>
+                        </ul>
+                      </div>
                     </div>
                   )}
                 </motion.div>

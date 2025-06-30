@@ -2959,4 +2959,204 @@
   .lab-task-row > div {
     font-size: 0.85rem;
   }
+}
+
+/* Student Reports Styles */
+.student-reports {
+  padding: 20px;
+  background: rgba(22, 22, 38, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 249, 255, 0.2);
+}
+
+.report-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.internship-summary {
+  flex: 1;
+  background: rgba(10, 10, 18, 0.6);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 249, 255, 0.3);
+}
+
+.internship-summary h3 {
+  color: var(--neon-cyan);
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.internship-summary p {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.internship-summary strong {
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.report-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 250px;
+}
+
+.download-csv-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 249, 255, 0.3);
+}
+
+.download-csv-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 249, 255, 0.4);
+}
+
+.download-csv-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.download-csv-btn .spinner {
+  animation: spin 1s linear infinite;
+}
+
+.report-preview {
+  background: rgba(10, 10, 18, 0.6);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(123, 45, 255, 0.3);
+}
+
+.report-preview h4 {
+  color: var(--neon-magenta);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.report-preview p {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.report-preview ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.report-preview li {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.report-preview li::before {
+  content: '•';
+  color: var(--neon-green);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Responsive design for student reports */
+@media (max-width: 768px) {
+  .report-info {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .report-actions {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .download-csv-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+  
+  .internship-summary {
+    padding: 15px;
+  }
+  
+  .internship-summary h3 {
+    font-size: 1.1rem;
+  }
+  
+  .report-preview {
+    padding: 15px;
+  }
+  
+  .report-preview h4 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-reports {
+    padding: 15px;
+  }
+  
+  .internship-summary {
+    padding: 12px;
+  }
+  
+  .internship-summary h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  
+  .internship-summary p {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  
+  .report-preview {
+    padding: 12px;
+  }
+  
+  .report-preview h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  
+  .report-preview p {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+  
+  .report-preview li {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
 } 
