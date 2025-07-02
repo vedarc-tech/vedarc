@@ -114,7 +114,7 @@ export default function Hero() {
           className="glitch-main"
         >
           <span className="glitch-line">VEDARC</span>
-          <span className="glitch-line">TECHNOLOGIES</span>
+          <span className="glitch-line no-break">TECHNOLOGIES</span>
         </motion.h1>
 
         {/* Typing Subheading */}

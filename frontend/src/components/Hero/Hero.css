@@ -358,3 +358,13 @@
     opacity: 0.8;
   }
 }
+
+.no-break {
+  white-space: nowrap;
+}
+
+@media (max-width: 400px) {
+  .glitch-line.no-break {
+    font-size: 6vw;
+  }
+}
