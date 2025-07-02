@@ -78,7 +78,7 @@ const companyProjects = [
     status: "Live",
     impact: "Improved patient outcomes by 20%",
     client: "MediCare Hospitals",
-    year: 2022
+    year: 2024
   },
   
   {
@@ -88,7 +88,7 @@ const companyProjects = [
     status: "Production",
     impact: "95% automation, error reduction",
     client: "FinTrust Corp",
-    year: 2023
+    year: 2024
   },
   {
     title: "Ongoing Project for Tamil Nadu Cube Association",
@@ -97,7 +97,7 @@ const companyProjects = [
     status: "Ongoing",
     impact: "Testimonial will be available after completion of the project",
     client: "Tamil Nadu Cube Association",
-    year: 2024
+    year: 2025
   },
 ];
 
