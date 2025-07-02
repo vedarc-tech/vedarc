@@ -150,6 +150,10 @@ export default function Hero() {
             whileHover={{ scale: 1.05, boxShadow: "0 0 25px var(--neon-cyan)" }}
             whileTap={{ scale: 0.95 }}
             className="cta-secondary"
+            onClick={() => {
+              const el = document.getElementById('projects');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             View Projects
           </motion.button>

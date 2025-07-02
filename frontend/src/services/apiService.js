@@ -91,6 +91,12 @@ export const publicAPI = {
   // Get all available internship tracks
   getInternships: () => apiRequest('/internships'),
   
+  // Get featured projects for public showcase
+  getFeaturedProjects: () => apiRequest('/featured-projects'),
+  
+  // Get company projects for public showcase
+  getCompanyProjects: () => apiRequest('/company-projects'),
+  
   // Register new student
   registerStudent: (studentData) => apiRequest('/register', {
     method: 'POST',

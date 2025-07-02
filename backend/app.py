@@ -417,6 +417,148 @@ def get_internships():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/featured-projects', methods=['GET'])
+def get_featured_projects():
+    """Get featured projects for public showcase"""
+    try:
+        # Check if database is available
+        if projects is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        # Get featured projects (approved and completed projects)
+        featured_projects = list(projects.find({
+            "is_template": {"$ne": True},
+            "review_status": "Approved",
+            "status": "Approved"
+        }, {
+            '_id': 0,
+            'user_id': 0,
+            'internship_id': 0,
+            'template_id': 0,
+            'assigned_at': 0,
+            'submitted_at': 0,
+            'reviewed_at': 0,
+            'review_feedback': 0,
+            'auto_assigned': 0
+        }).limit(12))
+        
+        # If no approved projects, return sample featured projects
+        if not featured_projects:
+            featured_projects = [
+                {
+                    "title": "AI-Powered E-commerce Recommendation System",
+                    "description": "Developed a machine learning model that provides personalized product recommendations, increasing sales by 35% and improving user engagement by 45%.",
+                    "tags": ["Python", "Machine Learning", "TensorFlow", "React", "MongoDB"],
+                    "status": "Completed",
+                    "completion_rate": 98,
+                    "student_name": "Priya Sharma",
+                    "university": "IIT Delhi",
+                    "year": 2024
+                },
+                {
+                    "title": "Blockchain-Based Supply Chain Tracker",
+                    "description": "Built a decentralized application for tracking products through the supply chain, ensuring transparency and reducing fraud by 60%.",
+                    "tags": ["Solidity", "Web3.js", "React", "Node.js", "IPFS"],
+                    "status": "Completed",
+                    "completion_rate": 95,
+                    "student_name": "Rahul Kumar",
+                    "university": "BITS Pilani",
+                    "year": 2024
+                },
+                {
+                    "title": "IoT Smart Home Automation System",
+                    "description": "Created an intelligent home automation system using IoT sensors and cloud computing, enabling remote control and energy optimization.",
+                    "tags": ["Arduino", "Python", "AWS IoT", "React Native", "MQTT"],
+                    "status": "Completed",
+                    "completion_rate": 92,
+                    "student_name": "Ananya Patel",
+                    "university": "VIT Vellore",
+                    "year": 2024
+                },
+                {
+                    "title": "Cybersecurity Threat Detection Platform",
+                    "description": "Developed a real-time threat detection system using machine learning algorithms, achieving 94% accuracy in identifying malicious activities.",
+                    "tags": ["Python", "Cybersecurity", "Machine Learning", "Docker", "Kubernetes"],
+                    "status": "Completed",
+                    "completion_rate": 96,
+                    "student_name": "Vikram Singh",
+                    "university": "NIT Trichy",
+                    "year": 2024
+                },
+                {
+                    "title": "Cloud-Native Microservices Architecture",
+                    "description": "Designed and implemented a scalable microservices architecture for a fintech application, reducing deployment time by 70%.",
+                    "tags": ["Docker", "Kubernetes", "Node.js", "PostgreSQL", "Redis"],
+                    "status": "Completed",
+                    "completion_rate": 94,
+                    "student_name": "Meera Iyer",
+                    "university": "IIIT Hyderabad",
+                    "year": 2024
+                },
+                {
+                    "title": "Data Analytics Dashboard for Healthcare",
+                    "description": "Built a comprehensive analytics dashboard for healthcare data visualization, helping doctors make data-driven decisions.",
+                    "tags": ["Python", "Tableau", "SQL", "Flask", "D3.js"],
+                    "status": "Completed",
+                    "completion_rate": 91,
+                    "student_name": "Arjun Reddy",
+                    "university": "Manipal Institute of Technology",
+                    "year": 2024
+                }
+            ]
+        
+        return jsonify({"featured_projects": featured_projects}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/company-projects', methods=['GET'])
+def get_company_projects():
+    """Get company projects for public showcase"""
+    try:
+        # If you have a real collection, fetch from DB here
+        # For now, use sample data
+        company_projects = [
+            {
+                "title": "Smart Campus Automation Platform",
+                "description": "Developed an IoT-driven automation system for university campuses, integrating smart lighting, security, and energy management. Reduced energy costs by 30% for clients.",
+                "tags": ["IoT", "Python", "AWS", "React", "Node.js"],
+                "status": "Deployed",
+                "impact": "30% energy cost reduction",
+                "client": "ABC University",
+                "year": 2023
+            },
+            {
+                "title": "Healthcare Data Analytics Suite",
+                "description": "Built a HIPAA-compliant analytics dashboard for hospitals, enabling real-time patient monitoring and predictive analytics for better outcomes.",
+                "tags": ["Python", "Django", "Tableau", "PostgreSQL"],
+                "status": "Live",
+                "impact": "Improved patient outcomes by 20%",
+                "client": "MediCare Hospitals",
+                "year": 2022
+            },
+            {
+                "title": "E-Governance Portal",
+                "description": "Designed and deployed a secure, scalable portal for government services, handling over 1 million users with 99.99% uptime.",
+                "tags": ["Java", "Spring Boot", "Angular", "MySQL", "Docker"],
+                "status": "Live",
+                "impact": "1M+ users, 99.99% uptime",
+                "client": "State Government",
+                "year": 2022
+            },
+            {
+                "title": "AI Document Processing Engine",
+                "description": "Implemented an AI-powered document processing system for a financial firm, automating 95% of manual paperwork and reducing errors.",
+                "tags": ["AI", "Python", "TensorFlow", "Flask"],
+                "status": "Production",
+                "impact": "95% automation, error reduction",
+                "client": "FinTrust Corp",
+                "year": 2023
+            }
+        ]
+        return jsonify({"company_projects": company_projects}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ============================================================================
 # STUDENT API ENDPOINTS
 # ============================================================================
