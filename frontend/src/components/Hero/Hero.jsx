@@ -112,9 +112,9 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="glitch-main"
-          data-text="VEDARC TECHNOLOGIES"
+          data-text="VEDARC\nTECHNOLOGIES"
         >
-          VEDARC TECHNOLOGIES
+          VEDARC<br />TECHNOLOGIES
         </motion.h1>
 
         {/* Typing Subheading */}
