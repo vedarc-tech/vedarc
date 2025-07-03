@@ -11,6 +11,10 @@ import InternshipManagerDashboard from './components/InternshipManagerDashboard/
 import UnifiedLogin from './components/UnifiedLogin/UnifiedLogin'
 import TermsAndConditions from './components/TermsAndConditions/TermsAndCondition'
 import RefundAndCancellationPolicy from './components/RefundAndCancellationPolicy/RefundAndCancellationPolicy'
+import PrivacyPolicy from './components/PrivacyPolicy/PrivacyPolicy'
+import TermsConditions from './pages/TermsConditions/TermsConditions'
+import RefundPolicy from './pages/RefundPolicy/RefundPolicy'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage/PrivacyPolicyPage'
 import './index.css' // Using only index.css for global styles
 import { useState } from 'react'
 
@@ -41,6 +45,7 @@ const pageVariants = {
 export default function App() {
   const [showTerms, setShowTerms] = useState(false)
   const [showRefund, setShowRefund] = useState(false)
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false)
 
   console.log('App component rendered')
 
@@ -55,8 +60,10 @@ export default function App() {
               <Home 
                 setShowTerms={setShowTerms} 
                 setShowRefund={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
                 showTerms={showTerms}
                 showRefund={showRefund}
+                showPrivacyPolicy={showPrivacyPolicy}
               />
             </>
           } />
@@ -69,6 +76,7 @@ export default function App() {
               <Footer 
                 setShowTerms={setShowTerms}
                 setShowRefundAndCancellationPolicy={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
               />
               <TermsAndConditions
                 isVisible={showTerms}
@@ -77,6 +85,10 @@ export default function App() {
               <RefundAndCancellationPolicy
                 isVisible={showRefund}
                 onClose={() => setShowRefund(false)}
+              />
+              <PrivacyPolicy
+                isVisible={showPrivacyPolicy}
+                onClose={() => setShowPrivacyPolicy(false)}
               />
             </>
           } />
@@ -87,6 +99,11 @@ export default function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/internship-manager-dashboard" element={<InternshipManagerDashboard />} />
           <Route path="/unified-login" element={<UnifiedLogin />} />
+          
+          {/* Policy Pages */}
+          <Route path="/terms-conditions" element={<TermsConditions />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           
           {/* Test Route */}
           <Route path="/test" element={<div style={{padding: '100px', color: 'white'}}>Test Route Working!</div>} />

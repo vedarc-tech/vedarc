@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './Footer.css'
 
-export default function Footer({setShowTerms, setShowRefundAndCancellationPolicy}) {
+export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
@@ -20,7 +20,6 @@ export default function Footer({setShowTerms, setShowRefundAndCancellationPolicy
           />
         </svg>
       </div>
-
 
       <div className="footer-container">
         {/* Company Info */}
@@ -52,7 +51,6 @@ export default function Footer({setShowTerms, setShowRefundAndCancellationPolicy
               <FaTwitter />
             </motion.a>
           </div>
-
 
         <br />
         <br />
@@ -86,10 +84,7 @@ export default function Footer({setShowTerms, setShowRefundAndCancellationPolicy
           </ul>
         </motion.div>
 
-
-
         </motion.div>
-
 
         {/* Quick Links */}
         <motion.div 
@@ -159,23 +154,20 @@ export default function Footer({setShowTerms, setShowRefundAndCancellationPolicy
             </li>
           </ul>
         </motion.div>
-
-
-
       </div>
 
       {/* Copyright */}
       <div className="copyright">
-          <a onClick={() => setShowTerms(true)} >Terms & Conditions</a>
-          <span> | </span>
-          <a onClick={() => setShowRefundAndCancellationPolicy(true)} >Refund and Cancellation Policy</a>
+        <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+        <span> | </span>
+        <a href="/refund-policy" target="_blank" rel="noopener noreferrer">Refund and Cancellation Policy</a>
+        <span> | </span>
+        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
         <div className="circuit-line"></div>
         <div className="footer-links">
-          {/* <a href="#">Privacy Policy</a> */}
-          {/* <span> | </span> */}
-        <p>
-          &copy; {currentYear} VEDARC TECHNOLOGIES PRIVATE LIMITED. All Rights Reserved.
-        </p>
+          <p>
+            &copy; {currentYear} VEDARC TECHNOLOGIES PRIVATE LIMITED. All Rights Reserved.
+          </p>
         </div>
       </div>
     </footer>

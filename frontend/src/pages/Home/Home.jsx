@@ -1,19 +1,18 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import Hero from '../../components/Hero/Hero'
 import About from '../../components/About/About'
 import Projects from '../../components/Projects/Projects.jsx'
 import TermsAndConditions from '../../components/TermsAndConditions/TermsAndCondition';
 import RefundAndCancellationPolicy from '../../components/RefundAndCancellationPolicy/RefundAndCancellationPolicy.jsx';
+import PrivacyPolicy from '../../components/PrivacyPolicy/PrivacyPolicy.jsx';
 // import Contact from '../../components/Contact/Contact'
 import Footer from '../../components/Footer/Footer.jsx'
 
 import './Home.css'
 
-export default function Home() {
+export default function Home({ setShowTerms, setShowRefund, setShowPrivacyPolicy, showTerms, showRefund, showPrivacyPolicy }) {
   const ref = useRef(null)
-  const [showTerms, setShowTerms] = useState(false);
-  const [ShowRefundAndCancellationPolicy, setShowRefundAndCancellationPolicy] = useState(false);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end']
@@ -53,7 +52,8 @@ export default function Home() {
       <section id="footer"> */}
         <Footer 
         setShowTerms={setShowTerms}
-        setShowRefundAndCancellationPolicy={setShowRefundAndCancellationPolicy}
+        setShowRefundAndCancellationPolicy={setShowRefund}
+        setShowPrivacyPolicy={setShowPrivacyPolicy}
         />
       </section>
 
@@ -63,8 +63,13 @@ export default function Home() {
       />
 
       <RefundAndCancellationPolicy
-        isVisible={ShowRefundAndCancellationPolicy}
-        onClose={() => setShowRefundAndCancellationPolicy(false)}
+        isVisible={showRefund}
+        onClose={() => setShowRefund(false)}
+      />
+
+      <PrivacyPolicy
+        isVisible={showPrivacyPolicy}
+        onClose={() => setShowPrivacyPolicy(false)}
       />
 
       {/* Tech-style decorative elements */}
