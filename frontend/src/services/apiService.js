@@ -263,6 +263,11 @@ export const hrAPI = {
     method: 'POST'
   }),
 
+  // Bulk enable all paid, pending students
+  bulkEnable: () => apiRequest('/hr/bulk-enable', {
+    method: 'POST'
+  }),
+
   // Get payment details for HR dashboard
   getPayments: () => apiRequest('/admin/payments', {
     method: 'GET'

@@ -12,6 +12,8 @@ export default function UnifiedLogin() {
   const [error, setError] = useState('')
   const [userType, setUserType] = useState('')
   const [userData, setUserData] = useState(null)
+  const [showHRPopup, setShowHRPopup] = useState(false)
+  const [pendingUserId, setPendingUserId] = useState("")
 
   // Check if already logged in
   useEffect(() => {
@@ -63,6 +65,12 @@ export default function UnifiedLogin() {
         setUserData(response.user)
       }
       setIsLoggedIn(true)
+      
+      if (response.user && response.user.status !== 'Active') {
+        setPendingUserId(response.user.user_id)
+        setShowHRPopup(true)
+        return
+      }
       
     } catch (error) {
       setError(error.message || 'Login failed')
@@ -277,6 +285,16 @@ export default function UnifiedLogin() {
           </div>
         </motion.div>
       </div>
+      {showHRPopup && (
+        <div className="hr-popup-overlay">
+          <div className="hr-popup-modal">
+            <h2>HR Confirmation Needed</h2>
+            <p>Your account is not yet enabled. Please contact <b>+91 8897140410</b> only via WhatsApp and share your User ID for confirmation.</p>
+            <div className="user-id-popup">Your User ID: <b>{pendingUserId}</b></div>
+            <button onClick={() => setShowHRPopup(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </section>
   )
 } 

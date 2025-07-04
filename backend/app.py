@@ -526,7 +526,7 @@ def verify_payment_endpoint():
             "track": registration_data['track'],
             "yearOfStudy": registration_data['yearOfStudy'],
             "passoutYear": registration_data['passoutYear'],
-            "status": "Pending",  # Pending HR approval
+            "status": "Active",  # Active after payment
             "created_at": datetime.utcnow(),
             "password": None,
             "payment_id": payment_id,
@@ -644,7 +644,7 @@ def razorpay_webhook():
                         "track": registration_data['track'],
                         "yearOfStudy": registration_data['yearOfStudy'],
                         "passoutYear": registration_data['passoutYear'],
-                        "status": "Pending",  # Pending HR approval
+                        "status": "Active",  # Active after payment
                         "created_at": datetime.utcnow(),
                         "password": None,
                         "payment_id": payment_id,
@@ -1719,6 +1719,25 @@ def hr_fix_inconsistent_users():
             "fixed_count": fixed_count
         }), 200
         
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/hr/bulk-enable', methods=['POST'])
+@jwt_required()
+def hr_bulk_enable():
+    """Bulk enable all users who have paid but are not yet active"""
+    try:
+        # Check if database is available
+        if users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        # Find all users with status 'Pending' and a valid payment_id
+        pending_paid_users = list(users.find({"status": "Pending", "payment_id": {"$ne": None}}))
+        updated_count = 0
+        for user in pending_paid_users:
+            users.update_one({"_id": user["_id"]}, {"$set": {"status": "Active", "activated_at": datetime.utcnow()}})
+            updated_count += 1
+        return jsonify({"success": True, "updated": updated_count}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

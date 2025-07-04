@@ -39,6 +39,10 @@ export default function HRDashboard() {
   // Add last refresh timestamp
   const [lastRefresh, setLastRefresh] = useState(null)
 
+  // Add bulk enable state
+  const [bulkEnabling, setBulkEnabling] = useState(false)
+  const [bulkEnableMessage, setBulkEnableMessage] = useState('')
+
   useEffect(() => {
     fetchRegistrations()
     fetchStatistics()
@@ -295,6 +299,21 @@ export default function HRDashboard() {
     }
     const colorIndex = Math.abs(hash) % colors.length
     return colors[colorIndex]
+  }
+
+  // Add bulk enable handler
+  const handleBulkEnable = async () => {
+    setBulkEnabling(true)
+    setBulkEnableMessage('')
+    try {
+      const result = await hrAPI.bulkEnable()
+      setBulkEnableMessage(`Bulk enabled ${result.updated} students.`)
+      await fetchRegistrations(true)
+    } catch (error) {
+      setBulkEnableMessage(error.message || 'Bulk enable failed')
+    } finally {
+      setBulkEnabling(false)
+    }
   }
 
   if (!authService.isAuthenticated() || authService.getUserType() !== 'hr') {
@@ -680,6 +699,19 @@ export default function HRDashboard() {
           )}
         </motion.div>
 
+        {/* Bulk Enable Section */}
+        <motion.div
+          className="bulk-enable-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <button className="bulk-enable-btn" onClick={handleBulkEnable} disabled={bulkEnabling}>
+            {bulkEnabling ? 'Enabling...' : 'Bulk Enable All Paid Students'}
+          </button>
+          {bulkEnableMessage && <div className="bulk-enable-message">{bulkEnableMessage}</div>}
+        </motion.div>
+
         {/* Payment ID Modal */}
         <AnimatePresence>
           {showPaymentModal && (
@@ -954,20 +986,22 @@ export default function HRDashboard() {
                   </div>
 
                   <div className="card-actions">
-                    <motion.button
-                      className="activate-btn"
-                      onClick={() => handleActivateUser(registration)}
-                      disabled={processing}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {processing ? (
-                        <FaSpinner className="spinner" />
-                      ) : (
-                        <FaCheckCircle />
-                      )}
-                      Activate User
-                    </motion.button>
+                    {registration.status !== 'Active' && (
+                      <motion.button
+                        className="activate-btn"
+                        onClick={() => handleActivateUser(registration)}
+                        disabled={processing}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {processing ? (
+                          <FaSpinner className="spinner" />
+                        ) : (
+                          <FaCheckCircle />
+                        )}
+                        Activate User
+                      </motion.button>
+                    )}
                     <motion.button
                       className="deactivate-btn"
                       onClick={() => handleDeactivateUser(registration)}
