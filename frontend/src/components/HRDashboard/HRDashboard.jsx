@@ -43,6 +43,10 @@ export default function HRDashboard() {
   const [bulkEnabling, setBulkEnabling] = useState(false)
   const [bulkEnableMessage, setBulkEnableMessage] = useState('')
 
+  // Add bulk disable state
+  const [bulkDisabling, setBulkDisabling] = useState(false)
+  const [bulkDisableMessage, setBulkDisableMessage] = useState('')
+
   useEffect(() => {
     fetchRegistrations()
     fetchStatistics()
@@ -313,6 +317,21 @@ export default function HRDashboard() {
       setBulkEnableMessage(error.message || 'Bulk enable failed')
     } finally {
       setBulkEnabling(false)
+    }
+  }
+
+  // Add bulk disable handler
+  const handleBulkDisable = async () => {
+    setBulkDisabling(true)
+    setBulkDisableMessage('')
+    try {
+      const result = await hrAPI.bulkDisable()
+      setBulkDisableMessage(`Bulk disabled ${result.updated} students.`)
+      await fetchRegistrations(true)
+    } catch (error) {
+      setBulkDisableMessage(error.message || 'Bulk disable failed')
+    } finally {
+      setBulkDisabling(false)
     }
   }
 
@@ -727,7 +746,11 @@ export default function HRDashboard() {
           <button className="bulk-enable-btn" onClick={handleBulkEnable} disabled={bulkEnabling}>
             {bulkEnabling ? 'Enabling...' : 'Bulk Enable All Paid Students'}
           </button>
+          <button className="bulk-disable-btn" onClick={handleBulkDisable} disabled={bulkDisabling}>
+            {bulkDisabling ? 'Disabling...' : 'Bulk Disable All Enabled Students'}
+          </button>
           {bulkEnableMessage && <div className="bulk-enable-message">{bulkEnableMessage}</div>}
+          {bulkDisableMessage && <div className="bulk-disable-message">{bulkDisableMessage}</div>}
         </motion.div>
 
         {/* Payment ID Modal */}

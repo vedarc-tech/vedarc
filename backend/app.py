@@ -4162,6 +4162,18 @@ def get_payments():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/hr/users', methods=['GET'])
+@jwt_required()
+def hr_get_all_users():
+    """Get all users for HR dashboard"""
+    try:
+        if users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        user_list = list(users.find({}, {'_id': 0, 'password': 0}))
+        return jsonify({"users": user_list}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     # Test database connection at startup
     if client is not None and db is not None:

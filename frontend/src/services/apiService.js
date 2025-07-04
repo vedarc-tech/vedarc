@@ -268,13 +268,18 @@ export const hrAPI = {
     method: 'POST'
   }),
 
+  // Bulk disable all enabled students
+  bulkDisable: () => apiRequest('/hr/bulk-disable', {
+    method: 'POST'
+  }),
+
   // Get payment details for HR dashboard
   getPayments: () => apiRequest('/admin/payments', {
     method: 'GET'
   }),
 
   // Get all users (for HR dashboard list view)
-  getAllUsers: () => apiRequest('/admin/users'),
+  getAllUsers: () => apiRequest('/hr/users'),
   // Enable user (set status to Active)
   enableUser: (data) => apiRequest('/hr/activate-user', {
     method: 'POST',

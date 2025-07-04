@@ -1652,3 +1652,25 @@
   font-size: 1rem;
   vertical-align: middle;
 } 
+
+.bulk-disable-btn {
+  background: #ff0088;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.bulk-disable-btn:disabled {
+  background: #fbb6ce;
+  color: #888;
+  cursor: not-allowed;
+}
+.bulk-disable-message {
+  color: #ff0088;
+  font-weight: 600;
+  font-size: 1rem;
+} 
