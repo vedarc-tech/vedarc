@@ -393,7 +393,7 @@ def create_payment_order(registration_data, amount=299):
             'temp_registration': True
         }
         
-        if payments:
+        if payments is not None:
             payments.insert_one(payment_data)
         
         return {
