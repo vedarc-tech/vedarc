@@ -1148,6 +1148,10 @@
   color: var(--neon-orange);
 }
 
+.stat-number.disabled {
+  color: #ff4f4f;
+}
+
 .stat-number.total {
   color: var(--neon-purple);
 }

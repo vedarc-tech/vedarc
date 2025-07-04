@@ -19,10 +19,8 @@ export default function HRDashboard() {
   const [passwordResetUserId, setPasswordResetUserId] = useState('')
   const [passwordResetMessage, setPasswordResetMessage] = useState('')
   
-  // Payment ID modal state
-  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  // User management state
   const [selectedUser, setSelectedUser] = useState(null)
-  const [paymentId, setPaymentId] = useState('')
 
   // Deactivate modal state
   const [showDeactivateModal, setShowDeactivateModal] = useState(false)
@@ -114,93 +112,41 @@ export default function HRDashboard() {
     }
   }
 
-  const handleActivateUser = async (userData) => {
+  const handleToggleStatus = async (userData) => {
     // Check if user is still in the current registrations list
-    const isStillPending = registrations.some(reg => reg.user_id === userData.user_id)
+    const isStillInList = registrations.some(reg => reg.user_id === userData.user_id)
     
-    if (!isStillPending) {
-      setError('This user is no longer in the pending list. Refreshing data...')
+    if (!isStillInList) {
+      setError('This user is no longer in the list. Refreshing data...')
       await fetchRegistrations(true)
-      return
-    }
-    
-    // Show payment modal instead of directly activating
-    setSelectedUser(userData)
-    setPaymentId('')
-    setShowPaymentModal(true)
-  }
-
-  const handleDeactivateUser = async (userData) => {
-    // Check if user is still in the current registrations list
-    const isStillPending = registrations.some(reg => reg.user_id === userData.user_id)
-    
-    if (!isStillPending) {
-      setError('This user is no longer in the pending list. Refreshing data...')
-      await fetchRegistrations(true)
-      return
-    }
-    
-    // Show deactivate modal
-    setSelectedUser(userData)
-    setDeactivateReason('')
-    setShowDeactivateModal(true)
-  }
-
-  const handlePaymentSubmit = async (e) => {
-    e.preventDefault()
-    if (!paymentId.trim()) {
-      setError('Payment ID is required')
       return
     }
     
     setProcessing(true)
     setError('')
+    
     try {
-      await hrAPI.activateUser({
-        user_id: selectedUser.user_id,
-        payment_id: paymentId.trim()
-      })
-      
-      // Close modal and refresh the list and statistics
-      setShowPaymentModal(false)
-      setSelectedUser(null)
-      setPaymentId('')
-      await fetchRegistrations(true) // Force refresh
-      await fetchStatistics()
-    } catch (error) {
-      // Handle specific "User is not pending" error
-      if (error.message.includes('User is not pending')) {
-        // setError('This user has already been activated or their status has changed. Refreshing the list...')
-        setError(error.message)
-        // Force refresh the list to get updated data
+      if (userData.status === 'Active') {
+        // Show deactivate modal for active users
+        setSelectedUser(userData)
+        setDeactivateReason('')
+        setShowDeactivateModal(true)
+      } else if (userData.status === 'Disabled') {
+        // Enable disabled users directly
+        await hrAPI.enableUser({ user_id: userData.user_id })
         await fetchRegistrations(true)
         await fetchStatistics()
-        // Close the modal after a short delay
-        setTimeout(() => {
-          setShowPaymentModal(false)
-          setSelectedUser(null)
-          setPaymentId('')
-          setError('')
-        }, 2000)
-      } else if (error.message.includes('has already been activated with payment ID')) {
-        setError('This user has already been activated with a payment ID. Refreshing the list...')
-        // Force refresh the list to get updated data
-        await fetchRegistrations(true)
-        await fetchStatistics()
-        // Close the modal after a short delay
-        setTimeout(() => {
-          setShowPaymentModal(false)
-          setSelectedUser(null)
-          setPaymentId('')
-          setError('')
-        }, 2000)
       } else {
-        setError(error.message || 'Failed to activate user')
+        setError(`Cannot toggle user from status: ${userData.status}`)
       }
+    } catch (error) {
+      setError(error.message || 'Failed to update user status')
     } finally {
       setProcessing(false)
     }
   }
+
+
 
   const handleDeactivateSubmit = async (e) => {
     e.preventDefault()
@@ -212,7 +158,7 @@ export default function HRDashboard() {
     setProcessing(true)
     setError('')
     try {
-      await hrAPI.deactivateUser({
+      await hrAPI.disableUser({
         user_id: selectedUser.user_id,
         reason: deactivateReason.trim()
       })
@@ -224,22 +170,7 @@ export default function HRDashboard() {
       await fetchRegistrations(true) // Force refresh
       await fetchStatistics()
     } catch (error) {
-      // Handle specific "User is not pending" error
-      if (error.message.includes('User is not pending')) {
-        setError(error.message)
-        // Force refresh the list to get updated data
-        await fetchRegistrations(true)
-        await fetchStatistics()
-        // Close the modal after a short delay
-        setTimeout(() => {
-          setShowDeactivateModal(false)
-          setSelectedUser(null)
-          setDeactivateReason('')
-          setError('')
-        }, 2000)
-      } else {
-        setError(error.message || 'Failed to deactivate user')
-      }
+      setError(error.message || 'Failed to disable user')
     } finally {
       setProcessing(false)
     }
@@ -289,12 +220,7 @@ export default function HRDashboard() {
     }
   }
 
-  const closePaymentModal = () => {
-    setShowPaymentModal(false)
-    setSelectedUser(null)
-    setPaymentId('')
-    setError('')
-  }
+
 
   const closeDeactivateModal = () => {
     setShowDeactivateModal(false)
@@ -482,7 +408,22 @@ export default function HRDashboard() {
                   </div>
                   <div className="stat-content">
                     <h3>{statistics.activated_accounts}</h3>
-                    <p>Activated Accounts</p>
+                    <p>Active Accounts</p>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="stat-card"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.15 }}
+                >
+                  <div className="stat-icon">
+                    <FaTimesCircle />
+                  </div>
+                  <div className="stat-content">
+                    <h3>{statistics.disabled_accounts}</h3>
+                    <p>Disabled Accounts</p>
                   </div>
                 </motion.div>
 
@@ -554,6 +495,10 @@ export default function HRDashboard() {
                             <span className="stat-label">Pending</span>
                           </div>
                           <div className="track-stat">
+                            <span className="stat-number disabled">{stats.disabled}</span>
+                            <span className="stat-label">Disabled</span>
+                          </div>
+                          <div className="track-stat">
                             <span className="stat-number total">{stats.total}</span>
                             <span className="stat-label">Total</span>
                           </div>
@@ -608,6 +553,22 @@ export default function HRDashboard() {
                 value={filters.date}
                 onChange={(e) => setFilters(prev => ({ ...prev, date: e.target.value }))}
               />
+            </div>
+
+            <div className="filter-group">
+              <label>
+                <FaFilter />
+                Status
+              </label>
+              <select
+                value={filters.status}
+                onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="disabled">Disabled</option>
+              </select>
             </div>
 
             <div className="search-group">
@@ -808,98 +769,7 @@ export default function HRDashboard() {
           {bulkDisableMessage && <div className="bulk-disable-message">{bulkDisableMessage}</div>}
         </motion.div>
 
-        {/* Payment ID Modal */}
-        <AnimatePresence>
-          {showPaymentModal && (
-            <motion.div
-              className="payment-modal-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={closePaymentModal}
-            >
-              <motion.div
-                className="payment-modal"
-                initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="modal-header">
-                  <h2>
-                    <FaCreditCard />
-                    Enter Payment ID
-                  </h2>
-                  <button className="close-btn" onClick={closePaymentModal}>
-                    <FaTimesCircle />
-                  </button>
-                </div>
 
-                {selectedUser && (
-                  <div className="user-info-modal">
-                    <div className="user-details">
-                      <h3>{selectedUser.fullName}</h3>
-                      <p className="user-id">{selectedUser.user_id}</p>
-                      <p className="track-info">{selectedUser.track}</p>
-                    </div>
-                  </div>
-                )}
-
-                <form onSubmit={handlePaymentSubmit} className="payment-form">
-                  <div className="form-group">
-                    <label htmlFor="paymentId">
-                      <FaCreditCard />
-                      Payment ID *
-                    </label>
-                    <input
-                      id="paymentId"
-                      type="text"
-                      placeholder="Enter the student's payment ID..."
-                      value={paymentId}
-                      onChange={(e) => setPaymentId(e.target.value)}
-                      required
-                      autoFocus
-                    />
-                    <small>Enter the payment reference ID provided by the student</small>
-                  </div>
-
-                  {error && (
-                    <div className="error-message">
-                      <FaTimesCircle />
-                      {error}
-                    </div>
-                  )}
-
-                  <div className="modal-actions">
-                    <motion.button
-                      type="button"
-                      className="cancel-btn"
-                      onClick={closePaymentModal}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Cancel
-                    </motion.button>
-                    <motion.button
-                      type="submit"
-                      className="activate-btn"
-                      disabled={processing || !paymentId.trim()}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {processing ? (
-                        <FaSpinner className="spinner" />
-                      ) : (
-                        <FaCheckCircle />
-                      )}
-                      Activate Account
-                    </motion.button>
-                  </div>
-                </form>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Deactivate Modal */}
         <AnimatePresence>
@@ -1100,8 +970,8 @@ export default function HRDashboard() {
         >
           <div className="section-header">
             <div className="header-left">
-              <h2>Pending Registrations</h2>
-              <span className="count">{filteredRegistrations.length} registrations</span>
+              <h2>All Users</h2>
+              <span className="count">{filteredRegistrations.length} users</span>
               {lastRefresh && (
                 <span className="last-refresh">
                   Last updated: {new Date(lastRefresh).toLocaleTimeString()}
@@ -1123,13 +993,13 @@ export default function HRDashboard() {
           {loading ? (
             <div className="loading-container">
               <FaSpinner className="loading-spinner" />
-              <p>Loading registrations...</p>
+              <p>Loading users...</p>
             </div>
           ) : filteredRegistrations.length === 0 ? (
             <div className="empty-state">
               <FaUserTie />
-              <h3>No registrations found</h3>
-              <p>There are no pending registrations matching your criteria.</p>
+              <h3>No users found</h3>
+              <p>There are no users matching your criteria.</p>
             </div>
           ) : (
             <div className="registrations-list-container">

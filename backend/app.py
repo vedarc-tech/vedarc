@@ -518,7 +518,7 @@ def verify_payment_endpoint():
         password = generate_password()
         hashed_password = generate_password_hash(password)
         
-        # Create complete user document
+        # Create complete user document with Active status
         user_data = {
             "user_id": user_id,
             "fullName": registration_data['fullName'],
@@ -528,11 +528,12 @@ def verify_payment_endpoint():
             "track": registration_data['track'],
             "yearOfStudy": registration_data['yearOfStudy'],
             "passoutYear": registration_data['passoutYear'],
-            "status": "Active",  # Active after payment
+            "status": "Active",  # Automatically set to Active after payment
             "created_at": datetime.utcnow(),
             "password": hashed_password,
-            "payment_id": payment_id,
+            "payment_id": payment_id,  # Store real Razorpay payment ID
             "activated_at": datetime.utcnow(),
+            "activated_by": "payment_system",  # Mark as activated by payment system
             # Certificate unlock fields
             "certificate_unlocked": False,
             "lor_unlocked": False,
@@ -549,7 +550,7 @@ def verify_payment_endpoint():
         # Save user to database
         users.insert_one(user_data)
         
-        # Update payment record with user_id and mark as completed
+        # Update payment record
         payments.update_one(
             {"order_id": order_id},
             {
@@ -574,7 +575,7 @@ def verify_payment_endpoint():
         
         return jsonify({
             "success": True,
-            "message": "Payment verified successfully! Your account has been created.",
+            "message": "Payment verified successfully! Your account has been created and activated.",
             "user_id": user_id,
             "payment_id": payment_id,
             "transaction_id": payment_id
@@ -862,7 +863,10 @@ def student_login():
             return jsonify({"error": "Invalid credentials"}), 401
         
         if user['status'] != "Active":
-            return jsonify({"error": "Account not activated. Please contact HR."}), 401
+            if user['status'] == "Disabled":
+                return jsonify({"error": "Account has been disabled. Please contact HR for assistance."}), 401
+            else:
+                return jsonify({"error": "Account not activated. Please contact HR."}), 401
         
         if not check_password_hash(user['password'], password):
             return jsonify({"error": "Invalid credentials"}), 401
@@ -1258,7 +1262,7 @@ def admin_login():
 @app.route('/api/hr/pending-registrations', methods=['GET'])
 @jwt_required()
 def hr_get_pending_registrations():
-    """Get pending student registrations"""
+    """Get all users for HR dashboard"""
     try:
         # Check if database is available
         if users is None or admin_users is None:
@@ -1274,9 +1278,10 @@ def hr_get_pending_registrations():
         # Get query parameters
         track_filter = request.args.get('track', '')
         date_filter = request.args.get('date', '')
+        status_filter = request.args.get('status', 'all')
         
         # Build query
-        query = {"status": "Pending"}
+        query = {}
         if track_filter:
             query["track"] = track_filter
         if date_filter:
@@ -1291,19 +1296,34 @@ def hr_get_pending_registrations():
             except ValueError:
                 pass  # Invalid date format, ignore filter
         
-        # Get pending registrations
-        pending_users = list(users.find(query).sort("created_at", -1))
+        # Filter by status
+        if status_filter == 'pending':
+            query["status"] = "Pending"
+        elif status_filter == 'active':
+            query["status"] = "Active"
+        elif status_filter == 'disabled':
+            query["status"] = "Disabled"
+        elif status_filter == 'all':
+            # No status filter - get all users
+            pass
+        
+        # Get users
+        users_list = list(users.find(query).sort("created_at", -1))
         
         # Convert ObjectId and datetime fields
-        for user in pending_users:
+        for user in users_list:
             if '_id' in user:
                 user['_id'] = str(user['_id'])
             if 'created_at' in user and user['created_at'] is not None:
                 user['created_at'] = user['created_at'].isoformat()
+            if 'activated_at' in user and user['activated_at'] is not None:
+                user['activated_at'] = user['activated_at'].isoformat()
+            if 'disabled_at' in user and user['disabled_at'] is not None:
+                user['disabled_at'] = user['disabled_at'].isoformat()
         
         return jsonify({
             "success": True,
-            "registrations": pending_users
+            "registrations": users_list
         }), 200
         
     except Exception as e:
@@ -1339,7 +1359,7 @@ def hr_get_available_tracks():
 @app.route('/api/hr/activate-user', methods=['POST'])
 @jwt_required()
 def hr_activate_user():
-    """Activate a pending user"""
+    """Enable a disabled user (set status to Active)"""
     try:
         # Check if database is available
         if users is None or admin_users is None:
@@ -1354,7 +1374,6 @@ def hr_activate_user():
         
         data = request.json
         user_id = data.get('user_id')
-        payment_id = data.get('payment_id')
         
         if not user_id:
             return jsonify({"error": "Missing user_id"}), 400
@@ -1364,36 +1383,33 @@ def hr_activate_user():
         if not user:
             return jsonify({"error": "User not found"}), 404
         
-        # Check if user is pending, rejected, or disabled
-        if user['status'] not in ["Pending", "Rejected", "Disabled"]:
-            return jsonify({"error": "User cannot be activated from current status"}), 400
+        # Only allow enabling users with status "Disabled"
+        if user['status'] != "Disabled":
+            return jsonify({"error": f"User cannot be enabled from current status: {user['status']}. Only 'Disabled' users can be enabled."}), 400
         
-        # Check if user already has a payment ID
-        if user.get('payment_id'):
-            return jsonify({"error": f"User {user_id} has already been activated with payment ID: {user['payment_id']}"}), 400
+        # Check if user has a valid payment ID (required for activation)
+        if not user.get('payment_id'):
+            return jsonify({"error": f"User {user_id} cannot be enabled without a valid payment ID. Please ensure payment was completed."}), 400
         
-        # Generate password for the user
+        # Generate new password for the user
         password = generate_password()
         hashed_password = generate_password_hash(password)
         
-        # Update user status and password
-        update_data = {
-            "status": "Active",
-            "activated_at": datetime.utcnow(),
-            "activated_by": current_user,
-            "password": hashed_password
-        }
-        
-        if payment_id:
-            update_data["payment_id"] = payment_id
-        
+        # Update user status to Active
         users.update_one(
             {"user_id": user_id},
-            {"$set": update_data}
+            {"$set": {
+                "status": "Active",
+                "activated_at": datetime.utcnow(),
+                "activated_by": current_user,
+                "password": hashed_password,
+                "enabled_at": datetime.utcnow(),
+                "enabled_by": current_user
+            }}
         )
         
         # Send styled activation email
-        email_subject = "VEDARC Internship Account Activated"
+        email_subject = "VEDARC Internship Account Re-activated"
         email_body = get_activation_email(user, user_id, password)
         try:
             send_email(user['email'], email_subject, email_body)
@@ -1402,7 +1418,7 @@ def hr_activate_user():
         
         return jsonify({
             "success": True,
-            "message": f"User {user_id} activated successfully. Password: {password}",
+            "message": f"User {user_id} enabled successfully. New password: {password}",
             "password": password
         }), 200
     except Exception as e:
@@ -1411,7 +1427,7 @@ def hr_activate_user():
 @app.route('/api/hr/deactivate-user', methods=['POST'])
 @jwt_required()
 def hr_deactivate_user():
-    """Deactivate a pending user"""
+    """Disable an active user (set status to Disabled)"""
     try:
         # Check if database is available
         if users is None or admin_users is None:
@@ -1439,23 +1455,23 @@ def hr_deactivate_user():
         if not user:
             return jsonify({"error": "User not found"}), 404
         
-        # Check if user is pending or active (allow deactivation of both)
-        if user['status'] not in ["Pending", "Active"]:
-            return jsonify({"error": "User is not in a state that can be deactivated"}), 400
+        # Only allow disabling users with status "Active"
+        if user['status'] != "Active":
+            return jsonify({"error": f"User cannot be disabled from current status: {user['status']}. Only 'Active' users can be disabled."}), 400
         
-        # Update user status
+        # Update user status to Disabled
         users.update_one(
             {"user_id": user_id},
             {"$set": {
-                "status": "Rejected",
-                "rejected_at": datetime.utcnow(),
-                "rejected_by": current_user,
-                "rejection_reason": reason
+                "status": "Disabled",
+                "disabled_at": datetime.utcnow(),
+                "disabled_by": current_user,
+                "disable_reason": reason
             }}
         )
         
         # Send styled deactivation email
-        email_subject = "VEDARC Internship Account Deactivated"
+        email_subject = "VEDARC Internship Account Disabled"
         email_body = get_deactivation_email(user, user_id, reason)
         try:
             send_email(user['email'], email_subject, email_body)
@@ -1464,7 +1480,7 @@ def hr_deactivate_user():
         
         return jsonify({
             "success": True,
-            "message": f"User {user_id} deactivated successfully"
+            "message": f"User {user_id} disabled successfully"
         }), 200
         
     except Exception as e:
@@ -1540,7 +1556,7 @@ def hr_get_statistics():
         total_users = users.count_documents({})
         pending_users = users.count_documents({"status": "Pending"})
         active_users = users.count_documents({"status": "Active"})
-        rejected_users = users.count_documents({"status": "Rejected"})
+        disabled_users = users.count_documents({"status": "Disabled"})
         
         # Get track-wise statistics
         track_stats = {}
@@ -1552,7 +1568,7 @@ def hr_get_statistics():
                 "total": users.count_documents({"track": track_name}),
                 "pending": users.count_documents({"track": track_name, "status": "Pending"}),
                 "active": users.count_documents({"track": track_name, "status": "Active"}),
-                "rejected": users.count_documents({"track": track_name, "status": "Rejected"})
+                "disabled": users.count_documents({"track": track_name, "status": "Disabled"})
             }
         
         # Get recent activity (last 7 days)
@@ -1574,6 +1590,7 @@ def hr_get_statistics():
         statistics = {
             "pending_registrations": pending_users,
             "activated_accounts": active_users,
+            "disabled_accounts": disabled_users,
             "total_registrations": total_users,
             "recent_activations_7_days": recent_activations,
             "today_activations": today_activations,

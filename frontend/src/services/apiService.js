@@ -234,16 +234,16 @@ export const hrAPI = {
   // Get available tracks
   getAvailableTracks: () => apiRequest('/hr/available-tracks'),
   
-  // Activate user
-  activateUser: (activationData) => apiRequest('/hr/activate-user', {
+  // Enable user (set status to Active)
+  enableUser: (data) => apiRequest('/hr/activate-user', {
     method: 'POST',
-    body: JSON.stringify(activationData)
+    body: JSON.stringify({ user_id: data.user_id })
   }),
 
-  // Deactivate user
-  deactivateUser: (deactivationData) => apiRequest('/hr/deactivate-user', {
+  // Disable user (set status to Disabled)
+  disableUser: (data) => apiRequest('/hr/deactivate-user', {
     method: 'POST',
-    body: JSON.stringify(deactivationData)
+    body: JSON.stringify({ user_id: data.user_id, reason: data.reason })
   }),
 
   // Reset student password (HR)
@@ -279,11 +279,13 @@ export const hrAPI = {
   }),
 
   // Get all users (for HR dashboard list view)
-  getAllUsers: () => apiRequest('/hr/users'),
+  getAllUsers: () => apiRequest('/hr/pending-registrations', {
+    method: 'GET'
+  }),
   // Enable user (set status to Active)
   enableUser: (data) => apiRequest('/hr/activate-user', {
     method: 'POST',
-    body: JSON.stringify({ user_id: data.user_id, payment_id: data.payment_id || 'HR-Manual' })
+    body: JSON.stringify({ user_id: data.user_id })
   }),
 
   // Delete user permanently

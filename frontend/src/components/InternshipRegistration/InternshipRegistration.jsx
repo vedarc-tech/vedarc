@@ -374,12 +374,8 @@ export default function InternshipRegistration() {
                 <p><strong>Payment Status:</strong> Completed</p>
                 <p><strong>Amount:</strong> ₹299</p>
               </div>
-              <div className="screenshot-instruction">
-                <p style={{ color: '#fbbf24', fontWeight: 600, marginTop: 16 }}>
-                  📸 Please take a screenshot of this page, including your Transaction ID, and share it with the HR when they contact you via WhatsApp.
-                </p>
-              </div>
-              <p>Your payment has been processed successfully. Your account is now pending HR approval. You will receive login credentials via WhatsApp once approved.</p>
+
+              <p>Your payment has been processed successfully. Your account has been automatically activated! You can now log in using the credentials provided in the email.</p>
               
               <motion.button
                 className="register-again-btn"
@@ -415,7 +411,7 @@ export default function InternshipRegistration() {
               <div className="payment-header">
                 <FaCreditCard className="payment-icon" />
                 <h2>Complete Payment</h2>
-                <p>Registration successful! Please complete the payment to activate your account.</p>
+                <p>Registration successful! Please complete the payment to automatically activate your account.</p>
               </div>
 
               {userId && (
@@ -484,7 +480,7 @@ export default function InternshipRegistration() {
                 <p>
                   <FaLock /> Your payment is secured by Razorpay
                 </p>
-                <p>You will receive a confirmation email after successful payment.</p>
+                <p>You will receive login credentials via email after successful payment.</p>
               </div>
             </motion.div>
           </div>
