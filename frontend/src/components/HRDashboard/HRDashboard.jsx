@@ -69,7 +69,7 @@ export default function HRDashboard() {
     setLoading(true)
     try {
       const data = await hrAPI.getAllUsers()
-      setRegistrations(data.users || [])
+      setRegistrations(data.registrations || [])
       setLastRefresh(new Date().toISOString())
     } catch (error) {
       console.error('Error fetching users:', error)
