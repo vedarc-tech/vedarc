@@ -237,3 +237,60 @@
     font-size: 0.9rem;
   }
 }
+
+.enquiry-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 10, 18, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enquiry-modal {
+  background: #181828;
+  border: 2px solid var(--neon-purple, #7b2dff);
+  border-radius: 16px;
+  box-shadow: 0 0 40px 0 var(--neon-magenta, #ff2d75);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 320px;
+  max-width: 90vw;
+  position: relative;
+  text-align: center;
+  color: var(--text-light, #fff);
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--neon-magenta, #ff2d75);
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-modal:hover {
+  color: var(--neon-cyan, #00f9ff);
+}
+
+.enquire-btn {
+  margin-top: 1.5rem;
+  background: linear-gradient(90deg, var(--neon-magenta, #ff2d75), var(--neon-cyan, #00f9ff));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--neon-magenta, #ff2d75);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.enquire-btn:hover {
+  background: linear-gradient(90deg, var(--neon-cyan, #00f9ff), var(--neon-magenta, #ff2d75));
+  box-shadow: 0 0 30px var(--neon-cyan, #00f9ff);
+}

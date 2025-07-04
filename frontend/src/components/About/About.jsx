@@ -1,12 +1,16 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FaAtom, FaShieldAlt, FaLink, FaBrain } from 'react-icons/fa'
+import { FaAtom, FaShieldAlt, FaLink, FaBrain, FaPaintBrush, FaRobot, FaChartLine } from 'react-icons/fa'
 import { SiTensorflow, SiSolidity, SiThreedotjs } from 'react-icons/si'
 import './About.css'
 
 export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: false, amount: 0.1 })
+
+  // Modal state for enquiry
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedService, setSelectedService] = useState(null)
 
   // Tech focus areas
   const focusAreas = [
@@ -24,6 +28,22 @@ export default function About() {
           icon: <FaBrain className="tech-icon" />,
           title: "AI & ML",
           desc: "Transforming industries with advanced neural networks and deep learning"
+        },
+        // New services below
+        {
+          icon: <FaPaintBrush className="tech-icon" />,
+          title: "UI/UX Designs for Websites",
+          desc: "Crafting beautiful, user-centric interfaces and seamless digital experiences"
+        },
+        {
+          icon: <FaRobot className="tech-icon" />,
+          title: "AI Agents and AI Employees",
+          desc: "Empowering businesses with intelligent automation and virtual workforce solutions"
+        },
+        {
+          icon: <FaChartLine className="tech-icon" />,
+          title: "SEO Growth & Digital Visibility",
+          desc: "Boosting your online presence and driving organic growth through proven SEO strategies"
         },
   ]
 
@@ -80,6 +100,7 @@ export default function About() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
             whileHover={{ y: -10 }}
+            onClick={() => { setSelectedService(area); setModalOpen(true); }}
           >
             <div className="card-glow"></div>
             {area.icon}
@@ -88,6 +109,28 @@ export default function About() {
           </motion.div>
         ))}
       </div>
+
+      {/* Enquiry Modal */}
+      {modalOpen && selectedService && (
+        <div className="enquiry-modal-overlay" onClick={() => setModalOpen(false)}>
+          <div className="enquiry-modal" onClick={e => e.stopPropagation()}>
+            <button className="close-modal" onClick={() => setModalOpen(false)}>&times;</button>
+            <h2>Enquire about {selectedService.title}</h2>
+            <p>Interested in <b>{selectedService.title}</b>? Click below to enquire via WhatsApp!</p>
+            <button
+              className="enquire-btn"
+              onClick={() => {
+                const msg = encodeURIComponent(`Hi, I want to know more details on ${selectedService.title} service which you're offering.`);
+                const number = '918897140410'; // User's WhatsApp Business number
+                window.open(`https://wa.me/${number}?text=${msg}`, '_blank');
+                setModalOpen(false);
+              }}
+            >
+              Enquire via WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Tech Stack Carousel */}
       <motion.div 
