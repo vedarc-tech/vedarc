@@ -271,6 +271,14 @@ export const hrAPI = {
   // Get payment details for HR dashboard
   getPayments: () => apiRequest('/admin/payments', {
     method: 'GET'
+  }),
+
+  // Get all users (for HR dashboard list view)
+  getAllUsers: () => apiRequest('/admin/users'),
+  // Enable user (set status to Active)
+  enableUser: (data) => apiRequest('/hr/activate-user', {
+    method: 'POST',
+    body: JSON.stringify({ user_id: data.user_id, payment_id: data.payment_id || 'HR-Manual' })
   })
 }
 

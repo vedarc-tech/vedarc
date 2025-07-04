@@ -62,12 +62,12 @@ export default function HRDashboard() {
   const fetchRegistrations = async (forceRefresh = false) => {
     setLoading(true)
     try {
-      const data = await hrAPI.getPendingRegistrations(filters)
-      setRegistrations(data.registrations || [])
+      const data = await hrAPI.getAllUsers()
+      setRegistrations(data.users || [])
       setLastRefresh(new Date().toISOString())
     } catch (error) {
-      console.error('Error fetching registrations:', error)
-      setError('Failed to load registrations')
+      console.error('Error fetching users:', error)
+      setError('Failed to load users')
     } finally {
       setLoading(false)
     }
@@ -313,6 +313,24 @@ export default function HRDashboard() {
       setBulkEnableMessage(error.message || 'Bulk enable failed')
     } finally {
       setBulkEnabling(false)
+    }
+  }
+
+  // Add toggle handler
+  const handleToggleStatus = async (user) => {
+    setProcessing(true)
+    setError('')
+    try {
+      if (user.status === 'Active') {
+        await hrAPI.deactivateUser({ user_id: user.user_id, reason: 'Disabled by HR' })
+      } else {
+        await hrAPI.enableUser({ user_id: user.user_id })
+      }
+      await fetchRegistrations(true)
+    } catch (error) {
+      setError(error.message || 'Failed to update user status')
+    } finally {
+      setProcessing(false)
     }
   }
 
@@ -986,36 +1004,16 @@ export default function HRDashboard() {
                   </div>
 
                   <div className="card-actions">
-                    {registration.status !== 'Active' && (
-                      <motion.button
-                        className="activate-btn"
-                        onClick={() => handleActivateUser(registration)}
+                    <label className="toggle-switch">
+                      <input
+                        type="checkbox"
+                        checked={registration.status === 'Active'}
+                        onChange={() => handleToggleStatus(registration)}
                         disabled={processing}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        {processing ? (
-                          <FaSpinner className="spinner" />
-                        ) : (
-                          <FaCheckCircle />
-                        )}
-                        Activate User
-                      </motion.button>
-                    )}
-                    <motion.button
-                      className="deactivate-btn"
-                      onClick={() => handleDeactivateUser(registration)}
-                      disabled={processing}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {processing ? (
-                        <FaSpinner className="spinner" />
-                      ) : (
-                        <FaTimesCircle />
-                      )}
-                      Deactivate
-                    </motion.button>
+                      />
+                      <span className="slider"></span>
+                    </label>
+                    <span className="toggle-label">{registration.status === 'Active' ? 'Enabled' : 'Disabled'}</span>
                   </div>
                 </motion.div>
               ))}
