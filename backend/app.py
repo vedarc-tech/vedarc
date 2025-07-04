@@ -4390,6 +4390,87 @@ def get_payment_invoice_email(user, user_id, payment_id, order_id, password):
 </html>
 """
 
+# --- Ensure get_deactivation_email is defined before any endpoint uses it ---
+def get_deactivation_email(user, user_id, reason):
+    return f"""
+    <html>
+      <body style='background: #18192a; margin: 0; padding: 0;'>
+        <table width='100%' cellpadding='0' cellspacing='0' style='background: #18192a; min-height: 100vh;'>
+          <tr>
+            <td align='center' style='padding: 40px 0;'>
+              <table width='480' cellpadding='0' cellspacing='0' style='background: #23244a; border-radius: 14px; box-shadow: 0 4px 32px rgba(80,0,255,0.10); padding: 36px 32px 28px 32px; font-family: Segoe UI, Arial, sans-serif;'>
+                <tr>
+                  <td align='center' style='padding-bottom: 8px;'>
+                    <h1 style='margin: 0; color: #ff4f4f; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #ff4f4f99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
+                    <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
+                      Vedarc Virtual Technical Internship Drive 2025
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
+                    <p style='margin: 0 0 12px 0;'>Dear <b>{user['fullName']}</b>,</p>
+                    <p style='margin: 0 0 12px 0; color: #ff4f4f;'>We regret to inform you that your VEDARC internship account (User ID: <b>{user_id}</b>) has been <b>deactivated</b>.</p>
+                    <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #ff4f4f33;'>
+                      <div><b>Reason:</b> <span style='color: #ff4f4f;'>{reason or 'No reason provided.'}</span></div>
+                    </div>
+                    <p style='margin: 0 0 16px 0;'>If you believe this was a mistake, please contact our support team.</p>
+                    <p style='margin: 0; color: #e0e6f8; font-size: 15px;'>Best regards,<br/>VEDARC Team</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+
+# --- Ensure get_activation_email is defined before any endpoint uses it ---
+def get_activation_email(user, user_id, password):
+    return f"""
+    <html>
+      <body style='background: #18192a; margin: 0; padding: 0;'>
+        <table width='100%' cellpadding='0' cellspacing='0' style='background: #18192a; min-height: 100vh;'>
+          <tr>
+            <td align='center' style='padding: 40px 0;'>
+              <table width='480' cellpadding='0' cellspacing='0' style='background: #23244a; border-radius: 14px; box-shadow: 0 4px 32px rgba(80,0,255,0.10); padding: 36px 32px 28px 32px; font-family: Segoe UI, Arial, sans-serif;'>
+                <tr>
+                  <td align='center' style='padding-bottom: 8px;'>
+                    <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
+                    <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
+                      Vedarc Virtual Technical Internship Drive 2025
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
+                    <p style='margin: 0 0 12px 0;'>Dear <b>{user['fullName']}</b>,</p>
+                    <p style='margin: 0 0 12px 0;'>Your VEDARC internship account has been <b style='color:#4f8cff;'>successfully activated!</b></p>
+                    <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #4f8cff33;'>
+                      <div style='margin-bottom: 6px;'><b>User ID:</b> <span style='color: #4f8cff;'>{user_id}</span></div>
+                      <div><b>Password:</b> <span style='color: #ff00cc;'>{password}</span></div>
+                    </div>
+                    <p style='margin: 0 0 16px 0;'>
+                      You can now log in to your student dashboard using the button below:
+                    </p>
+                    <div style='text-align: center; margin-bottom: 16px;'>
+                      <a href='https://www.vedarc.co.in/unified-login' style='display: inline-block; background: linear-gradient(90deg,#4f8cff,#ff00cc); color: #fff; text-decoration: none; font-weight: 700; padding: 12px 32px; border-radius: 6px; font-size: 16px; letter-spacing: 0.5px; box-shadow: 0 2px 12px #4f8cff33;'>Login to Dashboard</a>
+                    </div>
+                    <p style='margin: 0 0 8px 0; color: #b3b8e0; font-size: 14px;'>
+                      <i>Please keep your credentials safe and do not share them with anyone.</i>
+                    </p>
+                    <p style='margin: 0; color: #e0e6f8; font-size: 15px;'>Best regards,<br/>VEDARC Team</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+
 if __name__ == '__main__':
     # Test database connection at startup
     if client is not None and db is not None:
