@@ -316,23 +316,7 @@ export default function HRDashboard() {
     }
   }
 
-  // Add toggle handler
-  const handleToggleStatus = async (user) => {
-    setProcessing(true)
-    setError('')
-    try {
-      if (user.status === 'Active') {
-        await hrAPI.deactivateUser({ user_id: user.user_id, reason: 'Disabled by HR' })
-      } else {
-        await hrAPI.enableUser({ user_id: user.user_id })
-      }
-      await fetchRegistrations(true)
-    } catch (error) {
-      setError(error.message || 'Failed to update user status')
-    } finally {
-      setProcessing(false)
-    }
-  }
+
 
   if (!authService.isAuthenticated() || authService.getUserType() !== 'hr') {
     return (
