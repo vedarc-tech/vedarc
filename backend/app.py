@@ -1364,9 +1364,9 @@ def hr_activate_user():
         if not user:
             return jsonify({"error": "User not found"}), 404
         
-        # Check if user is pending
-        if user['status'] != "Pending":
-            return jsonify({"error": "User is not pending"}), 400
+        # Check if user is pending, rejected, or disabled
+        if user['status'] not in ["Pending", "Rejected", "Disabled"]:
+            return jsonify({"error": "User cannot be activated from current status"}), 400
         
         # Check if user already has a payment ID
         if user.get('payment_id'):
