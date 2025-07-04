@@ -980,66 +980,52 @@ export default function HRDashboard() {
               <p>There are no pending registrations matching your criteria.</p>
             </div>
           ) : (
-            <div className="registrations-grid">
-              {filteredRegistrations.map((registration, index) => (
-                <motion.div
-                  key={registration.user_id || index}
-                  className="registration-card"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <div className="card-header">
-                    <div className="user-info">
-                      <div className="avatar">
-                        {registration.fullName?.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <h3>{registration.fullName}</h3>
-                        <p className="user-id">{registration.user_id}</p>
-                      </div>
-                    </div>
-                    <div 
-                      className="track-badge"
-                      style={{ backgroundColor: getTrackColor(registration.track) }}
-                    >
-                      {registration.track}
-                    </div>
-                  </div>
-
-                  <div className="card-content">
-                    <div className="info-row">
-                      <FaEnvelope />
-                      <span>{registration.email}</span>
-                    </div>
-                    <div className="info-row">
-                      <FaWhatsapp />
-                      <span>{registration.whatsapp}</span>
-                    </div>
-                    <div className="info-row">
-                      <FaGraduationCap />
-                      <span>{registration.collegeName}</span>
-                    </div>
-                    <div className="info-row">
-                      <FaCalendarAlt />
-                      <span>{registration.yearOfStudy} • {registration.passoutYear}</span>
-                    </div>
-                  </div>
-
-                  <div className="card-actions">
-                    <label className="toggle-switch">
-                      <input
-                        type="checkbox"
-                        checked={registration.status === 'Active'}
-                        onChange={() => handleToggleStatus(registration)}
-                        disabled={processing}
-                      />
-                      <span className="slider"></span>
-                    </label>
-                    <span className="toggle-label">{registration.status === 'Active' ? 'Enabled' : 'Disabled'}</span>
-                  </div>
-                </motion.div>
-              ))}
+            <div className="registrations-list-container">
+              <table className="registrations-list-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>WhatsApp</th>
+                    <th>College</th>
+                    <th>Track</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Enable/Disable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRegistrations.map((registration, index) => (
+                    <tr key={registration.user_id || index}>
+                      <td>{index + 1}</td>
+                      <td>{registration.fullName}</td>
+                      <td>{registration.user_id}</td>
+                      <td>{registration.email}</td>
+                      <td>{registration.whatsapp}</td>
+                      <td>{registration.collegeName}</td>
+                      <td>{registration.track}</td>
+                      <td>{registration.yearOfStudy} / {registration.passoutYear}</td>
+                      <td>
+                        <span className={`status-badge ${registration.status === 'Active' ? 'completed' : 'pending'}`}>{registration.status}</span>
+                      </td>
+                      <td>
+                        <label className="toggle-switch">
+                          <input
+                            type="checkbox"
+                            checked={registration.status === 'Active'}
+                            onChange={() => handleToggleStatus(registration)}
+                            disabled={processing}
+                          />
+                          <span className="slider"></span>
+                        </label>
+                        <span className="toggle-label">{registration.status === 'Active' ? 'Enabled' : 'Disabled'}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </motion.div>
