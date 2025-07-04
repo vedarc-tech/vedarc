@@ -28,6 +28,10 @@ export default function HRDashboard() {
   const [showDeactivateModal, setShowDeactivateModal] = useState(false)
   const [deactivateReason, setDeactivateReason] = useState('')
 
+  // Delete modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteReason, setDeleteReason] = useState('')
+
   // Statistics state
   const [statistics, setStatistics] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
@@ -241,6 +245,50 @@ export default function HRDashboard() {
     }
   }
 
+  const handleDeleteUser = async (userData) => {
+    // Check if user is still in the current registrations list
+    const isStillInList = registrations.some(reg => reg.user_id === userData.user_id)
+    
+    if (!isStillInList) {
+      setError('This user is no longer in the list. Refreshing data...')
+      await fetchRegistrations(true)
+      return
+    }
+    
+    // Show delete modal
+    setSelectedUser(userData)
+    setDeleteReason('')
+    setShowDeleteModal(true)
+  }
+
+  const handleDeleteSubmit = async (e) => {
+    e.preventDefault()
+    if (!deleteReason.trim()) {
+      setError('Reason is required for account deletion')
+      return
+    }
+    
+    setProcessing(true)
+    setError('')
+    try {
+      await hrAPI.deleteUser({
+        user_id: selectedUser.user_id,
+        reason: deleteReason.trim()
+      })
+      
+      // Close modal and refresh the list and statistics
+      setShowDeleteModal(false)
+      setSelectedUser(null)
+      setDeleteReason('')
+      await fetchRegistrations(true) // Force refresh
+      await fetchStatistics()
+    } catch (error) {
+      setError(error.message || 'Failed to delete user')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   const closePaymentModal = () => {
     setShowPaymentModal(false)
     setSelectedUser(null)
@@ -252,6 +300,13 @@ export default function HRDashboard() {
     setShowDeactivateModal(false)
     setSelectedUser(null)
     setDeactivateReason('')
+    setError('')
+  }
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false)
+    setSelectedUser(null)
+    setDeleteReason('')
     setError('')
   }
 
@@ -898,7 +953,9 @@ export default function HRDashboard() {
                       rows="4"
                       autoFocus
                     />
-                    <small>This action will permanently delete the registration. Please provide a clear reason.</small>
+                    <small style={{ color: '#ff4f4f', fontWeight: 'bold' }}>
+                      ⚠️ WARNING: This reason will be sent to the student via email. Please provide a clear and professional explanation.
+                    </small>
                   </div>
 
                   {error && (
@@ -931,6 +988,101 @@ export default function HRDashboard() {
                         <FaTimesCircle />
                       )}
                       Deactivate Registration
+                    </motion.button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Delete Modal */}
+        <AnimatePresence>
+          {showDeleteModal && (
+            <motion.div
+              className="modal-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeDeleteModal}
+            >
+              <motion.div
+                className="deactivate-modal" // Reusing deactivate-modal class
+                initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 50 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="modal-header">
+                  <h2>
+                    <FaTimesCircle />
+                    Delete Registration
+                  </h2>
+                  <button className="close-btn" onClick={closeDeleteModal}>
+                    <FaTimesCircle />
+                  </button>
+                </div>
+
+                {selectedUser && (
+                  <div className="user-info-modal">
+                    <div className="user-details">
+                      <h3>{selectedUser.fullName}</h3>
+                      <p className="user-id">{selectedUser.user_id}</p>
+                      <p className="track-info">{selectedUser.track}</p>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleDeleteSubmit} className="deactivate-form">
+                  <div className="form-group">
+                    <label htmlFor="deleteReason">
+                      <FaTimesCircle />
+                      Reason for Deletion *
+                    </label>
+                    <textarea
+                      id="deleteReason"
+                      placeholder="Please provide a reason for deleting this registration..."
+                      value={deleteReason}
+                      onChange={(e) => setDeleteReason(e.target.value)}
+                      required
+                      rows="4"
+                      autoFocus
+                    />
+                    <small style={{ color: '#ff4f4f', fontWeight: 'bold' }}>
+                      ⚠️ WARNING: This reason will be sent to the student via email. This action will permanently delete the account and cannot be undone.
+                    </small>
+                  </div>
+
+                  {error && (
+                    <div className="error-message">
+                      <FaTimesCircle />
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="modal-actions">
+                    <motion.button
+                      type="button"
+                      className="cancel-btn"
+                      onClick={closeDeleteModal}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Cancel
+                    </motion.button>
+                    <motion.button
+                      type="submit"
+                      className="deactivate-submit-btn"
+                      disabled={processing || !deleteReason.trim()}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {processing ? (
+                        <FaSpinner className="spinner" />
+                      ) : (
+                        <FaTimesCircle />
+                      )}
+                      Delete Registration
                     </motion.button>
                   </div>
                 </form>
@@ -994,6 +1146,7 @@ export default function HRDashboard() {
                     <th>Year</th>
                     <th>Status</th>
                     <th>Enable/Disable</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1021,6 +1174,17 @@ export default function HRDashboard() {
                           <span className="slider"></span>
                         </label>
                         <span className="toggle-label">{registration.status === 'Active' ? 'Enabled' : 'Disabled'}</span>
+                      </td>
+                      <td>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDeleteUser(registration)}
+                          disabled={processing}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <FaTimesCircle />
+                        </button>
                       </td>
                     </tr>
                   ))}

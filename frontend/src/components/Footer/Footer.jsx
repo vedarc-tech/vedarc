@@ -1,4 +1,5 @@
 import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
+import { FaInstagram } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './Footer.css'
@@ -43,12 +44,13 @@ export default function Footer() {
             >
               <FaLinkedin />
             </motion.a>
-            <motion.a 
-              href="https://twitter.com/" 
+            <motion.a
+              href="https://www.instagram.com/vedarc.tech?igsh=bmYxcTZuZndncHB1&utm_source=qr"
               target="_blank"
-              whileHover={{ y: -3, color: 'var(--neon-cyan)' }}
+              whileHover={{ y: -3, color: '#E1306C' }}
+              style={{ marginLeft: '8px' }}
             >
-              <FaTwitter />
+              <FaInstagram />
             </motion.a>
           </div>
 

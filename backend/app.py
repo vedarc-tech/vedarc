@@ -515,6 +515,8 @@ def verify_payment_endpoint():
         
         # Generate User ID after successful payment
         user_id = generate_user_id(registration_data['track'])
+        password = generate_password()
+        hashed_password = generate_password_hash(password)
         
         # Create complete user document
         user_data = {
@@ -528,9 +530,9 @@ def verify_payment_endpoint():
             "passoutYear": registration_data['passoutYear'],
             "status": "Active",  # Active after payment
             "created_at": datetime.utcnow(),
-            "password": None,
+            "password": hashed_password,
             "payment_id": payment_id,
-            "activated_at": None,
+            "activated_at": datetime.utcnow(),
             # Certificate unlock fields
             "certificate_unlocked": False,
             "lor_unlocked": False,
@@ -562,27 +564,10 @@ def verify_payment_endpoint():
             }
         )
         
-        # Send confirmation email
+        # Send styled invoice email
         try:
-            email_subject = "Payment Successful - VEDARC Internship"
-            email_body = f"""
-            Dear {user_data['fullName']},
-            
-            Your payment of ₹299 for the VEDARC Internship Program has been successfully processed.
-            
-            Payment Details:
-            - Payment ID: {payment_id}
-            - Order ID: {order_id}
-            - Amount: ₹299
-            - User ID: {user_id}
-            
-            Your account is now pending HR approval. You will receive login credentials via WhatsApp once approved.
-            
-            Thank you for choosing VEDARC Technologies!
-            
-            Best regards,
-            VEDARC Team
-            """
+            email_subject = "Payment Successful - VEDARC Internship (Invoice & Credentials)"
+            email_body = get_payment_invoice_email(user_data, user_id, payment_id, order_id, password)
             send_email(user_data['email'], email_subject, email_body)
         except Exception as e:
             print(f"Failed to send payment confirmation email: {e}")
@@ -633,6 +618,8 @@ def razorpay_webhook():
                     
                     # Generate User ID
                     user_id = generate_user_id(registration_data['track'])
+                    password = generate_password()
+                    hashed_password = generate_password_hash(password)
                     
                     # Create complete user document
                     user_data = {
@@ -646,9 +633,9 @@ def razorpay_webhook():
                         "passoutYear": registration_data['passoutYear'],
                         "status": "Active",  # Active after payment
                         "created_at": datetime.utcnow(),
-                        "password": None,
+                        "password": hashed_password,
                         "payment_id": payment_id,
-                        "activated_at": None,
+                        "activated_at": datetime.utcnow(),
                         # Certificate unlock fields
                         "certificate_unlocked": False,
                         "lor_unlocked": False,
@@ -680,7 +667,13 @@ def razorpay_webhook():
                             }
                         }
                     )
-                    
+                    # Send styled invoice email
+                    try:
+                        email_subject = "Payment Successful - VEDARC Internship (Invoice & Credentials)"
+                        email_body = get_payment_invoice_email(user_data, user_id, payment_id, order_id, password)
+                        send_email(user_data['email'], email_subject, email_body)
+                    except Exception as e:
+                        print(f"Failed to send payment confirmation email: {e}")
                     print(f"Payment webhook processed: {payment_id} for new user {user_id}")
         
         return jsonify({"status": "success"}), 200
@@ -1399,56 +1392,12 @@ def hr_activate_user():
             {"$set": update_data}
         )
         
-        # Send email to user with credentials (HTML format)
+        # Send styled activation email
         email_subject = "VEDARC Internship Account Activated"
-        email_body = f"""
-<html>
-  <body style='background: #18192a; margin: 0; padding: 0;'>
-    <table width='100%' cellpadding='0' cellspacing='0' style='background: #18192a; min-height: 100vh;'>
-      <tr>
-        <td align='center' style='padding: 40px 0;'>
-          <table width='480' cellpadding='0' cellspacing='0' style='background: #23244a; border-radius: 14px; box-shadow: 0 4px 32px rgba(80,0,255,0.10); padding: 36px 32px 28px 32px; font-family: Segoe UI, Arial, sans-serif;'>
-            <tr>
-              <td align='center' style='padding-bottom: 8px;'>
-                <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
-                <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
-                  Vedarc Virtual Technical Internship Drive 2025
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
-                <p style='margin: 0 0 12px 0;'>Dear <b>{user['fullName']}</b>,</p>
-                <p style='margin: 0 0 12px 0;'>Your VEDARC internship account has been <b style='color:#4f8cff;'>successfully activated!</b></p>
-                <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #4f8cff33;'>
-                  <div style='margin-bottom: 6px;'><b>User ID:</b> <span style='color: #4f8cff;'>{user_id}</span></div>
-                  <div><b>Password:</b> <span style='color: #ff00cc;'>{password}</span></div>
-                </div>
-                <p style='margin: 0 0 16px 0;'>
-                  You can now log in to your student dashboard using the button below:
-                </p>
-                <div style='text-align: center; margin-bottom: 16px;'>
-                  <a href='https://www.vedarc.co.in/unified-login' style='display: inline-block; background: linear-gradient(90deg,#4f8cff,#ff00cc); color: #fff; text-decoration: none; font-weight: 700; padding: 12px 32px; border-radius: 6px; font-size: 16px; letter-spacing: 0.5px; box-shadow: 0 2px 12px #4f8cff33;'>Login to Dashboard</a>
-                </div>
-                <p style='margin: 0 0 8px 0; color: #b3b8e0; font-size: 14px;'>
-                  <i>Please keep your credentials safe and do not share them with anyone.</i>
-                </p>
-                <p style='margin: 0; color: #e0e6f8; font-size: 15px;'>Best regards,<br/>VEDARC Team</p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>
-"""
-        # When sending the email, set content_subtype to 'html' if using EmailMessage or similar
-        
+        email_body = get_activation_email(user, user_id, password)
         try:
             send_email(user['email'], email_subject, email_body)
         except Exception as email_error:
-            # Log email error but don't fail the activation
             print(f"Failed to send email to {user['email']}: {str(email_error)}")
         
         return jsonify({
@@ -1456,7 +1405,6 @@ def hr_activate_user():
             "message": f"User {user_id} activated successfully. Password: {password}",
             "password": password
         }), 200
-        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -1483,14 +1431,17 @@ def hr_deactivate_user():
         if not user_id:
             return jsonify({"error": "Missing user_id"}), 400
         
+        if not reason or not reason.strip():
+            return jsonify({"error": "Reason is required for account deactivation"}), 400
+        
         # Find user
         user = users.find_one({"user_id": user_id})
         if not user:
             return jsonify({"error": "User not found"}), 404
         
-        # Check if user is pending
-        if user['status'] != "Pending":
-            return jsonify({"error": "User is not pending"}), 400
+        # Check if user is pending or active (allow deactivation of both)
+        if user['status'] not in ["Pending", "Active"]:
+            return jsonify({"error": "User is not in a state that can be deactivated"}), 400
         
         # Update user status
         users.update_one(
@@ -1502,6 +1453,14 @@ def hr_deactivate_user():
                 "rejection_reason": reason
             }}
         )
+        
+        # Send styled deactivation email
+        email_subject = "VEDARC Internship Account Deactivated"
+        email_body = get_deactivation_email(user, user_id, reason)
+        try:
+            send_email(user['email'], email_subject, email_body)
+        except Exception as email_error:
+            print(f"Failed to send email to {user['email']}: {str(email_error)}")
         
         return jsonify({
             "success": True,
@@ -4173,6 +4132,263 @@ def hr_get_all_users():
         return jsonify({"users": user_list}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# 5. HR delete user: permanently delete user account with reason
+@app.route('/api/hr/delete-user', methods=['POST'])
+@jwt_required()
+def hr_delete_user():
+    """Permanently delete a user account"""
+    try:
+        # Check if database is available
+        if users is None or admin_users is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        current_user = get_jwt_identity()
+        
+        # Verify HR
+        hr_user = admin_users.find_one({"username": current_user, "user_type": "hr"})
+        if not hr_user:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        data = request.json
+        user_id = data.get('user_id')
+        reason = data.get('reason')
+        
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        
+        if not reason or not reason.strip():
+            return jsonify({"error": "Reason is required for account deletion"}), 400
+        
+        # Find user
+        user = users.find_one({"user_id": user_id})
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Store user data before deletion for email
+        user_email = user['email']
+        user_name = user['fullName']
+        
+        # Delete user from database
+        users.delete_one({"user_id": user_id})
+        
+        # Send styled deletion email
+        email_subject = "VEDARC Internship Account Deleted"
+        email_body = get_deactivation_email({"fullName": user_name, "email": user_email}, user_id, f"Account permanently deleted: {reason}")
+        try:
+            send_email(user_email, email_subject, email_body)
+        except Exception as email_error:
+            print(f"Failed to send email to {user_email}: {str(email_error)}")
+        
+        return jsonify({
+            "success": True,
+            "message": f"User {user_id} permanently deleted successfully"
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def get_payment_invoice_email(user, user_id, payment_id, order_id, password):
+    # Generate invoice number
+    invoice_number = f"INV-{datetime.utcnow().strftime('%Y%m%d')}-{payment_id[-6:]}"
+    
+    return f"""
+<html>
+  <body style='background: #f8f9fa; margin: 0; padding: 0; font-family: Arial, sans-serif;'>
+    <table width='100%' cellpadding='0' cellspacing='0' style='background: #f8f9fa; min-height: 100vh;'>
+      <tr>
+        <td align='center' style='padding: 40px 0;'>
+          <table width='600' cellpadding='0' cellspacing='0' style='background: #ffffff; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden;'>
+            <!-- Header -->
+            <tr>
+              <td style='background: linear-gradient(135deg, #4f8cff, #ff00cc); padding: 30px; text-align: center;'>
+                <h1 style='margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: 1px;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
+                <p style='margin: 10px 0 0 0; color: #ffffff; font-size: 16px; opacity: 0.9;'>Vedarc Virtual Technical Internship Drive 2025</p>
+              </td>
+            </tr>
+            
+            <!-- Invoice Header -->
+            <tr>
+              <td style='padding: 30px; border-bottom: 1px solid #e9ecef;'>
+                <table width='100%' cellpadding='0' cellspacing='0'>
+                  <tr>
+                    <td style='width: 50%;'>
+                      <h2 style='margin: 0 0 20px 0; color: #333; font-size: 24px; font-weight: 600;'>INVOICE</h2>
+                      <div style='margin-bottom: 15px;'>
+                        <strong style='color: #666; font-size: 14px;'>Invoice Number:</strong><br>
+                        <span style='color: #333; font-size: 16px; font-weight: 600;'>{invoice_number}</span>
+                      </div>
+                      <div style='margin-bottom: 15px;'>
+                        <strong style='color: #666; font-size: 14px;'>Date:</strong><br>
+                        <span style='color: #333; font-size: 16px;'>{datetime.utcnow().strftime('%B %d, %Y')}</span>
+                      </div>
+                      <div>
+                        <strong style='color: #666; font-size: 14px;'>Payment Status:</strong><br>
+                        <span style='color: #28a745; font-size: 16px; font-weight: 600;'>PAID</span>
+                      </div>
+                    </td>
+                    <td style='width: 50%; text-align: right;'>
+                      <div style='margin-bottom: 15px;'>
+                        <strong style='color: #666; font-size: 14px;'>Bill To:</strong><br>
+                        <span style='color: #333; font-size: 16px; font-weight: 600;'>{user['fullName']}</span><br>
+                        <span style='color: #666; font-size: 14px;'>{user['email']}</span><br>
+                        <span style='color: #666; font-size: 14px;'>{user['collegeName']}</span>
+                      </div>
+                      <div>
+                        <strong style='color: #666; font-size: 14px;'>User ID:</strong><br>
+                        <span style='color: #4f8cff; font-size: 16px; font-weight: 600;'>{user_id}</span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            
+            <!-- Invoice Details -->
+            <tr>
+              <td style='padding: 30px;'>
+                <table width='100%' cellpadding='0' cellspacing='0' style='border-collapse: collapse;'>
+                  <thead>
+                    <tr style='background: #f8f9fa;'>
+                      <th style='padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6; color: #333; font-size: 14px; font-weight: 600;'>Description</th>
+                      <th style='padding: 15px; text-align: center; border-bottom: 2px solid #dee2e6; color: #333; font-size: 14px; font-weight: 600;'>Track</th>
+                      <th style='padding: 15px; text-align: right; border-bottom: 2px solid #dee2e6; color: #333; font-size: 14px; font-weight: 600;'>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style='padding: 15px; border-bottom: 1px solid #dee2e6; color: #333; font-size: 16px;'>
+                        VEDARC Virtual Technical Internship Program<br>
+                        <small style='color: #666;'>Complete internship program with certificate</small>
+                      </td>
+                      <td style='padding: 15px; text-align: center; border-bottom: 1px solid #dee2e6; color: #333; font-size: 16px;'>
+                        {user['track']}
+                      </td>
+                      <td style='padding: 15px; text-align: right; border-bottom: 1px solid #dee2e6; color: #333; font-size: 16px; font-weight: 600;'>
+                        ₹299.00
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <!-- Total -->
+                <table width='100%' cellpadding='0' cellspacing='0' style='margin-top: 20px;'>
+                  <tr>
+                    <td style='width: 70%;'></td>
+                    <td style='width: 30%;'>
+                      <table width='100%' cellpadding='0' cellspacing='0' style='border-collapse: collapse;'>
+                        <tr>
+                          <td style='padding: 10px 0; border-bottom: 1px solid #dee2e6;'>
+                            <strong style='color: #333; font-size: 16px;'>Total:</strong>
+                          </td>
+                          <td style='padding: 10px 0; text-align: right; border-bottom: 1px solid #dee2e6;'>
+                            <strong style='color: #333; font-size: 18px;'>₹299.00</strong>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            
+            <!-- Payment Information -->
+            <tr>
+              <td style='padding: 0 30px 30px 30px;'>
+                <div style='background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;'>
+                  <h3 style='margin: 0 0 15px 0; color: #333; font-size: 18px; font-weight: 600;'>Payment Information</h3>
+                  <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr>
+                      <td style='width: 50%;'>
+                        <div style='margin-bottom: 10px;'>
+                          <strong style='color: #666; font-size: 14px;'>Payment ID:</strong><br>
+                          <span style='color: #333; font-size: 14px;'>{payment_id}</span>
+                        </div>
+                        <div>
+                          <strong style='color: #666; font-size: 14px;'>Order ID:</strong><br>
+                          <span style='color: #333; font-size: 14px;'>{order_id}</span>
+                        </div>
+                      </td>
+                      <td style='width: 50%;'>
+                        <div style='margin-bottom: 10px;'>
+                          <strong style='color: #666; font-size: 14px;'>Payment Method:</strong><br>
+                          <span style='color: #333; font-size: 14px;'>Razorpay Online Payment</span>
+                        </div>
+                        <div>
+                          <strong style='color: #666; font-size: 14px;'>Payment Date:</strong><br>
+                          <span style='color: #333; font-size: 14px;'>{datetime.utcnow().strftime('%B %d, %Y at %I:%M %p')}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Account Credentials -->
+            <tr>
+              <td style='padding: 0 30px 30px 30px;'>
+                <div style='background: linear-gradient(135deg, #4f8cff, #ff00cc); border-radius: 8px; padding: 20px; margin-bottom: 20px;'>
+                  <h3 style='margin: 0 0 15px 0; color: #ffffff; font-size: 18px; font-weight: 600;'>Your Account Credentials</h3>
+                  <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr>
+                      <td style='width: 50%;'>
+                        <div style='margin-bottom: 10px;'>
+                          <strong style='color: #ffffff; font-size: 14px;'>User ID:</strong><br>
+                          <span style='color: #ffffff; font-size: 16px; font-weight: 600;'>{user_id}</span>
+                        </div>
+                      </td>
+                      <td style='width: 50%;'>
+                        <div style='margin-bottom: 10px;'>
+                          <strong style='color: #ffffff; font-size: 14px;'>Password:</strong><br>
+                          <span style='color: #ffffff; font-size: 16px; font-weight: 600;'>{password}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style='margin: 15px 0 0 0; color: #ffffff; font-size: 14px; opacity: 0.9;'>
+                    <strong>Important:</strong> Please keep your credentials safe and do not share them with anyone.
+                  </p>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Action Button -->
+            <tr>
+              <td style='padding: 0 30px 30px 30px; text-align: center;'>
+                <a href='https://www.vedarc.co.in/unified-login' style='display: inline-block; background: linear-gradient(135deg, #4f8cff, #ff00cc); color: #ffffff; text-decoration: none; font-weight: 700; padding: 15px 40px; border-radius: 50px; font-size: 16px; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(79, 140, 255, 0.3);'>
+                  Login to Your Dashboard
+                </a>
+              </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+              <td style='background: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #e9ecef;'>
+                <p style='margin: 0 0 10px 0; color: #666; font-size: 14px;'>
+                  <strong>VEDARC TECHNOLOGIES PRIVATE LIMITED</strong><br>
+                  Virtual Technical Internship Program
+                </p>
+                <p style='margin: 0 0 15px 0; color: #999; font-size: 12px;'>
+                  This is an automatically generated invoice. For any queries, please contact our support team.
+                </p>
+                <div style='margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;'>
+                  <p style='margin: 0 0 8px 0; color: #666; font-size: 13px;'>
+                    <strong>Follow us on social media:</strong>
+                  </p>
+                  <a href='https://www.instagram.com/vedarc.tech?igsh=bmYxcTZuZndncHB1&utm_source=qr' style='display: inline-block; background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); color: #ffffff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;'>
+                    📸 @vedarc.tech
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+"""
 
 if __name__ == '__main__':
     # Test database connection at startup

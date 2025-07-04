@@ -284,6 +284,12 @@ export const hrAPI = {
   enableUser: (data) => apiRequest('/hr/activate-user', {
     method: 'POST',
     body: JSON.stringify({ user_id: data.user_id, payment_id: data.payment_id || 'HR-Manual' })
+  }),
+
+  // Delete user permanently
+  deleteUser: (deletionData) => apiRequest('/hr/delete-user', {
+    method: 'POST',
+    body: JSON.stringify(deletionData)
   })
 }
 
