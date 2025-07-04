@@ -32,18 +32,24 @@ export default function HRDashboard() {
   const [statistics, setStatistics] = useState(null)
   const [statsLoading, setStatsLoading] = useState(true)
   
+  // Payment details state
+  const [payments, setPayments] = useState([])
+  const [paymentsLoading, setPaymentsLoading] = useState(true)
+  
   // Add last refresh timestamp
   const [lastRefresh, setLastRefresh] = useState(null)
 
   useEffect(() => {
     fetchRegistrations()
     fetchStatistics()
+    fetchPayments()
     fetchAvailableTracks()
     
     // Set up auto-refresh every 30 seconds
     const autoRefreshInterval = setInterval(() => {
       fetchRegistrations()
       fetchStatistics()
+      fetchPayments()
     }, 30000) // 30 seconds
     
     return () => clearInterval(autoRefreshInterval)
@@ -81,6 +87,18 @@ export default function HRDashboard() {
       setAvailableTracks(data.tracks || [])
     } catch (error) {
       console.error('Error fetching available tracks:', error)
+    }
+  }
+
+  const fetchPayments = async () => {
+    setPaymentsLoading(true)
+    try {
+      const data = await hrAPI.getPayments()
+      setPayments(data.payments || [])
+    } catch (error) {
+      console.error('Error fetching payments:', error)
+    } finally {
+      setPaymentsLoading(false)
     }
   }
 
@@ -589,6 +607,77 @@ export default function HRDashboard() {
               {processing ? <FaSpinner className="spinner" /> : <FaCheckCircle />} Fix Database Inconsistencies
             </motion.button>
           </div>
+        </motion.div>
+
+        {/* Payment Details Section */}
+        <motion.div
+          className="payment-details-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+        >
+          <h3>
+            <FaCreditCard />
+            Payment Details & Transaction IDs
+          </h3>
+          
+          {paymentsLoading ? (
+            <div className="loading-state">
+              <FaSpinner className="spinner" />
+              <p>Loading payment details...</p>
+            </div>
+          ) : payments.length > 0 ? (
+            <div className="payments-table-container">
+              <table className="payments-table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Track</th>
+                    <th>Amount</th>
+                    <th>Transaction ID</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payments
+                    .filter(payment => payment.user_id) // Only show completed payments with user_id
+                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    .map((payment, index) => (
+                      <tr key={index} className="payment-row">
+                        <td className="user-id-cell">{payment.user_id}</td>
+                        <td className="name-cell">{payment.registration_data?.fullName || 'N/A'}</td>
+                        <td className="email-cell">{payment.registration_data?.email || 'N/A'}</td>
+                        <td className="track-cell">
+                          <span className={`track-badge ${getTrackColor(payment.registration_data?.track)}`}>
+                            {payment.registration_data?.track || 'N/A'}
+                          </span>
+                        </td>
+                        <td className="amount-cell">₹{payment.amount}</td>
+                        <td className="transaction-cell">
+                          <span className="transaction-id">{payment.payment_id || 'N/A'}</span>
+                        </td>
+                        <td className="status-cell">
+                          <span className={`status-badge ${payment.status === 'completed' ? 'completed' : 'pending'}`}>
+                            {payment.status === 'completed' ? 'Completed' : 'Pending'}
+                          </span>
+                        </td>
+                        <td className="date-cell">
+                          {payment.created_at ? new Date(payment.created_at).toLocaleDateString() : 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="no-payments">
+              <FaCreditCard />
+              <p>No payment records found</p>
+            </div>
+          )}
         </motion.div>
 
         {/* Payment ID Modal */}

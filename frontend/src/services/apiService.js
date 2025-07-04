@@ -97,10 +97,16 @@ export const publicAPI = {
   // Get company projects for public showcase
   getCompanyProjects: () => apiRequest('/company-projects'),
   
-  // Register new student
+  // Register new student with payment
   registerStudent: (studentData) => apiRequest('/register', {
     method: 'POST',
     body: JSON.stringify(studentData)
+  }),
+  
+  // Verify payment
+  verifyPayment: (paymentData) => apiRequest('/verify-payment', {
+    method: 'POST',
+    body: JSON.stringify(paymentData)
   })
 }
 
@@ -255,6 +261,11 @@ export const hrAPI = {
   // Fix inconsistent users
   fixInconsistentUsers: () => apiRequest('/hr/fix-inconsistent-users', {
     method: 'POST'
+  }),
+
+  // Get payment details for HR dashboard
+  getPayments: () => apiRequest('/admin/payments', {
+    method: 'GET'
   })
 }
 
@@ -541,6 +552,11 @@ export const adminAPI = {
 
   // Get available placeholder options
   getCertificatePlaceholders: () => apiRequest('/admin/certificate-placeholders', {
+    method: 'GET'
+  }),
+
+  // Get all payment records for admin/HR dashboard
+  getPayments: () => apiRequest('/admin/payments', {
     method: 'GET'
   }),
 }

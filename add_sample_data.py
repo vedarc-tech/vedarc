@@ -16,7 +16,7 @@ def add_sample_internships():
             "track_name": "Frontend Development",
             "description": "Learn modern frontend technologies including React, JavaScript, HTML, and CSS. Build responsive web applications and master the latest frontend frameworks.",
             "duration": "8 weeks",
-            "fee": 999,
+            "fee": 299,
             "features": [
                 "React.js Fundamentals",
                 "Modern JavaScript (ES6+)",

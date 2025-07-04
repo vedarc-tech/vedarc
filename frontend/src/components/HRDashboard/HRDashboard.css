@@ -1422,3 +1422,161 @@
     width: 100%;
   }
 } 
+
+/* Payment Details Section */
+.payment-details-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.payment-details-section h3 {
+  color: #00f9ff;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.4rem;
+}
+
+.payments-table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.payments-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.payments-table th {
+  background: rgba(0, 249, 255, 0.1);
+  color: #00f9ff;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid rgba(0, 249, 255, 0.3);
+}
+
+.payments-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.payment-row:hover {
+  background: rgba(0, 249, 255, 0.05);
+}
+
+.user-id-cell {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #00f9ff;
+}
+
+.name-cell {
+  font-weight: 500;
+}
+
+.email-cell {
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.track-cell {
+  text-align: center;
+}
+
+.track-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.amount-cell {
+  font-weight: 600;
+  color: #4ade80;
+  text-align: center;
+}
+
+.transaction-cell {
+  text-align: center;
+}
+
+.transaction-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.status-cell {
+  text-align: center;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.completed {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge.pending {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.date-cell {
+  text-align: center;
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.no-payments {
+  text-align: center;
+  padding: 40px 20px;
+  color: #ccc;
+}
+
+.no-payments svg {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #ccc;
+}
+
+.loading-state .spinner {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+} 

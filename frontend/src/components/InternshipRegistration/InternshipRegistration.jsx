@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaUser, FaEnvelope, FaWhatsapp, FaGraduationCap, FaCalendarAlt, FaCode, FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa'
+import { FaUser, FaEnvelope, FaWhatsapp, FaGraduationCap, FaCalendarAlt, FaCode, FaCheckCircle, FaTimesCircle, FaSpinner, FaCreditCard, FaLock } from 'react-icons/fa'
 import { publicAPI } from '../../services/apiService'
 import './InternshipRegistration.css'
 import Select from 'react-select'
@@ -98,6 +98,39 @@ export default function InternshipRegistration() {
   const [errors, setErrors] = useState({})
   const [userId, setUserId] = useState("")
   const [customCountryCode, setCustomCountryCode] = useState('')
+  
+  // Payment states
+  const [paymentOrder, setPaymentOrder] = useState(null)
+  const [showPayment, setShowPayment] = useState(false)
+  const [paymentProcessing, setPaymentProcessing] = useState(false)
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false)
+  const [paymentId, setPaymentId] = useState('')
+
+  // Load Razorpay script
+  useEffect(() => {
+    const loadRazorpay = () => {
+      return new Promise((resolve) => {
+        if (window.Razorpay) {
+          resolve(window.Razorpay)
+          return
+        }
+        
+        const script = document.createElement('script')
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+        script.onload = () => {
+          setRazorpayLoaded(true)
+          resolve(window.Razorpay)
+        }
+        script.onerror = () => {
+          console.error('Failed to load Razorpay script')
+          resolve(null)
+        }
+        document.body.appendChild(script)
+      })
+    }
+    
+    loadRazorpay()
+  }, [])
 
   // Fetch available internships on component mount
   useEffect(() => {
@@ -174,23 +207,99 @@ export default function InternshipRegistration() {
       const fullWhatsapp = (formData.countryCode === 'other' ? customCountryCode : formData.countryCode) + formData.whatsapp
       const submitData = { ...formData, whatsapp: fullWhatsapp }
       const response = await publicAPI.registerStudent(submitData)
-      setUserId(response.user_id || response.id || response.student_id || "")
-      setSuccess(true)
-      setFormData({
-        fullName: '',
-        email: '',
-        whatsapp: '',
-        countryCode: '+91',
-        collegeName: '',
-        track: '',
-        yearOfStudy: '',
-        passoutYear: ''
-      })
-      setCustomCountryCode('')
+      
+      if (response.payment_order) {
+        // Payment required
+        setPaymentOrder(response.payment_order)
+        setShowPayment(true)
+      } else {
+        // Direct success (fallback)
+        setSuccess(true)
+        resetForm()
+      }
     } catch (error) {
       setError(error.message || 'Registration failed. Please try again.')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      fullName: '',
+      email: '',
+      whatsapp: '',
+      countryCode: '+91',
+      collegeName: '',
+      track: '',
+      yearOfStudy: '',
+      passoutYear: ''
+    })
+    setCustomCountryCode('')
+  }
+
+  const handlePayment = async () => {
+    if (!razorpayLoaded || !paymentOrder) {
+      setError('Payment system not ready. Please refresh and try again.')
+      return
+    }
+
+    setPaymentProcessing(true)
+    setError('')
+
+    try {
+      const options = {
+        key: paymentOrder.key_id,
+        amount: paymentOrder.amount * 100, // Razorpay expects amount in paise
+        currency: paymentOrder.currency,
+        name: 'VEDARC Technologies',
+        description: 'Internship Program Registration',
+        order_id: paymentOrder.order_id,
+        handler: async function (response) {
+          try {
+            // Verify payment with backend
+            const verificationData = {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            }
+            
+            const verificationResponse = await publicAPI.verifyPayment(verificationData)
+            
+            // Payment successful - show user ID and transaction details
+            setShowPayment(false)
+            setPaymentOrder(null)
+            setUserId(verificationResponse.user_id)
+            setPaymentId(verificationResponse.payment_id)
+            setSuccess(true)
+            resetForm()
+            
+          } catch (error) {
+            setError('Payment verification failed. Please contact support.')
+            setPaymentProcessing(false)
+          }
+        },
+        prefill: {
+          name: formData.fullName,
+          email: formData.email,
+          contact: formData.whatsapp
+        },
+        theme: {
+          color: '#00f9ff'
+        },
+        modal: {
+          ondismiss: function() {
+            setPaymentProcessing(false)
+          }
+        }
+      }
+
+      const rzp = new window.Razorpay(options)
+      rzp.open()
+      
+    } catch (error) {
+      setError('Failed to initiate payment. Please try again.')
+      setPaymentProcessing(false)
     }
   }
 
@@ -247,7 +356,7 @@ export default function InternshipRegistration() {
               <div className="success-icon">
                 <FaCheckCircle />
               </div>
-              <h2>Registration Successful!</h2>
+              <h2>Registration & Payment Successful!</h2>
               <p>Thank you for registering for the VEDARC Internship Program.</p>
               {userId && (
                 <div className="user-id-display">
@@ -255,16 +364,128 @@ export default function InternshipRegistration() {
                   <span className="user-id">{userId}</span>
                 </div>
               )}
-              <p>We will review your application and contact you soon with further instructions.</p>
+              {paymentId && (
+                <div className="transaction-details">
+                  <span>Transaction ID:</span>
+                  <span className="transaction-id">{paymentId}</span>
+                </div>
+              )}
+              <div className="transaction-details">
+                <p><strong>Payment Status:</strong> Completed</p>
+                <p><strong>Amount:</strong> ₹299</p>
+              </div>
+              <div className="screenshot-instruction">
+                <p style={{ color: '#fbbf24', fontWeight: 600, marginTop: 16 }}>
+                  📸 Please take a screenshot of this page, including your Transaction ID, and share it with the HR when they contact you via WhatsApp.
+                </p>
+              </div>
+              <p>Your payment has been processed successfully. Your account is now pending HR approval. You will receive login credentials via WhatsApp once approved.</p>
               
               <motion.button
                 className="register-again-btn"
-                onClick={() => { setSuccess(false); setUserId(""); }}
+                onClick={() => { setSuccess(false); setUserId(""); setPaymentId(""); }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 Register Another Student
               </motion.button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (showPayment) {
+    return (
+      <section className="internship-registration">
+        <div className="registration-bg">
+          <div className="circuit-pattern"></div>
+          <div className="neon-glow"></div>
+        </div>
+
+        <div className="registration-container">
+          <div className="payment-modal-overlay">
+            <motion.div
+              className="payment-content"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="payment-header">
+                <FaCreditCard className="payment-icon" />
+                <h2>Complete Payment</h2>
+                <p>Registration successful! Please complete the payment to activate your account.</p>
+              </div>
+
+              {userId && (
+                <div className="user-id-display">
+                  <span>Your User ID:</span>
+                  <span className="user-id">{userId}</span>
+                </div>
+              )}
+
+              <div className="payment-details">
+                <div className="payment-amount">
+                  <span>Amount:</span>
+                  <span className="amount">₹{paymentOrder?.amount || 999}</span>
+                </div>
+                <div className="payment-description">
+                  <p>VEDARC Internship Program Registration</p>
+                  <p>Duration: 4 weeks</p>
+                  <p>Includes: Course materials, mentorship, certificate</p>
+                </div>
+              </div>
+
+              {error && (
+                <motion.div
+                  className="error-banner"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <FaTimesCircle />
+                  {error}
+                </motion.div>
+              )}
+
+              <div className="payment-actions">
+                <motion.button
+                  className="payment-btn"
+                  onClick={handlePayment}
+                  disabled={paymentProcessing || !razorpayLoaded}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {paymentProcessing ? (
+                    <>
+                      <FaSpinner className="spinner" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <FaLock />
+                      Pay Securely with Razorpay
+                    </>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  className="cancel-btn"
+                  onClick={() => { setShowPayment(false); setPaymentOrder(null); }}
+                  disabled={paymentProcessing}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Cancel
+                </motion.button>
+              </div>
+
+              <div className="payment-security">
+                <p>
+                  <FaLock /> Your payment is secured by Razorpay
+                </p>
+                <p>You will receive a confirmation email after successful payment.</p>
+              </div>
             </motion.div>
           </div>
         </div>

@@ -1,35 +1,27 @@
 services:
   - type: web
-    name: vedarc-backend-api
+    name: vedarc-backend
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
-      - key: FLASK_ENV
-        value: production
+      - key: PYTHON_VERSION
+        value: 3.9.16
       - key: MONGODB_URI
-        value: mongodb+srv://vedarc:Vedarc6496@vedarc.venpk9a.mongodb.net/vedarc_internship?retryWrites=true&w=majority
+        sync: false
       - key: JWT_SECRET_KEY
-        value: vedarc-super-secret-jwt-key-2024-change-this
+        sync: false
       - key: SMTP_SERVER
-        value: smtp.gmail.com
+        sync: false
       - key: SMTP_PORT
-        value: 587
+        sync: false
       - key: SMTP_USERNAME
-        value: tech@vedarc.co.in
+        sync: false
       - key: SMTP_PASSWORD
         sync: false
-      - key: ADMIN_USERNAME
-        value: admin@vedarc.co.in
-      - key: ADMIN_PASSWORD
-        value: vedarc-admin-2024-secure
-      - key: HR_USERNAME
-        value: hr@vedarc.co.in
-      - key: HR_PASSWORD
-        value: vedarc-hr-2024-secure
-      - key: MANAGER_USERNAME
-        value: manager@vedarc.co.in
-      - key: MANAGER_PASSWORD
-        value: vedarc-manager-2024-secure
-      - key: FRONTEND_ORIGIN
-        value: https://vedarc.co.in 
+      - key: RAZORPAY_KEY_ID
+        value: rzp_live_0KhcjQzPRIDLaw
+      - key: RAZORPAY_KEY_SECRET
+        value: 1F1HYYfx8DALjMlAtlPges5K
+      - key: RAZORPAY_WEBHOOK_SECRET
+        value: vedarc@6496 

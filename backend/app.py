@@ -20,6 +20,9 @@ import base64
 import uuid
 from pymongo.server_api import ServerApi
 import ssl
+import razorpay
+import hashlib
+import hmac
 
 # Load environment variables
 load_dotenv()
@@ -161,6 +164,14 @@ except Exception as e:
 
 db = client.vedarc_internship if client else None  # Explicitly specify database name
 
+# Razorpay Configuration
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', 'rzp_live_0KhcjQzPRIDLaw')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', '1F1HYYfx8DALjMlAtlPges5K')
+RAZORPAY_WEBHOOK_SECRET = os.getenv('RAZORPAY_WEBHOOK_SECRET', 'vedarc@6496')
+
+# Initialize Razorpay client
+razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+
 # CORS Middleware to ensure all responses have proper headers
 @app.after_request
 def after_request(response):
@@ -187,6 +198,7 @@ if db is not None:
     certificate_templates = db['certificate_templates']
     projects = db['projects']
     user_sessions = db['user_sessions']  # New collection for session management
+    payments = db['payments']  # New collection for payment tracking
 else:
     # Create dummy collections to prevent crashes
     users = None
@@ -337,13 +349,92 @@ def fix_object_ids(obj):
     else:
         return obj
 
+def verify_razorpay_signature(payload, signature):
+    """Verify Razorpay webhook signature"""
+    try:
+        razorpay_client.utility.verify_webhook_signature(payload, signature, RAZORPAY_WEBHOOK_SECRET)
+        return True
+    except Exception as e:
+        print(f"Signature verification failed: {e}")
+        return False
+
+def create_payment_order(registration_data, amount=299):
+    """Create a Razorpay order for payment"""
+    try:
+        # Generate a temporary receipt ID
+        temp_receipt = f'vedarc_temp_{datetime.utcnow().strftime("%Y%m%d%H%M%S")}'
+        
+        # Create order data
+        order_data = {
+            'amount': amount * 100,  # Razorpay expects amount in paise
+            'currency': 'INR',
+            'receipt': temp_receipt,
+            'notes': {
+                'email': registration_data['email'],
+                'track': registration_data['track'],
+                'temp_registration': True
+            }
+        }
+        
+        # Create order with Razorpay
+        order = razorpay_client.order.create(data=order_data)
+        
+        # Store payment record in database
+        payment_data = {
+            'order_id': order['id'],
+            'amount': amount,
+            'currency': 'INR',
+            'status': 'created',
+            'registration_data': registration_data,
+            'created_at': datetime.utcnow(),
+            'payment_id': None,
+            'verified': False,
+            'user_id': None,  # Will be set after payment success
+            'temp_registration': True
+        }
+        
+        if payments:
+            payments.insert_one(payment_data)
+        
+        return {
+            'order_id': order['id'],
+            'amount': amount,
+            'currency': 'INR',
+            'key_id': RAZORPAY_KEY_ID
+        }
+        
+    except Exception as e:
+        print(f"Error creating payment order: {e}")
+        return None
+
+def verify_payment(payment_id, order_id, signature):
+    """Verify payment with Razorpay"""
+    try:
+        # Verify payment signature
+        params_dict = {
+            'razorpay_payment_id': payment_id,
+            'razorpay_order_id': order_id,
+            'razorpay_signature': signature
+        }
+        
+        razorpay_client.utility.verify_payment_signature(params_dict)
+        
+        # Get payment details from Razorpay
+        payment = razorpay_client.payment.fetch(payment_id)
+        
+        return payment['status'] == 'captured'
+        
+    except Exception as e:
+        print(f"Payment verification failed: {e}")
+        return False
+
 # ============================================================================
 # PUBLIC API ENDPOINTS
 # ============================================================================
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    """Student registration endpoint"""
+    """Student registration endpoint with payment integration - User ID generated after payment"""
     try:
         # Check if database is available
         if users is None:
@@ -361,12 +452,8 @@ def register():
         if users.find_one({"email": data['email']}):
             return jsonify({"error": "Email already registered"}), 400
         
-        # Generate User ID
-        user_id = generate_user_id(data['track'])
-        
-        # Create user document
-        user_data = {
-            "user_id": user_id,
+        # Create temporary registration data (without user_id)
+        registration_data = {
             "fullName": data['fullName'],
             "email": data['email'],
             "whatsapp": data['whatsapp'],
@@ -374,10 +461,75 @@ def register():
             "track": data['track'],
             "yearOfStudy": data['yearOfStudy'],
             "passoutYear": data['passoutYear'],
-            "status": "Pending",
+            "status": "Payment Pending",
+            "created_at": datetime.utcnow(),
+            "temp_registration": True  # Mark as temporary registration
+        }
+        
+        # Create payment order with registration data
+        payment_order = create_payment_order(registration_data, amount=299)  # ₹299 for internship
+        
+        if not payment_order:
+            return jsonify({"error": "Failed to create payment order. Please try again."}), 500
+        
+        return jsonify({
+            "success": True,
+            "message": "Please complete the payment to complete your registration.",
+            "payment_order": payment_order,
+            "registration_data": registration_data
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/verify-payment', methods=['POST'])
+def verify_payment_endpoint():
+    """Verify payment and create user account"""
+    try:
+        # Check if database is available
+        if users is None or payments is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        data = request.json
+        
+        # Validate required fields
+        required_fields = ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        payment_id = data['razorpay_payment_id']
+        order_id = data['razorpay_order_id']
+        signature = data['razorpay_signature']
+        
+        # Verify payment with Razorpay
+        if not verify_payment(payment_id, order_id, signature):
+            return jsonify({"error": "Payment verification failed"}), 400
+        
+        # Get payment record from database
+        payment_record = payments.find_one({"order_id": order_id})
+        if not payment_record:
+            return jsonify({"error": "Payment record not found"}), 404
+        
+        registration_data = payment_record.get('registration_data', {})
+        
+        # Generate User ID after successful payment
+        user_id = generate_user_id(registration_data['track'])
+        
+        # Create complete user document
+        user_data = {
+            "user_id": user_id,
+            "fullName": registration_data['fullName'],
+            "email": registration_data['email'],
+            "whatsapp": registration_data['whatsapp'],
+            "collegeName": registration_data['collegeName'],
+            "track": registration_data['track'],
+            "yearOfStudy": registration_data['yearOfStudy'],
+            "passoutYear": registration_data['passoutYear'],
+            "status": "Pending",  # Pending HR approval
             "created_at": datetime.utcnow(),
             "password": None,
-            "payment_id": None,
+            "payment_id": payment_id,
             "activated_at": None,
             # Certificate unlock fields
             "certificate_unlocked": False,
@@ -388,20 +540,153 @@ def register():
             "lor_unlocked_by": None,
             "certificate_unlocked_at": None,
             "lor_unlocked_at": None,
-            "project_completion_status": "Not Started",  # Not Started, In Progress, Completed, Excellent
+            "project_completion_status": "Not Started",
             "course_completion_percentage": 0
         }
         
-        # Save to database
-        result = users.insert_one(user_data)
+        # Save user to database
+        users.insert_one(user_data)
+        
+        # Update payment record with user_id and mark as completed
+        payments.update_one(
+            {"order_id": order_id},
+            {
+                "$set": {
+                    "payment_id": payment_id,
+                    "status": "completed",
+                    "verified": True,
+                    "verified_at": datetime.utcnow(),
+                    "user_id": user_id,
+                    "temp_registration": False
+                }
+            }
+        )
+        
+        # Send confirmation email
+        try:
+            email_subject = "Payment Successful - VEDARC Internship"
+            email_body = f"""
+            Dear {user_data['fullName']},
+            
+            Your payment of ₹299 for the VEDARC Internship Program has been successfully processed.
+            
+            Payment Details:
+            - Payment ID: {payment_id}
+            - Order ID: {order_id}
+            - Amount: ₹299
+            - User ID: {user_id}
+            
+            Your account is now pending HR approval. You will receive login credentials via WhatsApp once approved.
+            
+            Thank you for choosing VEDARC Technologies!
+            
+            Best regards,
+            VEDARC Team
+            """
+            send_email(user_data['email'], email_subject, email_body)
+        except Exception as e:
+            print(f"Failed to send payment confirmation email: {e}")
         
         return jsonify({
             "success": True,
-            "message": f"Thank you for registering! Your User ID is {user_id}. Our HR will contact you soon on WhatsApp.",
-            "user_id": user_id
-        }), 201
+            "message": "Payment verified successfully! Your account has been created.",
+            "user_id": user_id,
+            "payment_id": payment_id,
+            "transaction_id": payment_id
+        }), 200
         
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/razorpay-webhook', methods=['POST'])
+def razorpay_webhook():
+    """Handle Razorpay webhook notifications"""
+    try:
+        # Get the webhook payload
+        payload = request.get_data(as_text=True)
+        signature = request.headers.get('X-Razorpay-Signature')
+        
+        # Verify webhook signature
+        if not verify_razorpay_signature(payload, signature):
+            return jsonify({"error": "Invalid signature"}), 400
+        
+        # Parse the payload
+        webhook_data = request.json
+        
+        # Handle different webhook events
+        event = webhook_data.get('event')
+        
+        if event == 'payment.captured':
+            # Payment was successful
+            payment_data = webhook_data.get('payload', {}).get('payment', {}).get('entity', {})
+            order_data = webhook_data.get('payload', {}).get('order', {}).get('entity', {})
+            
+            payment_id = payment_data.get('id')
+            order_id = order_data.get('id')
+            
+            if payment_id and order_id:
+                # Get payment record from database
+                payment_record = payments.find_one({"order_id": order_id})
+                if payment_record and payment_record.get('temp_registration'):
+                    # This is a new registration, create user account
+                    registration_data = payment_record.get('registration_data', {})
+                    
+                    # Generate User ID
+                    user_id = generate_user_id(registration_data['track'])
+                    
+                    # Create complete user document
+                    user_data = {
+                        "user_id": user_id,
+                        "fullName": registration_data['fullName'],
+                        "email": registration_data['email'],
+                        "whatsapp": registration_data['whatsapp'],
+                        "collegeName": registration_data['collegeName'],
+                        "track": registration_data['track'],
+                        "yearOfStudy": registration_data['yearOfStudy'],
+                        "passoutYear": registration_data['passoutYear'],
+                        "status": "Pending",  # Pending HR approval
+                        "created_at": datetime.utcnow(),
+                        "password": None,
+                        "payment_id": payment_id,
+                        "activated_at": None,
+                        # Certificate unlock fields
+                        "certificate_unlocked": False,
+                        "lor_unlocked": False,
+                        "admin_certificate_approval": False,
+                        "admin_lor_approval": False,
+                        "certificate_unlocked_by": None,
+                        "lor_unlocked_by": None,
+                        "certificate_unlocked_at": None,
+                        "lor_unlocked_at": None,
+                        "project_completion_status": "Not Started",
+                        "course_completion_percentage": 0
+                    }
+                    
+                    # Save user to database
+                    users.insert_one(user_data)
+                    
+                    # Update payment record
+                    payments.update_one(
+                        {"order_id": order_id},
+                        {
+                            "$set": {
+                                "payment_id": payment_id,
+                                "status": "completed",
+                                "verified": True,
+                                "verified_at": datetime.utcnow(),
+                                "webhook_received": True,
+                                "user_id": user_id,
+                                "temp_registration": False
+                            }
+                        }
+                    )
+                    
+                    print(f"Payment webhook processed: {payment_id} for new user {user_id}")
+        
+        return jsonify({"status": "success"}), 200
+        
+    except Exception as e:
+        print(f"Webhook error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/internships', methods=['GET'])
@@ -3812,6 +4097,47 @@ def manager_export_students_csv(internship_id):
             "internship_track": track_name,
             "internship_duration": internship.get('duration', ''),
             "internship_description": internship.get('description', '')
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ============================================================================
+# PAYMENT MANAGEMENT ENDPOINTS
+# ============================================================================
+
+@app.route('/api/admin/payments', methods=['GET'])
+@jwt_required()
+def get_payments():
+    """Get all payment records for admin/HR dashboard"""
+    try:
+        # Check if database is available
+        if payments is None:
+            return jsonify({"error": "Database connection not available"}), 503
+        
+        # Get all payment records
+        payment_records = list(payments.find({}, {'_id': 0}))
+        
+        # Format the data for frontend
+        formatted_payments = []
+        for payment in payment_records:
+            formatted_payment = {
+                'order_id': payment.get('order_id'),
+                'payment_id': payment.get('payment_id'),
+                'user_id': payment.get('user_id'),
+                'amount': payment.get('amount'),
+                'currency': payment.get('currency'),
+                'status': payment.get('status'),
+                'verified': payment.get('verified', False),
+                'created_at': payment.get('created_at'),
+                'verified_at': payment.get('verified_at'),
+                'registration_data': payment.get('registration_data', {})
+            }
+            formatted_payments.append(formatted_payment)
+        
+        return jsonify({
+            "success": True,
+            "payments": formatted_payments
         }), 200
         
     except Exception as e:

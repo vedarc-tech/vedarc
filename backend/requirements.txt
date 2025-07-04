@@ -10,4 +10,5 @@ bcrypt==4.0.1
 reportlab==4.0.4
 Pillow==10.4.0
 PyPDF2==3.0.1 
-fpdf==1.7.2 
+fpdf==1.7.2
+razorpay==1.4.1 
