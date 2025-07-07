@@ -325,6 +325,7 @@ export default function Projects() {
           </div>
         </div>
       )}
+      {/* Only render the CTA section if registration is enabled, so no space is left when hidden */}
       {registrationEnabled && (
         <motion.div
           className="cta-section"
