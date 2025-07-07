@@ -161,7 +161,7 @@ export default function UnifiedLogin() {
         setRegistrationPopupMsg(
           <>
             Registrations are currently closed. Please check back later or contact support for more information.<br />
-            <a href="https://wa.me/918897140410?text=Hey%20I%20want%20to%20enroll%20in%20your%20Learning%20cum%20Project%20based%20internship" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-cyan)', fontWeight: 700, fontSize: 20, textDecoration: 'underline', marginTop: 8, display: 'inline-block' }}>+91 8897140410</a>
+            <a href="https://wa.me/918897140410?text=Hey%20I%20want%20to%20enroll%20in%20your%20Learning%20cum%20Project%20based%20internship" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-cyan)', fontWeight: 700, fontSize: 20, textDecoration: 'underline', marginTop: 8, display: 'inline-block' }}>Contact Support</a>
           </>
         )
         setShowRegistrationPopup(true)

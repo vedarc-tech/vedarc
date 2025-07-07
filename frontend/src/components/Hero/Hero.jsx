@@ -19,27 +19,8 @@ export default function Hero() {
       rgba(255, 45, 117, 0.3), transparent 70%)`
   }
 
-  const handleJoinUsClick = async () => {
-    setRegistrationPopupLoading(true)
-    try {
-      const res = await publicAPI.getSystemSettings()
-      if (res.internship_registration_enabled) {
-        navigate('/internship-registration')
-      } else {
-        setRegistrationPopupMsg(
-          <>
-            Registrations are currently closed. Please check back later or contact support for more information.<br />
-            <a href="https://wa.me/918897140410?text=Hey%20I%20want%20to%20enroll%20in%20your%20Learning%20cum%20Project%20based%20internship" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-cyan)', fontWeight: 700, fontSize: 20, textDecoration: 'underline', marginTop: 8, display: 'inline-block' }}>+91 8897140410</a>
-          </>
-        )
-        setShowRegistrationPopup(true)
-      }
-    } catch {
-      setRegistrationPopupMsg('Unable to check registration status. Please try again later.')
-      setShowRegistrationPopup(true)
-    } finally {
-      setRegistrationPopupLoading(false)
-    }
+  const handleJoinUsClick = () => {
+    window.open('https://wa.me/918897140410?text=Hey%20I%20would%20like%20to%20know%20more%20about%20your%20services', '_blank')
   }
 
   return (
@@ -165,8 +146,8 @@ export default function Hero() {
             whileTap={{ scale: 0.95 }}
             className="cta-primary"
             onClick={handleJoinUsClick}
-            disabled={registrationPopupLoading}
-            style={{ opacity: registrationPopupLoading ? 0.6 : 1, cursor: registrationPopupLoading ? 'not-allowed' : 'pointer' }}
+            disabled={false}
+            style={{ opacity: 1, cursor: 'pointer' }}
           >
             Join Us
           </motion.button>
@@ -195,16 +176,6 @@ export default function Hero() {
         <div className="chevron" />
         <div className="chevron" />
       </motion.div>
-
-      {showRegistrationPopup && (
-        <div className="hr-popup-overlay" style={{ zIndex: 9999 }}>
-          <div className="hr-popup-modal" style={{ background: '#18192a', borderRadius: 18, color: 'var(--neon-cyan)', boxShadow: '0 0 40px var(--neon-magenta)', border: '2px solid var(--neon-cyan)' }}>
-            <h2 className="glitch-title" style={{ color: 'var(--neon-cyan)', fontSize: 36, marginBottom: 16, marginTop: 8, textAlign: 'center', letterSpacing: 2 }}>REGISTRATION UNAVAILABLE</h2>
-            <div style={{ color: '#fff', fontWeight: 400, fontSize: 18, marginBottom: 18, textAlign: 'center' }}>{registrationPopupMsg}</div>
-            <button onClick={() => setShowRegistrationPopup(false)} style={{ background: 'var(--neon-cyan)', color: '#18192a', border: 'none', borderRadius: 8, padding: '10px 32px', fontWeight: 700, fontSize: 20, margin: '0 auto', display: 'block', boxShadow: '0 0 10px var(--neon-cyan)' }}>Close</button>
-          </div>
-        </div>
-      )}
     </section>
   )
 }
