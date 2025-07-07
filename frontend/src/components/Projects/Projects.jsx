@@ -13,8 +13,7 @@ const studentProjects = [
     status: "Completed",
     completion_rate: 98,
     student_name: "Priya Sharma",
-    university: "IIT Delhi",
-    year: 2024
+    university: "IIT Delhi"
   },
   {
     title: "Blockchain-Based Supply Chain Tracker",
@@ -23,8 +22,7 @@ const studentProjects = [
     status: "Completed",
     completion_rate: 95,
     student_name: "Rahul Kumar",
-    university: "BITS Pilani",
-    year: 2024
+    university: "BITS Pilani"
   },
   {
     title: "IoT Smart Home Automation System",
@@ -33,8 +31,7 @@ const studentProjects = [
     status: "Completed",
     completion_rate: 92,
     student_name: "Ananya Patel",
-    university: "VIT Vellore",
-    year: 2024
+    university: "VIT Vellore"
   },
   {
     title: "Cybersecurity Threat Detection Platform",
@@ -43,8 +40,7 @@ const studentProjects = [
     status: "Completed",
     completion_rate: 96,
     student_name: "Vikram Singh",
-    university: "NIT Trichy",
-    year: 2024
+    university: "NIT Trichy"
   },
   {
     title: "Cloud-Native Microservices Architecture",
@@ -53,8 +49,7 @@ const studentProjects = [
     status: "Completed",
     completion_rate: 94,
     student_name: "Meera Iyer",
-    university: "IIIT Hyderabad",
-    year: 2024
+    university: "IIIT Hyderabad"
   },
   {
     title: "Data Analytics Dashboard for Healthcare",
@@ -63,32 +58,27 @@ const studentProjects = [
     status: "Completed",
     completion_rate: 91,
     student_name: "Arjun Reddy",
-    university: "Manipal Institute of Technology",
-    year: 2024
+    university: "Manipal Institute of Technology"
   }
 ];
 
 // Hardcoded company projects
 const companyProjects = [
-  
   {
     title: "Healthcare Data Analytics Suite",
     description: "Built a HIPAA-compliant analytics dashboard for hospitals, enabling real-time patient monitoring and predictive analytics for better outcomes.",
     tags: ["Python", "Django", "Tableau", "PostgreSQL"],
     status: "Live",
     impact: "Improved patient outcomes by 20%",
-    client: "MediCare Hospitals",
-    year: 2024
+    client: "MediCare Hospitals"
   },
-  
   {
     title: "AI Document Processing Engine",
     description: "Implemented an AI-powered document processing system for a financial firm, automating 95% of manual paperwork and reducing errors.",
     tags: ["AI", "Python", "TensorFlow", "Flask"],
     status: "Production",
     impact: "95% automation, error reduction",
-    client: "FinTrust Corp",
-    year: 2024
+    client: "FinTrust Corp"
   },
   {
     title: "Ongoing Project for Tamil Nadu Cube Association",
@@ -96,8 +86,7 @@ const companyProjects = [
     tags: ["React", "Node.js", "MongoDB", "AI", "Interactive Quizes"],
     status: "Ongoing",
     impact: "Testimonial will be available after completion of the project",
-    client: "Tamil Nadu Cube Association",
-    year: 2025
+    client: "Tamil Nadu Cube Association"
   },
 ];
 
