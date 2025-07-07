@@ -198,7 +198,7 @@ if db is not None:
     certificate_templates = db['certificate_templates']
     projects = db['projects']
     user_sessions = db['user_sessions']  # New collection for session management
-    payments = db['payments']  # New collection for payment tracking
+    system_settings = db['system_settings']  # Global system settings collection
 else:
     # Create dummy collections to prevent crashes
     users = None
@@ -213,6 +213,7 @@ else:
     certificate_templates = None
     projects = None
     user_sessions = None
+    system_settings = None
 
 # Email Configuration
 SMTP_SERVER = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
@@ -4487,6 +4488,58 @@ def get_activation_email(user, user_id, password):
       </body>
     </html>
     """
+
+# --- SYSTEM SETTINGS ENDPOINTS ---
+
+# Helper to get or create the system settings document
+SYSTEM_SETTINGS_ID = 'global_settings'
+def get_system_settings():
+    settings = system_settings.find_one({'_id': SYSTEM_SETTINGS_ID})
+    if not settings:
+        # Default: registration enabled
+        settings = {'_id': SYSTEM_SETTINGS_ID, 'internship_registration_enabled': True}
+        system_settings.insert_one(settings)
+    return settings
+
+def update_system_settings(data):
+    system_settings.update_one({'_id': SYSTEM_SETTINGS_ID}, {'$set': data}, upsert=True)
+    return get_system_settings()
+
+# Public endpoint to get current system settings
+@app.route('/api/system/settings', methods=['GET'])
+def public_get_system_settings():
+    settings = get_system_settings()
+    return jsonify({
+        'internship_registration_enabled': settings.get('internship_registration_enabled', True)
+    })
+
+# Manager-only endpoints to get/update system settings
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+@app.route('/api/manager/system/settings', methods=['GET'])
+@jwt_required()
+def manager_get_system_settings():
+    current_user = get_jwt_identity()
+    if current_user != MANAGER_USERNAME:
+        return jsonify({"error": "Unauthorized"}), 403
+    settings = get_system_settings()
+    return jsonify({
+        'internship_registration_enabled': settings.get('internship_registration_enabled', True)
+    })
+
+@app.route('/api/manager/system/settings', methods=['PUT'])
+@jwt_required()
+def manager_update_system_settings():
+    current_user = get_jwt_identity()
+    if current_user != MANAGER_USERNAME:
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.get_json()
+    if not data or 'internship_registration_enabled' not in data:
+        return jsonify({"error": "Missing internship_registration_enabled"}), 400
+    updated = update_system_settings({'internship_registration_enabled': bool(data['internship_registration_enabled'])})
+    return jsonify({
+        'internship_registration_enabled': updated.get('internship_registration_enabled', True)
+    })
 
 if __name__ == '__main__':
     # Test database connection at startup

@@ -101,6 +101,42 @@ export default function InternshipManagerDashboard() {
   const [templateForm, setTemplateForm] = useState({ title: '', description: '', uploadLink: '' })
   const [editingTemplate, setEditingTemplate] = useState(null)
 
+  // Add state for registration toggle
+  const [registrationEnabled, setRegistrationEnabled] = useState(true)
+  const [toggleLoading, setToggleLoading] = useState(false)
+  const [toggleError, setToggleError] = useState('')
+
+  // Only show toggle if user is manager
+  const isManager = authService.getUserType() === 'manager'
+
+  // Fetch system setting on mount (if manager)
+  useEffect(() => {
+    if (isManager) {
+      setToggleLoading(true)
+      managerAPI.getSystemSettings()
+        .then(res => {
+          setRegistrationEnabled(res.internship_registration_enabled)
+          setToggleError('')
+        })
+        .catch(() => setToggleError('Failed to fetch registration setting'))
+        .finally(() => setToggleLoading(false))
+    }
+  }, [isManager])
+
+  // Toggle handler
+  const handleToggle = async () => {
+    setToggleLoading(true)
+    setToggleError('')
+    try {
+      const updated = await managerAPI.updateSystemSettings({ internship_registration_enabled: !registrationEnabled })
+      setRegistrationEnabled(updated.internship_registration_enabled)
+    } catch (e) {
+      setToggleError('Failed to update setting')
+    } finally {
+      setToggleLoading(false)
+    }
+  }
+
   // Add click outside handler for search results
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -2882,6 +2918,33 @@ export default function InternshipManagerDashboard() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Registration Toggle UI (Manager only) */}
+        {isManager && (
+          <div style={{ margin: '24px 0', padding: '16px', background: '#f6f6ff', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 16 }}>
+            <span style={{ fontWeight: 600 }}>Internship Registration:</span>
+            <button
+              onClick={handleToggle}
+              disabled={toggleLoading}
+              style={{
+                background: registrationEnabled ? '#4caf50' : '#f44336',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 16,
+                padding: '8px 20px',
+                cursor: toggleLoading ? 'not-allowed' : 'pointer',
+                fontWeight: 600,
+                fontSize: 16
+              }}
+            >
+              {toggleLoading ? 'Saving...' : registrationEnabled ? 'ON' : 'OFF'}
+            </button>
+            <span style={{ color: registrationEnabled ? '#4caf50' : '#f44336', fontWeight: 500 }}>
+              {registrationEnabled ? 'Registration link is visible to users.' : 'Registration link is hidden from users.'}
+            </span>
+            {toggleError && <span style={{ color: '#f44336', marginLeft: 16 }}>{toggleError}</span>}
+          </div>
+        )}
       </div>
     </div>
   )

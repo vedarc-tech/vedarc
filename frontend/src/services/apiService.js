@@ -107,7 +107,9 @@ export const publicAPI = {
   verifyPayment: (paymentData) => apiRequest('/verify-payment', {
     method: 'POST',
     body: JSON.stringify(paymentData)
-  })
+  }),
+  // Get global system settings (public)
+  getSystemSettings: () => apiRequest('/system/settings'),
 }
 
 // ============================================================================
@@ -446,7 +448,13 @@ export const managerAPI = {
   reviewProject: (data) => apiRequest('/manager/project/review', {
     method: 'POST',
     body: JSON.stringify(data)
-  })
+  }),
+  // System settings endpoints
+  getSystemSettings: () => apiRequest('/manager/system/settings'),
+  updateSystemSettings: (settings) => apiRequest('/manager/system/settings', {
+    method: 'PUT',
+    body: JSON.stringify(settings)
+  }),
 }
 
 // ============================================================================

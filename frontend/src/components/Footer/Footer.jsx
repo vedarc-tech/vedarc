@@ -3,9 +3,20 @@ import { FaInstagram } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './Footer.css'
+import { useEffect, useState } from 'react'
+import { publicAPI } from '../../services/apiService'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const [registrationEnabled, setRegistrationEnabled] = useState(true)
+
+  useEffect(() => {
+    publicAPI.getSystemSettings()
+      .then(res => {
+        setRegistrationEnabled(res.internship_registration_enabled)
+      })
+      .catch(() => setRegistrationEnabled(true)) // Default to true if error
+  }, [])
 
   return (
     <footer className="footer">
@@ -126,13 +137,15 @@ export default function Footer() {
             </li>
             <li>
               <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
-                <Link 
-                  to="/internship-registration"
-                  className="footer-link"
-                  onClick={() => console.log('Internship Registration clicked')}
-                >
-                  Internship Registration
-                </Link>
+                {registrationEnabled && (
+                  <Link 
+                    to="/internship-registration"
+                    className="footer-link"
+                    onClick={() => console.log('Internship Registration clicked')}
+                  >
+                    Internship Registration
+                  </Link>
+                )}
               </motion.div>
             </li>
             <li>
