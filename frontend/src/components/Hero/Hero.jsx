@@ -1,12 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { TypeAnimation } from 'react-type-animation'
 import { useNavigate } from 'react-router-dom'
 import './Hero.css'
+import { publicAPI } from '../../services/apiService'
 
 export default function Hero() {
   const neonBeam = useRef(null)
   const navigate = useNavigate()
+  const [showRegistrationPopup, setShowRegistrationPopup] = useState(false)
+  const [registrationPopupMsg, setRegistrationPopupMsg] = useState('')
+  const [registrationPopupLoading, setRegistrationPopupLoading] = useState(false)
 
   const handleHover = (e) => {
     const x = e.clientX / window.innerWidth * 100
@@ -15,8 +19,25 @@ export default function Hero() {
       rgba(255, 45, 117, 0.3), transparent 70%)`
   }
 
-  const handleJoinUsClick = () => {
-    navigate('/internship-registration')
+  const handleJoinUsClick = async () => {
+    setRegistrationPopupLoading(true)
+    try {
+      const res = await publicAPI.getSystemSettings()
+      if (res.internship_registration_enabled) {
+        navigate('/internship-registration')
+      } else {
+        setRegistrationPopupMsg(
+          <>Registrations are currently closed. Please check back later or contact support for more information.<br />
+          <a href="https://wa.me/918897140410?text=Hey%20I%20want%20to%20enroll%20in%20your%20Learning%20cum%20Project%20based%20internship" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontWeight: 600, textDecoration: 'underline' }}>+91 8897140410 (WhatsApp)</a></>
+        )
+        setShowRegistrationPopup(true)
+      }
+    } catch {
+      setRegistrationPopupMsg('Unable to check registration status. Please try again later.')
+      setShowRegistrationPopup(true)
+    } finally {
+      setRegistrationPopupLoading(false)
+    }
   }
 
   return (
@@ -142,6 +163,8 @@ export default function Hero() {
             whileTap={{ scale: 0.95 }}
             className="cta-primary"
             onClick={handleJoinUsClick}
+            disabled={registrationPopupLoading}
+            style={{ opacity: registrationPopupLoading ? 0.6 : 1, cursor: registrationPopupLoading ? 'not-allowed' : 'pointer' }}
           >
             Join Us
           </motion.button>
@@ -170,6 +193,16 @@ export default function Hero() {
         <div className="chevron" />
         <div className="chevron" />
       </motion.div>
+
+      {showRegistrationPopup && (
+        <div className="hr-popup-overlay">
+          <div className="hr-popup-modal">
+            <h2>Registration Unavailable</h2>
+            <p>{registrationPopupMsg}</p>
+            <button onClick={() => setShowRegistrationPopup(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

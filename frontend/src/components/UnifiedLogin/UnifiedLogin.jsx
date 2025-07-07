@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { FaUser, FaLock, FaSignInAlt, FaSignOutAlt, FaGraduationCap, FaUserTie, FaUserShield, FaCrown } from 'react-icons/fa'
-import { studentAPI, hrAPI, managerAPI, adminAPI, authService } from '../../services/apiService'
+import { studentAPI, hrAPI, managerAPI, adminAPI, authService, publicAPI } from '../../services/apiService'
 import './UnifiedLogin.css'
 
 export default function UnifiedLogin() {
@@ -15,6 +15,9 @@ export default function UnifiedLogin() {
   const [showHRPopup, setShowHRPopup] = useState(false)
   const [pendingUserId, setPendingUserId] = useState("")
   const [pendingUserType, setPendingUserType] = useState("")
+  const [showRegistrationPopup, setShowRegistrationPopup] = useState(false)
+  const [registrationPopupMsg, setRegistrationPopupMsg] = useState('')
+  const [registrationPopupLoading, setRegistrationPopupLoading] = useState(false)
 
   // Check if already logged in
   useEffect(() => {
@@ -146,6 +149,29 @@ export default function UnifiedLogin() {
     }
   }
 
+  // Handler for registration link click
+  const handleRegistrationClick = async (e) => {
+    e.preventDefault()
+    setRegistrationPopupLoading(true)
+    try {
+      const res = await publicAPI.getSystemSettings()
+      if (res.internship_registration_enabled) {
+        window.location.href = '/internship-registration'
+      } else {
+        setRegistrationPopupMsg(
+          <>Registrations are currently closed. Please check back later or contact support for more information.<br />
+          <a href="https://wa.me/918897140410?text=Hey%20I%20want%20to%20enroll%20in%20your%20Learning%20cum%20Project%20based%20internship" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontWeight: 600, textDecoration: 'underline' }}>+91 8897140410 (WhatsApp)</a></>
+        )
+        setShowRegistrationPopup(true)
+      }
+    } catch {
+      setRegistrationPopupMsg('Unable to check registration status. Please try again later.')
+      setShowRegistrationPopup(true)
+    } finally {
+      setRegistrationPopupLoading(false)
+    }
+  }
+
   if (!isLoggedIn) {
     return (
       <section id="unified-login" className="unified-login">
@@ -227,7 +253,7 @@ export default function UnifiedLogin() {
               </div>
               
               <div className="registration-link">
-                <p>New student? <Link to="/internship-registration">Register for Internship</Link></p>
+                <p>New student? <a href="/internship-registration" onClick={handleRegistrationClick} style={{ cursor: registrationPopupLoading ? 'not-allowed' : 'pointer', pointerEvents: registrationPopupLoading ? 'none' : 'auto', opacity: registrationPopupLoading ? 0.6 : 1 }}>Register for Internship</a></p>
               </div>
             </div>
           </motion.div>
@@ -294,6 +320,15 @@ export default function UnifiedLogin() {
             <p>Your account is not yet enabled. Please contact <b>+91 8897140410</b> only via WhatsApp and share your User ID for confirmation.</p>
             <div className="user-id-popup">Your User ID: <b>{pendingUserId}</b></div>
             <button onClick={() => setShowHRPopup(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      {showRegistrationPopup && (
+        <div className="hr-popup-overlay">
+          <div className="hr-popup-modal">
+            <h2>Registration Unavailable</h2>
+            <p>{registrationPopupMsg}</p>
+            <button onClick={() => setShowRegistrationPopup(false)}>Close</button>
           </div>
         </div>
       )}
