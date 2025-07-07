@@ -124,20 +124,9 @@ export default function Footer() {
                 Our Projects
               </motion.a>
             </li>
-            <li>
-              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
-                <Link 
-                  to="/test"
-                  className="footer-link"
-                  onClick={() => console.log('Test link clicked')}
-                >
-                  Test Link
-                </Link>
-              </motion.div>
-            </li>
-            <li>
-              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
-                {registrationEnabled && (
+            {registrationEnabled && (
+              <li>
+                <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
                   <Link 
                     to="/internship-registration"
                     className="footer-link"
@@ -145,9 +134,9 @@ export default function Footer() {
                   >
                     Internship Registration
                   </Link>
-                )}
-              </motion.div>
-            </li>
+                </motion.div>
+              </li>
+            )}
             <li>
               <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
                 <Link 
