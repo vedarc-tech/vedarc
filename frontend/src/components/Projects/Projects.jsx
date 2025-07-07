@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { FaCode, FaServer, FaBrain, FaLink, FaGraduationCap, FaStar, FaUsers, FaTrophy } from 'react-icons/fa'
 import { SiTensorflow, SiThreedotjs, SiReact, SiPython, SiJavascript, SiDocker, SiKubernetes } from 'react-icons/si'
 import './Projects.css';
+import { publicAPI } from '../../services/apiService'
 
 // Hardcoded student projects
 const studentProjects = [
@@ -112,6 +113,13 @@ export default function Projects() {
   const [tab, setTab] = useState('company')
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedProject, setSelectedProject] = useState(null)
+  const [registrationEnabled, setRegistrationEnabled] = useState(true)
+
+  useEffect(() => {
+    publicAPI.getSystemSettings()
+      .then(res => setRegistrationEnabled(res.internship_registration_enabled))
+      .catch(() => setRegistrationEnabled(true))
+  }, [])
 
   // Stats for trust-building
   const stats = {
@@ -317,24 +325,26 @@ export default function Projects() {
           </div>
         </div>
       )}
-      <motion.div
-        className="cta-section"
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : {}}
-        transition={{ delay: 0.8, duration: 0.5 }}
-      >
-        <div className="cta-content">
-          <h3>Ready to Build Your Own Success Story?</h3>
-          <p>Join thousands of students who have transformed their careers with our industry-focused projects</p>
-          <div className="cta-buttons">
-            <a href="https://www.vedarc.co.in/internship-registration" className="glowing-btn primary" target="_blank" rel="noopener noreferrer">
-              <FaLink className="link-icon" />
-              START YOUR INTERNSHIP
-              <span className="btn-glow"></span>
-            </a>
+      {registrationEnabled && (
+        <motion.div
+          className="cta-section"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+          <div className="cta-content">
+            <h3>Ready to Build Your Own Success Story?</h3>
+            <p>Join thousands of students who have transformed their careers with our industry-focused projects</p>
+            <div className="cta-buttons">
+              <a href="https://www.vedarc.co.in/internship-registration" className="glowing-btn primary" target="_blank" rel="noopener noreferrer">
+                <FaLink className="link-icon" />
+                START YOUR INTERNSHIP
+                <span className="btn-glow"></span>
+              </a>
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
     </section>
   )
 }
