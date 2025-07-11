@@ -379,9 +379,9 @@
   min-height: inherit;
   padding: 0 3vw;
   box-sizing: border-box;
-}
-
-.logo {
+  }
+  
+  .logo {
   display: flex;
   align-items: center;
   height: 100%;
@@ -458,8 +458,8 @@
   height: 72px; /* Match navbar height for vertical centering */
   display: flex;
   align-items: center;
-}
-
+  }
+  
 .nav-btn:focus {
   outline: none;
   box-shadow: none;
@@ -509,7 +509,7 @@
 .navbar.logo-only .nav-menu,
 .navbar.logo-only .mobile-menu-btn {
   display: none !important;
-}
+  }
 
 /* Animate nav links out */
 .navbar .nav-menu {

@@ -88,7 +88,7 @@ export default function Navbar() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
             <span id='logo-container'>
-              <span className="glitch" data-text=""> <img src={logo} alt="" /> VEDARC</span>
+            <span className="glitch" data-text=""> <img src={logo} alt="" /> VEDARC</span>
             </span>
           </button>
         </motion.div>
@@ -101,39 +101,39 @@ export default function Navbar() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {navLinks.map((link) => (
-                <motion.li 
-                  key={link.to}
+          {navLinks.map((link) => (
+            <motion.li 
+              key={link.to}
                   whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300 } }}
-                  whileTap={{ scale: 0.95 }}
-                >
+              whileTap={{ scale: 0.95 }}
+            >
                   <button
                     onClick={() => handleNavClick(link.to)}
                     className={activeLink === link.to ? 'active-link nav-btn' : 'nav-btn'}
                     style={{ background: 'none', border: 'none', padding: '0 18px', cursor: 'pointer' }}
-                  >
-                    {link.name}
-                    <div className="link-underline"></div>
+              >
+                {link.name}
+                <div className="link-underline"></div>
                   </button>
-                </motion.li>
-              ))}
+            </motion.li>
+          ))}
             </motion.ul>
           )}
         </AnimatePresence>
         {/* Mobile Menu Button (hidden in logo-only mode) */}
         {!isLogoOnly && (
-          <motion.div 
-            className="mobile-menu-btn"
-            onClick={() => setIsOpen(!isOpen)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {isOpen ? (
-              <FaTimes className="menu-icon" />
-            ) : (
-              <FaBars className="menu-icon" />
-            )}
-          </motion.div>
+        <motion.div 
+          className="mobile-menu-btn"
+          onClick={() => setIsOpen(!isOpen)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          {isOpen ? (
+            <FaTimes className="menu-icon" />
+          ) : (
+            <FaBars className="menu-icon" />
+          )}
+        </motion.div>
         )}
       </div>
       {/* Mobile Menu */}

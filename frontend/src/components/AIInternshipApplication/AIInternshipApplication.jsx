@@ -5,7 +5,6 @@ import './AIInternshipApplication.css'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom';
 import OTPVerificationSuccessModal from '../OTPVerificationSuccessModal';
-import { Helmet } from 'react-helmet-async';
 
 const areaOfInterestOptions = [
   { value: 'machine-learning', label: 'Machine Learning' },
@@ -296,20 +295,6 @@ export default function AIInternshipApplication() {
 
   return (
     <div className="ai-internship-application">
-      <Helmet>
-        <title>AI Internship Application | VEDARC Technologies</title>
-        <meta name="description" content="Apply for the VEDARC AI Internship. Join our cutting-edge AI research and development team, work on real-world projects, and boost your career in Artificial Intelligence, Machine Learning, and Full Stack AI." />
-        <meta name="keywords" content="AI Internship, Artificial Intelligence, Machine Learning, VEDARC, Research Internship, Full Stack AI, Student Internship, Tech Internship, AI Projects" />
-        <meta property="og:title" content="AI Internship Application | VEDARC Technologies" />
-        <meta property="og:description" content="Apply for the VEDARC AI Internship. Join our cutting-edge AI research and development team, work on real-world projects, and boost your career in Artificial Intelligence, Machine Learning, and Full Stack AI." />
-        <meta property="og:image" content="https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031" />
-        <meta property="og:url" content="https://www.vedarc.co.in/ai-internship" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Internship Application | VEDARC Technologies" />
-        <meta name="twitter:description" content="Apply for the VEDARC AI Internship. Join our cutting-edge AI research and development team, work on real-world projects, and boost your career in Artificial Intelligence, Machine Learning, and Full Stack AI." />
-        <meta name="twitter:image" content="https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031" />
-      </Helmet>
       <div className="application-container">
         <motion.div
           className="application-header"
