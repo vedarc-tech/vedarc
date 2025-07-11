@@ -1067,7 +1067,8 @@ export default function HRDashboard() {
               </div>
             ) : (
               <div className="applications-list-container">
-                <table className="applications-list-table">
+                <div className="applications-table-scroll" style={{overflowX: 'auto', width: '100%'}}>
+                  <table className="applications-list-table" style={{minWidth: '1100px'}}>
                   <thead>
                     <tr>
                       <th>#</th>
@@ -1138,7 +1139,7 @@ export default function HRDashboard() {
                     ))}
                   </tbody>
                 </table>
-
+                </div>
                 {/* Pagination */}
                 {applicationsPages > 1 && (
                   <div className="pagination">
