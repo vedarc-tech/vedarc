@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaUserTie, FaSignOutAlt, FaCheckCircle, FaTimesCircle, FaSpinner, FaFilter, FaSearch, FaEnvelope, FaWhatsapp, FaGraduationCap, FaCalendarAlt, FaCode, FaCreditCard, FaChartBar, FaUsers, FaUserCheck, FaClock } from 'react-icons/fa'
+import { FaUserTie, FaSignOutAlt, FaCheckCircle, FaTimesCircle, FaSpinner, FaFilter, FaSearch, FaEnvelope, FaWhatsapp, FaGraduationCap, FaCalendarAlt, FaCode, FaCreditCard, FaChartBar, FaUsers, FaUserCheck, FaClock, FaFileUpload } from 'react-icons/fa'
 import { hrAPI, authService } from '../../services/apiService'
 import './HRDashboard.css'
 
@@ -49,21 +49,33 @@ export default function HRDashboard() {
   const [bulkDisabling, setBulkDisabling] = useState(false)
   const [bulkDisableMessage, setBulkDisableMessage] = useState('')
 
+  // Internship applications state
+  const [applications, setApplications] = useState([])
+  const [applicationsLoading, setApplicationsLoading] = useState(true)
+  const [applicationsPage, setApplicationsPage] = useState(1)
+  const [applicationsTotal, setApplicationsTotal] = useState(0)
+  const [applicationsPages, setApplicationsPages] = useState(0)
+  const [activeTab, setActiveTab] = useState('registrations') // 'registrations' or 'applications'
+
   useEffect(() => {
     fetchRegistrations()
     fetchStatistics()
     fetchPayments()
     fetchAvailableTracks()
+    fetchApplications()
     
     // Set up auto-refresh every 30 seconds
     const autoRefreshInterval = setInterval(() => {
       fetchRegistrations()
       fetchStatistics()
       fetchPayments()
+      if (activeTab === 'applications') {
+        fetchApplications()
+      }
     }, 30000) // 30 seconds
     
     return () => clearInterval(autoRefreshInterval)
-  }, [filters])
+  }, [filters, activeTab, applicationsPage])
 
   const fetchRegistrations = async (forceRefresh = false) => {
     setLoading(true)
@@ -109,6 +121,54 @@ export default function HRDashboard() {
       console.error('Error fetching payments:', error)
     } finally {
       setPaymentsLoading(false)
+    }
+  }
+
+  const fetchApplications = async () => {
+    setApplicationsLoading(true)
+    try {
+      const data = await hrAPI.getInternshipApplications(applicationsPage, 10)
+      setApplications(data.applications || [])
+      setApplicationsTotal(data.total || 0)
+      setApplicationsPages(data.pages || 0)
+    } catch (error) {
+      console.error('Error fetching applications:', error)
+      setError('Failed to load applications')
+    } finally {
+      setApplicationsLoading(false)
+    }
+  }
+
+  const handleDownloadResume = async (applicationId) => {
+    try {
+      const response = await hrAPI.downloadResume(applicationId)
+      const blob = response.data
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `resume_${applicationId}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Error downloading resume:', error)
+      setError('Failed to download resume')
+    }
+  }
+
+  const handleDeleteApplication = async (applicationId) => {
+    if (!window.confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+      return
+    }
+    
+    try {
+      await hrAPI.deleteApplication(applicationId)
+      await fetchApplications()
+      setError('')
+    } catch (error) {
+      console.error('Error deleting application:', error)
+      setError('Failed to delete application')
     }
   }
 
@@ -945,12 +1005,161 @@ export default function HRDashboard() {
           )}
         </AnimatePresence>
 
+        {/* Tab Navigation */}
+        <motion.div
+          className="tab-navigation"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          <button
+            className={`tab-btn ${activeTab === 'registrations' ? 'active' : ''}`}
+            onClick={() => setActiveTab('registrations')}
+          >
+            <FaUsers />
+            Internship Registrations
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'applications' ? 'active' : ''}`}
+            onClick={() => setActiveTab('applications')}
+          >
+            <FaUserTie />
+            AI Internship Applications
+            {applicationsTotal > 0 && <span className="badge">{applicationsTotal}</span>}
+          </button>
+        </motion.div>
+
+        {/* Applications Section */}
+        {activeTab === 'applications' && (
+          <motion.div
+            className="applications-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="section-header">
+              <div className="header-left">
+                <h2>AI Internship Applications</h2>
+                <span className="count">{applicationsTotal} applications</span>
+              </div>
+              <motion.button
+                className="refresh-btn"
+                onClick={() => fetchApplications()}
+                disabled={applicationsLoading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {applicationsLoading ? <FaSpinner className="spinner" /> : <FaSearch />}
+                Refresh
+              </motion.button>
+            </div>
+
+            {applicationsLoading ? (
+              <div className="loading-container">
+                <FaSpinner className="loading-spinner" />
+                <p>Loading applications...</p>
+              </div>
+            ) : applications.length === 0 ? (
+              <div className="empty-state">
+                <FaUserTie />
+                <h3>No applications found</h3>
+                <p>There are no AI internship applications yet.</p>
+              </div>
+            ) : (
+              <div className="applications-list-container">
+                <table className="applications-list-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Area of Interest</th>
+                      <th>LinkedIn</th>
+                      <th>Submitted</th>
+                      <th>Resume</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {applications.map((application, index) => (
+                      <tr key={application._id}>
+                        <td>{index + 1}</td>
+                        <td>{application.fullName}</td>
+                        <td>{application.email}</td>
+                        <td>{application.phoneNumber}</td>
+                        <td>
+                          <span className="area-badge">{application.areaOfInterest}</span>
+                        </td>
+                        <td>
+                          <a 
+                            href={application.linkedinUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="linkedin-link"
+                          >
+                            View Profile
+                          </a>
+                        </td>
+                        <td>{new Date(application.submittedAt).toLocaleDateString()}</td>
+                        <td>
+                          <button
+                            className="download-btn"
+                            onClick={() => handleDownloadResume(application._id)}
+                            title="Download Resume"
+                          >
+                            <FaFileUpload />
+                            Download
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            className="delete-btn"
+                            onClick={() => handleDeleteApplication(application._id)}
+                            title="Delete Application"
+                          >
+                            <FaTimesCircle />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Pagination */}
+                {applicationsPages > 1 && (
+                  <div className="pagination">
+                    <button
+                      className="pagination-btn"
+                      onClick={() => setApplicationsPage(prev => Math.max(1, prev - 1))}
+                      disabled={applicationsPage === 1}
+                    >
+                      Previous
+                    </button>
+                    <span className="page-info">
+                      Page {applicationsPage} of {applicationsPages}
+                    </span>
+                    <button
+                      className="pagination-btn"
+                      onClick={() => setApplicationsPage(prev => Math.min(applicationsPages, prev + 1))}
+                      disabled={applicationsPage === applicationsPages}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* Registrations List */}
         <motion.div
           className="registrations-section"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
+          style={{ display: activeTab === 'registrations' ? 'block' : 'none' }}
         >
           <div className="section-header">
             <div className="header-left">

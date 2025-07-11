@@ -9,8 +9,11 @@ from datetime import datetime, timedelta
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 import random
 import string
+import re
 from dotenv import load_dotenv
 from flask import abort
 from io import BytesIO
@@ -286,8 +289,8 @@ def validate_session(session_id, user_id, user_type):
     update_session_activity(session_id)
     return True
 
-def send_email(to_email, subject, body):
-    """Send email using SMTP"""
+def send_email(to_email, subject, body, attachment_path=None):
+    """Send email using SMTP with optional attachment"""
     try:
         msg = MIMEMultipart()
         msg['From'] = SMTP_USERNAME
@@ -295,6 +298,15 @@ def send_email(to_email, subject, body):
         msg['Subject'] = subject
         
         msg.attach(MIMEText(body, 'html'))
+        
+        # Add attachment if provided
+        if attachment_path and os.path.exists(attachment_path):
+            with open(attachment_path, 'rb') as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+                encoders.encode_base64(part)
+                part.add_header('Content-Disposition', f'attachment; filename= {os.path.basename(attachment_path)}')
+                msg.attach(part)
         
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
@@ -4488,6 +4500,377 @@ def get_activation_email(user, user_id, password):
       </body>
     </html>
     """
+
+# --- INTERNSHIP APPLICATION ENDPOINTS ---
+
+# Create internship_applications collection
+if db is not None:
+    internship_applications = db['internship_applications']
+
+def generate_otp():
+    """Generate a 6-digit OTP"""
+    return ''.join(random.choices(string.digits, k=6))
+
+def get_internship_application_email_template(applicant_name, otp):
+    """Email template for internship application OTP"""
+    return f"""
+    <html>
+      <body style='background: #18192a; margin: 0; padding: 0;'>
+        <table width='100%' cellpadding='0' cellspacing='0' style='background: #18192a; min-height: 100vh;'>
+          <tr>
+            <td align='center' style='padding: 40px 0;'>
+              <table width='480' cellpadding='0' cellspacing='0' style='background: #23244a; border-radius: 14px; box-shadow: 0 4px 32px rgba(80,0,255,0.10); padding: 36px 32px 28px 32px; font-family: Segoe UI, Arial, sans-serif;'>
+                <tr>
+                  <td align='center' style='padding-bottom: 8px;'>
+                    <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
+                    <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
+                      AI Internship Application Verification
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
+                    <p style='margin: 0 0 12px 0;'>Dear <b>{applicant_name}</b>,</p>
+                    <p style='margin: 0 0 12px 0;'>Thank you for your interest in our AI Internship Program!</p>
+                    <p style='margin: 0 0 16px 0;'>Please use the following verification code to complete your application:</p>
+                    <div style='background: #1a1b2e; border-radius: 8px; padding: 20px; margin-bottom: 16px; border: 1px solid #4f8cff33; text-align: center;'>
+                      <div style='color: #4f8cff; font-size: 24px; font-weight: 700; letter-spacing: 4px;'>{otp}</div>
+                      <div style='color: #b3b8e0; font-size: 14px; margin-top: 8px;'>Enter this code in the application form</div>
+                    </div>
+                    <p style='margin: 0 0 8px 0; color: #b3b8e0; font-size: 14px;'>
+                      <i>This code will expire in 10 minutes for security purposes.</i>
+                    </p>
+                    <p style='margin: 0; color: #e0e6f8; font-size: 15px;'>Best regards,<br/>VEDARC AI Team</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+
+def get_internship_application_confirmation_email(application_data):
+    """Email template for application confirmation"""
+    return f"""
+    <html>
+      <body style='background: #18192a; margin: 0; padding: 0;'>
+        <table width='100%' cellpadding='0' cellspacing='0' style='background: #18192a; min-height: 100vh;'>
+          <tr>
+            <td align='center' style='padding: 40px 0;'>
+              <table width='480' cellpadding='0' cellspacing='0' style='background: #23244a; border-radius: 14px; box-shadow: 0 4px 32px rgba(80,0,255,0.10); padding: 36px 32px 28px 32px; font-family: Segoe UI, Arial, sans-serif;'>
+                <tr>
+                  <td align='center' style='padding-bottom: 8px;'>
+                    <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
+                    <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
+                      AI Internship Application Received
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
+                    <p style='margin: 0 0 12px 0;'>Dear <b>{application_data['fullName']}</b>,</p>
+                    <p style='margin: 0 0 12px 0;'>Thank you for submitting your application for our AI Internship Program!</p>
+                    <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #4f8cff33;'>
+                      <div style='margin-bottom: 8px;'><b>Application Details:</b></div>
+                      <div style='margin-bottom: 4px;'>• <b>Name:</b> {application_data['fullName']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Email:</b> {application_data['email']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Phone:</b> {application_data['phoneNumber']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Area of Interest:</b> {application_data['areaOfInterest']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>LinkedIn:</b> {application_data['linkedinUrl']}</div>
+                    </div>
+                    <p style='margin: 0 0 16px 0;'>
+                      Our team will review your application and get back to you within 3-5 business days.
+                    </p>
+                    <p style='margin: 0 0 8px 0; color: #b3b8e0; font-size: 14px;'>
+                      <i>If you have any questions, please contact us at tech@vedarc.co.in</i>
+                    </p>
+                    <p style='margin: 0; color: #e0e6f8; font-size: 15px;'>Best regards,<br/>VEDARC AI Team</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+
+def get_internship_application_notification_email(application_data):
+    """Email template for HR notification"""
+    return f"""
+    <html>
+      <body style='background: #18192a; margin: 0; padding: 0;'>
+        <table width='100%' cellpadding='0' cellspacing='0' style='background: #18192a; min-height: 100vh;'>
+          <tr>
+            <td align='center' style='padding: 40px 0;'>
+              <table width='480' cellpadding='0' cellspacing='0' style='background: #23244a; border-radius: 14px; box-shadow: 0 4px 32px rgba(80,0,255,0.10); padding: 36px 32px 28px 32px; font-family: Segoe UI, Arial, sans-serif;'>
+                <tr>
+                  <td align='center' style='padding-bottom: 8px;'>
+                    <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
+                    <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
+                      New AI Internship Application Received
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
+                    <p style='margin: 0 0 12px 0;'>A new AI Internship application has been submitted:</p>
+                    <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #4f8cff33;'>
+                      <div style='margin-bottom: 8px;'><b>Applicant Details:</b></div>
+                      <div style='margin-bottom: 4px;'>• <b>Name:</b> {application_data['fullName']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Email:</b> {application_data['email']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Phone:</b> {application_data['phoneNumber']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Area of Interest:</b> {application_data['areaOfInterest']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>LinkedIn:</b> {application_data['linkedinUrl']}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Why Join:</b> {application_data['whyJoin'][:100]}...</div>
+                      <div style='margin-bottom: 4px;'>• <b>Portfolio Links:</b> {application_data.get('portfolioLinks', 'Not provided')}</div>
+                      <div style='margin-bottom: 4px;'>• <b>Resume:</b> Attached</div>
+                    </div>
+                    <p style='margin: 0 0 16px 0;'>
+                      Please review this application and take appropriate action.
+                    </p>
+                    <p style='margin: 0; color: #e0e6f8; font-size: 15px;'>Best regards,<br/>VEDARC AI System</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+
+# Store OTPs temporarily (in production, use Redis or similar)
+otp_store = {}
+
+@app.route('/api/internship-application/send-otp', methods=['POST'])
+def send_internship_application_otp():
+    """Send OTP for internship application verification"""
+    try:
+        if 'email' not in request.form or 'fullName' not in request.form:
+            return jsonify({'error': 'Email and full name are required'}), 400
+        
+        email = request.form['email'].strip()
+        full_name = request.form['fullName'].strip()
+        
+        # Validate email format
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Generate OTP
+        otp = generate_otp()
+        
+        # Store OTP with timestamp (10 minutes expiry)
+        otp_store[email] = {
+            'otp': otp,
+            'timestamp': datetime.now(),
+            'full_name': full_name
+        }
+        
+        # Send OTP email
+        email_body = get_internship_application_email_template(full_name, otp)
+        send_email(email, 'VEDARC AI Internship Application - Email Verification', email_body)
+        
+        return jsonify({'message': 'OTP sent successfully'}), 200
+        
+    except Exception as e:
+        print(f"Error sending OTP: {e}")
+        return jsonify({'error': 'Failed to send OTP'}), 500
+
+@app.route('/api/internship-application/submit', methods=['POST'])
+def submit_internship_application():
+    """Submit internship application with OTP verification"""
+    try:
+        # Check if all required fields are present
+        required_fields = ['fullName', 'email', 'phoneNumber', 'linkedinUrl', 'areaOfInterest', 'whyJoin', 'otp']
+        for field in required_fields:
+            if field not in request.form:
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Get form data
+        full_name = request.form['fullName'].strip()
+        email = request.form['email'].strip()
+        phone_number = request.form['phoneNumber'].strip()
+        linkedin_url = request.form['linkedinUrl'].strip()
+        area_of_interest = request.form['areaOfInterest'].strip()
+        why_join = request.form['whyJoin'].strip()
+        portfolio_links = request.form.get('portfolioLinks', '').strip()
+        otp = request.form['otp'].strip()
+        
+        # Validate OTP
+        if email not in otp_store:
+            return jsonify({'error': 'OTP not found. Please request a new OTP'}), 400
+        
+        stored_otp_data = otp_store[email]
+        if stored_otp_data['otp'] != otp:
+            return jsonify({'error': 'Invalid OTP'}), 400
+        
+        # Check OTP expiry (10 minutes)
+        if (datetime.now() - stored_otp_data['timestamp']).total_seconds() > 600:
+            del otp_store[email]
+            return jsonify({'error': 'OTP has expired. Please request a new OTP'}), 400
+        
+        # Validate file upload
+        if 'resume' not in request.files:
+            return jsonify({'error': 'Resume file is required'}), 400
+        
+        resume_file = request.files['resume']
+        if resume_file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Validate file type and size
+        if not resume_file.filename.lower().endswith('.pdf'):
+            return jsonify({'error': 'Only PDF files are allowed'}), 400
+        
+        # Check file size (2MB limit)
+        resume_file.seek(0, 2)  # Seek to end
+        file_size = resume_file.tell()
+        resume_file.seek(0)  # Reset to beginning
+        
+        if file_size > 2 * 1024 * 1024:  # 2MB
+            return jsonify({'error': 'File size must be less than 2MB'}), 400
+        
+        # Generate unique filename
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"resume_{email.replace('@', '_').replace('.', '_')}_{timestamp}.pdf"
+        
+        # Save file (in production, use cloud storage)
+        upload_folder = 'uploads/resumes'
+        os.makedirs(upload_folder, exist_ok=True)
+        file_path = os.path.join(upload_folder, filename)
+        resume_file.save(file_path)
+        
+        # Create application document
+        application_data = {
+            'fullName': full_name,
+            'email': email,
+            'phoneNumber': phone_number,
+            'linkedinUrl': linkedin_url,
+            'areaOfInterest': area_of_interest,
+            'whyJoin': why_join,
+            'portfolioLinks': portfolio_links,
+            'resumeFilename': filename,
+            'resumePath': file_path,
+            'submittedAt': datetime.now(),
+            'status': 'pending'
+        }
+        
+        # Save to database
+        result = internship_applications.insert_one(application_data)
+        application_id = str(result.inserted_id)
+        
+        # Send confirmation email to applicant
+        confirmation_email = get_internship_application_confirmation_email(application_data)
+        send_email(email, 'VEDARC AI Internship Application - Confirmation', confirmation_email)
+        
+        # Send notification email to HR
+        notification_email = get_internship_application_notification_email(application_data)
+        send_email('tech@vedarc.co.in', f'New AI Internship Application - {full_name}', notification_email, attachment_path=file_path)
+        
+        # Clean up OTP
+        del otp_store[email]
+        
+        return jsonify({
+            'message': 'Application submitted successfully',
+            'applicationId': application_id
+        }), 200
+        
+    except Exception as e:
+        print(f"Error submitting application: {e}")
+        return jsonify({'error': 'Failed to submit application'}), 500
+
+@app.route('/api/hr/internship-applications', methods=['GET'])
+@jwt_required()
+def hr_get_internship_applications():
+    """Get all internship applications for HR dashboard"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user != HR_USERNAME:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get applications with pagination
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 10))
+        skip = (page - 1) * limit
+        
+        # Get total count
+        total_count = internship_applications.count_documents({})
+        
+        # Get applications
+        applications = list(internship_applications.find({}).sort('submittedAt', -1).skip(skip).limit(limit))
+        
+        # Convert ObjectId to string
+        for app in applications:
+            app['_id'] = str(app['_id'])
+            app['submittedAt'] = app['submittedAt'].isoformat()
+        
+        return jsonify({
+            'applications': applications,
+            'total': total_count,
+            'page': page,
+            'limit': limit,
+            'pages': (total_count + limit - 1) // limit
+        }), 200
+        
+    except Exception as e:
+        print(f"Error getting applications: {e}")
+        return jsonify({'error': 'Failed to get applications'}), 500
+
+@app.route('/api/hr/internship-applications/<application_id>/resume', methods=['GET'])
+@jwt_required()
+def hr_download_resume(application_id):
+    """Download resume for HR"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user != HR_USERNAME:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get application
+        application = internship_applications.find_one({'_id': ObjectId(application_id)})
+        if not application:
+            return jsonify({'error': 'Application not found'}), 404
+        
+        # Check if file exists
+        file_path = application.get('resumePath')
+        if not file_path or not os.path.exists(file_path):
+            return jsonify({'error': 'Resume file not found'}), 404
+        
+        # Send file
+        return send_file(file_path, as_attachment=True, download_name=application['resumeFilename'])
+        
+    except Exception as e:
+        print(f"Error downloading resume: {e}")
+        return jsonify({'error': 'Failed to download resume'}), 500
+
+@app.route('/api/hr/internship-applications/<application_id>', methods=['DELETE'])
+@jwt_required()
+def hr_delete_application(application_id):
+    """Delete internship application and resume file"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user != HR_USERNAME:
+            return jsonify({"error": "Unauthorized"}), 403
+        
+        # Get application
+        application = internship_applications.find_one({'_id': ObjectId(application_id)})
+        if not application:
+            return jsonify({'error': 'Application not found'}), 404
+        
+        # Delete resume file
+        file_path = application.get('resumePath')
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
+        
+        # Delete from database
+        internship_applications.delete_one({'_id': ObjectId(application_id)})
+        
+        return jsonify({'message': 'Application deleted successfully'}), 200
+        
+    except Exception as e:
+        print(f"Error deleting application: {e}")
+        return jsonify({'error': 'Failed to delete application'}), 500
 
 # --- SYSTEM SETTINGS ENDPOINTS ---
 

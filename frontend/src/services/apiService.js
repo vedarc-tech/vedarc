@@ -110,6 +110,36 @@ export const publicAPI = {
   }),
   // Get global system settings (public)
   getSystemSettings: () => apiRequest('/system/settings'),
+  
+  // AI Internship Application endpoints
+  sendApplicationOtp: (formData) => {
+    const data = new FormData()
+    data.append('email', formData.email)
+    data.append('fullName', formData.fullName)
+    
+    return fetch(`${API_BASE_URL}/internship-application/send-otp`, {
+      method: 'POST',
+      body: data
+    }).then(response => response.json())
+  },
+  
+  submitApplication: (formData) => {
+    const data = new FormData()
+    data.append('fullName', formData.fullName)
+    data.append('email', formData.email)
+    data.append('phoneNumber', formData.phoneNumber)
+    data.append('linkedinUrl', formData.linkedinUrl)
+    data.append('areaOfInterest', formData.areaOfInterest)
+    data.append('whyJoin', formData.whyJoin)
+    data.append('portfolioLinks', formData.portfolioLinks || '')
+    data.append('otp', formData.otp)
+    data.append('resume', formData.resume)
+    
+    return fetch(`${API_BASE_URL}/internship-application/submit`, {
+      method: 'POST',
+      body: data
+    }).then(response => response.json())
+  }
 }
 
 // ============================================================================
@@ -294,6 +324,20 @@ export const hrAPI = {
   deleteUser: (deletionData) => apiRequest('/hr/delete-user', {
     method: 'POST',
     body: JSON.stringify(deletionData)
+  }),
+
+  // Get internship applications
+  getInternshipApplications: (page = 1, limit = 10) => apiRequest(`/hr/internship-applications?page=${page}&limit=${limit}`),
+  
+  // Download resume
+  downloadResume: (applicationId) => apiRequest(`/hr/internship-applications/${applicationId}/resume`, {
+    method: 'GET',
+    responseType: 'blob'
+  }),
+  
+  // Delete application
+  deleteApplication: (applicationId) => apiRequest(`/hr/internship-applications/${applicationId}`, {
+    method: 'DELETE'
   })
 }
 

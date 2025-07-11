@@ -1,20 +1,31 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-scroll'
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { FaBars, FaTimes } from 'react-icons/fa'
-import { RiArrowLeftRightLine } from 'react-icons/ri'
 import logo from "./../../assets/LOGO VEDARC.png";
 import './Navbar.css'
 
+function scrollToSection(sectionId) {
+  setTimeout(() => {
+    if (sectionId === 'hero') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+      return
+    }
+    const el = document.getElementById(sectionId)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, 100)
+}
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const [activeLink, setActiveLink] = useState('home')
-  const { scrollY } = useScroll()
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 50)
-  })
+  const [isLogoOnly, setIsLogoOnly] = useState(false)
+  const lastScrollY = useRef(window.scrollY)
+  const ticking = useRef(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const navLinks = [
     { name: 'Home', to: 'hero' },
@@ -23,82 +34,110 @@ export default function Navbar() {
     { name: 'Contact', to: 'contact' }
   ]
 
-  const handleSetActive = (to) => {
-    setActiveLink(to)
+  const handleNavClick = (section) => {
+    setActiveLink(section)
+    if (location.pathname !== '/') {
+      navigate('/')
+      scrollToSection(section)
+    } else {
+      scrollToSection(section)
+    }
+    setIsOpen(false)
   }
+
+  // Show only logo when scrolling down, show full navbar when scrolling up
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+            setIsLogoOnly(true) // scrolling down
+          } else {
+            setIsLogoOnly(false) // scrolling up
+          }
+          lastScrollY.current = currentScrollY
+          ticking.current = false
+        })
+        ticking.current = true
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <motion.nav 
-      className={`navbar ${scrolled ? 'scrolled' : ''}`}
+      className={`navbar${isLogoOnly ? ' logo-only' : ''}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: [0.6, 0.05, -0.01, 0.9] }}
     >
       {/* Animated Tech Border */}
       <div className="tech-border"></div>
-
       <div className="navbar-container">
         {/* Logo with Glitch Effect */}
         <motion.div 
-          className="logo"
+          className={`logo${isLogoOnly ? ' logo-center' : ''}`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Link 
-            to="hero" 
-            smooth={true}
-            onSetActive={() => handleSetActive('hero')}
+          <button 
+            onClick={() => handleNavClick('hero')} 
+            className="logo-btn"
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
             <span id='logo-container'>
-            <span className="glitch" data-text=""> <img src={logo} alt="" /> VEDARC</span>
+              <span className="glitch" data-text=""> <img src={logo} alt="" /> VEDARC</span>
             </span>
-          </Link>
-          {/* <RiArrowLeftRightLine className="connection-icon" /> */}
+          </button>
         </motion.div>
-
-        {/* Desktop Menu */}
-        <ul className="nav-menu">
-          {navLinks.map((link) => (
-            <motion.li 
-              key={link.to}
-              whileHover={{ 
-                y: -3,
-                transition: { type: 'spring', stiffness: 300 }
-              }}
-              whileTap={{ scale: 0.95 }}
+        <AnimatePresence>
+          {!isLogoOnly && (
+            <motion.ul 
+              className="nav-menu"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
             >
-              <Link
-                to={link.to}
-                smooth={true}
-                duration={500}
-                spy={true}
-                onSetActive={() => handleSetActive(link.to)}
-                className={activeLink === link.to ? 'active-link' : ''}
-              >
-                {link.name}
-                <div className="link-underline"></div>
-              </Link>
-            </motion.li>
-          ))}
-        </ul>
-
-        {/* Mobile Menu Button */}
-        <motion.div 
-          className="mobile-menu-btn"
-          onClick={() => setIsOpen(!isOpen)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          {isOpen ? (
-            <FaTimes className="menu-icon" />
-          ) : (
-            <FaBars className="menu-icon" />
+              {navLinks.map((link) => (
+                <motion.li 
+                  key={link.to}
+                  whileHover={{ y: -3, transition: { type: 'spring', stiffness: 300 } }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <button
+                    onClick={() => handleNavClick(link.to)}
+                    className={activeLink === link.to ? 'active-link nav-btn' : 'nav-btn'}
+                    style={{ background: 'none', border: 'none', padding: '0 18px', cursor: 'pointer' }}
+                  >
+                    {link.name}
+                    <div className="link-underline"></div>
+                  </button>
+                </motion.li>
+              ))}
+            </motion.ul>
           )}
-        </motion.div>
+        </AnimatePresence>
+        {/* Mobile Menu Button (hidden in logo-only mode) */}
+        {!isLogoOnly && (
+          <motion.div 
+            className="mobile-menu-btn"
+            onClick={() => setIsOpen(!isOpen)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            {isOpen ? (
+              <FaTimes className="menu-icon" />
+            ) : (
+              <FaBars className="menu-icon" />
+            )}
+          </motion.div>
+        )}
       </div>
-
       {/* Mobile Menu */}
-      {isOpen && (
+      {!isLogoOnly && isOpen && (
         <motion.div 
           className="mobile-menu"
           initial={{ opacity: 0, y: -20 }}
@@ -113,22 +152,16 @@ export default function Navbar() {
                 key={link.to}
                 initial={{ x: -30, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ 
-                  duration: 0.3,
-                  delay: 0.1 * navLinks.indexOf(link)
-                }}
+                transition={{ duration: 0.3, delay: 0.1 * navLinks.indexOf(link) }}
                 onClick={() => setIsOpen(false)}
               >
-                <Link
-                  to={link.to}
-                  smooth={true}
-                  duration={500}
-                  spy={true}
-                  onSetActive={() => handleSetActive(link.to)}
-                  className={activeLink === link.to ? 'active-link' : ''}
+                <button
+                  onClick={() => handleNavClick(link.to)}
+                  className={activeLink === link.to ? 'active-link nav-btn' : 'nav-btn'}
+                  style={{ background: 'none', border: 'none', padding: '0 16px', cursor: 'pointer' }}
                 >
                   {link.name}
-                </Link>
+                </button>
               </motion.li>
             ))}
           </ul>

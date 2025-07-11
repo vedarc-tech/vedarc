@@ -1,14 +1,25 @@
 import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { FaInstagram } from 'react-icons/fa'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import './Footer.css'
 import { useEffect, useState } from 'react'
 import { publicAPI } from '../../services/apiService'
 
+function scrollToSection(sectionId) {
+  setTimeout(() => {
+    const el = document.getElementById(sectionId)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, 100) // Wait for navigation
+}
+
 export default function Footer() {
   const currentYear = new Date().getFullYear()
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     publicAPI.getSystemSettings()
@@ -17,6 +28,15 @@ export default function Footer() {
       })
       .catch(() => setRegistrationEnabled(true)) // Default to true if error
   }, [])
+
+  const handleFooterNav = (section) => {
+    if (location.pathname !== '/') {
+      navigate('/')
+      scrollToSection(section)
+    } else {
+      scrollToSection(section)
+    }
+  }
 
   return (
     <footer className="footer">
@@ -112,6 +132,7 @@ export default function Footer() {
               <motion.a 
                 href="#about"
                 whileHover={{ x: 5, color: 'var(--neon-cyan)' }}
+                onClick={e => { e.preventDefault(); handleFooterNav('about'); }}
               >
                 About Us
               </motion.a>
@@ -120,6 +141,7 @@ export default function Footer() {
               <motion.a 
                 href="#projects"
                 whileHover={{ x: 5, color: 'var(--neon-cyan)' }}
+                onClick={e => { e.preventDefault(); handleFooterNav('projects'); }}
               >
                 Our Projects
               </motion.a>
@@ -140,6 +162,17 @@ export default function Footer() {
             <li>
               <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
                 <Link 
+                  to="/internship-apply"
+                  className="footer-link"
+                  onClick={() => console.log('AI Internship Application clicked')}
+                >
+                  AI Internship Application
+                </Link>
+              </motion.div>
+            </li>
+            <li>
+              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
+                <Link 
                   to="/unified-login"
                   className="footer-link"
                   onClick={() => console.log('Internship Login clicked')}
@@ -152,6 +185,7 @@ export default function Footer() {
               <motion.a 
                 href="#contact"
                 whileHover={{ x: 5, color: 'var(--neon-cyan)' }}
+                onClick={e => { e.preventDefault(); handleFooterNav('contact'); }}
               >
                 Contact
               </motion.a>

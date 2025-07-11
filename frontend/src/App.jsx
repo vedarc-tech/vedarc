@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Home from './pages/Home/Home'
 import InternshipRegistration from './components/InternshipRegistration/InternshipRegistration'
+import AIInternshipApplication from './components/AIInternshipApplication/AIInternshipApplication'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import HRDashboard from './components/HRDashboard/HRDashboard'
@@ -17,6 +18,7 @@ import RefundPolicy from './pages/RefundPolicy/RefundPolicy'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage/PrivacyPolicyPage'
 import './index.css' // Using only index.css for global styles
 import { useState } from 'react'
+import ScrollToTop from './components/ScrollToTop'
 
 // Page transition animation
 const pageVariants = {
@@ -51,6 +53,7 @@ export default function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <Routes>
           {/* Main Home Route */}
@@ -73,6 +76,31 @@ export default function App() {
             <>
               <Navbar />
               <InternshipRegistration />
+              <Footer 
+                setShowTerms={setShowTerms}
+                setShowRefundAndCancellationPolicy={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
+              />
+              <TermsAndConditions
+                isVisible={showTerms}
+                onClose={() => setShowTerms(false)}
+              />
+              <RefundAndCancellationPolicy
+                isVisible={showRefund}
+                onClose={() => setShowRefund(false)}
+              />
+              <PrivacyPolicy
+                isVisible={showPrivacyPolicy}
+                onClose={() => setShowPrivacyPolicy(false)}
+              />
+            </>
+          } />
+          
+          {/* AI Internship Application Route */}
+          <Route path="/internship-apply" element={
+            <>
+              <Navbar />
+              <AIInternshipApplication />
               <Footer 
                 setShowTerms={setShowTerms}
                 setShowRefundAndCancellationPolicy={setShowRefund}
