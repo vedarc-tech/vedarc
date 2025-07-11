@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FaUser, FaEnvelope, FaWhatsapp, FaLinkedin, FaFileUpload, FaSpinner, FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash } from 'react-icons/fa'
 import './AIInternshipApplication.css'
 import Select from 'react-select'
+import { useNavigate } from 'react-router-dom';
+import OTPVerificationSuccessModal from '../OTPVerificationSuccessModal';
+import { Helmet } from 'react-helmet-async';
 
 const areaOfInterestOptions = [
   { value: 'machine-learning', label: 'Machine Learning' },
@@ -92,6 +95,9 @@ export default function AIInternshipApplication() {
   const [otpLoading, setOtpLoading] = useState(false)
   const [otpError, setOtpError] = useState('')
   const [showOtp, setShowOtp] = useState(false)
+
+  const navigate = useNavigate();
+  const [showOTPSuccess, setShowOTPSuccess] = useState(false);
 
   const validateForm = () => {
     const newErrors = {}
@@ -209,7 +215,7 @@ export default function AIInternshipApplication() {
       if (response.ok) {
         setOtpSent(true)
         setShowOtpForm(true)
-        setSuccess('OTP sent successfully! Please check your email.')
+        setSuccess('OTP sent successfully! Please check your email. (If Not Visible, Check Spam Folder)')
         setTimeout(() => setSuccess(''), 3000)
       } else {
         setOtpError(data.error || 'Failed to send OTP')
@@ -252,7 +258,7 @@ export default function AIInternshipApplication() {
       const data = await response.json()
       
       if (response.ok) {
-        setSuccess('Application submitted successfully! We will contact you soon.')
+        setShowOTPSuccess(true);
         resetForm()
       } else {
         setOtpError(data.error || 'Failed to submit application')
@@ -284,8 +290,26 @@ export default function AIInternshipApplication() {
     setOtpError('')
   }
 
+  if (showOTPSuccess) {
+    return <OTPVerificationSuccessModal onClose={() => navigate('/')} />;
+  }
+
   return (
     <div className="ai-internship-application">
+      <Helmet>
+        <title>AI Internship Application | VEDARC Technologies</title>
+        <meta name="description" content="Apply for the VEDARC AI Internship. Join our cutting-edge AI research and development team, work on real-world projects, and boost your career in Artificial Intelligence, Machine Learning, and Full Stack AI." />
+        <meta name="keywords" content="AI Internship, Artificial Intelligence, Machine Learning, VEDARC, Research Internship, Full Stack AI, Student Internship, Tech Internship, AI Projects" />
+        <meta property="og:title" content="AI Internship Application | VEDARC Technologies" />
+        <meta property="og:description" content="Apply for the VEDARC AI Internship. Join our cutting-edge AI research and development team, work on real-world projects, and boost your career in Artificial Intelligence, Machine Learning, and Full Stack AI." />
+        <meta property="og:image" content="https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031" />
+        <meta property="og:url" content="https://www.vedarc.co.in/ai-internship" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Internship Application | VEDARC Technologies" />
+        <meta name="twitter:description" content="Apply for the VEDARC AI Internship. Join our cutting-edge AI research and development team, work on real-world projects, and boost your career in Artificial Intelligence, Machine Learning, and Full Stack AI." />
+        <meta name="twitter:image" content="https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031" />
+      </Helmet>
       <div className="application-container">
         <motion.div
           className="application-header"

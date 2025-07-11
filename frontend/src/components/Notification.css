@@ -1,0 +1,62 @@
+.global-notification {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  min-width: 320px;
+  max-width: 90vw;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: rgba(7, 32, 28, 0.95);
+  border: 2px solid var(--neon-cyan, #00f9ff);
+  border-radius: 16px;
+  box-shadow: 0 0 30px 0 rgba(0,249,255,0.15), 0 2px 16px 0 rgba(255,45,117,0.10);
+  font-family: 'Rajdhani', 'Montserrat', sans-serif;
+  font-size: 1.25rem;
+  color: var(--neon-magenta, #ff2d75);
+  animation: notification-fade-in 0.5s;
+}
+
+.global-notification.success {
+  border-color: var(--neon-cyan, #00f9ff);
+  color: var(--neon-magenta, #ff2d75);
+}
+
+.global-notification.error {
+  border-color: var(--neon-orange, #ff2d55);
+  color: var(--neon-orange, #ff2d55);
+}
+
+.global-notification .icon {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  color: inherit;
+}
+
+.global-notification .message {
+  flex: 1;
+  color: inherit;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+@keyframes notification-fade-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .global-notification {
+    min-width: 180px;
+    padding: 12px 10px;
+    font-size: 1rem;
+    gap: 10px;
+  }
+  .global-notification .icon {
+    font-size: 1.3rem;
+  }
+} 

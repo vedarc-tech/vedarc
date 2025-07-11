@@ -1,0 +1,98 @@
+.otp-success-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(7, 7, 16, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .otp-success-modal {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10,10,18,0.98) 0%, rgba(22,22,38,0.98) 100%);
+    border: 2.5px solid var(--neon-cyan, #00f9ff);
+    border-radius: 22px;
+    box-shadow: 0 0 40px 0 rgba(0,249,255,0.18), 0 2px 24px 0 rgba(255,45,117,0.13);
+    padding: 48px 36px 36px 36px;
+    min-width: 340px;
+    max-width: 95vw;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: modal-fade-in 0.5s;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: transparent;
+    border: none;
+    color: var(--neon-magenta, #ff2d75);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    z-index: 2;
+  }
+  .close-btn:hover {
+    color: var(--neon-cyan, #00f9ff);
+  }
+  
+  .icon-wrapper {
+    font-size: 4rem;
+    color: var(--neon-cyan, #00f9ff);
+    margin-bottom: 18px;
+    animation: pulse 2s infinite;
+  }
+  
+  .otp-success-modal h2 {
+    color: var(--neon-cyan, #00f9ff);
+    font-family: 'Rajdhani', 'Montserrat', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .otp-success-modal p {
+    color: var(--neon-magenta, #ff2d75);
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+  
+  @keyframes modal-fade-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+  
+  @media (max-width: 600px) {
+    .otp-success-modal {
+      min-width: 0;
+      padding: 28px 10px 24px 10px;
+    }
+    .icon-wrapper {
+      font-size: 2.5rem;
+    }
+    .otp-success-modal h2 {
+      font-size: 1.2rem;
+    }
+    .close-btn {
+      font-size: 1.3rem;
+      top: 10px;
+      right: 10px;
+    }
+  }
+  

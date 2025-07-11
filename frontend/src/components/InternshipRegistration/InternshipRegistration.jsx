@@ -5,6 +5,9 @@ import { publicAPI } from '../../services/apiService'
 import './InternshipRegistration.css'
 import Select from 'react-select'
 import ReactCountryFlag from 'react-country-flag'
+import Notification from '../Notification';
+import { useNavigate } from 'react-router-dom';
+import OTPVerificationSuccessModal from '../OTPVerificationSuccessModal';
 
 const topCountryCodes = [
   { value: '+91', label: 'India', countryCode: 'IN' },
@@ -105,6 +108,9 @@ export default function InternshipRegistration() {
   const [paymentProcessing, setPaymentProcessing] = useState(false)
   const [razorpayLoaded, setRazorpayLoaded] = useState(false)
   const [paymentId, setPaymentId] = useState('')
+  const [showNotification, setShowNotification] = useState(false);
+  const navigate = useNavigate();
+  const [showOTPSuccess, setShowOTPSuccess] = useState(false);
 
   // Load Razorpay script
   useEffect(() => {
@@ -214,7 +220,8 @@ export default function InternshipRegistration() {
         setShowPayment(true)
       } else {
         // Direct success (fallback)
-        setSuccess(true)
+        setShowNotification(true)
+        setTimeout(() => setShowNotification(false), 5000)
         resetForm()
       }
     } catch (error) {
@@ -489,8 +496,19 @@ export default function InternshipRegistration() {
     )
   }
 
+  if (showOTPSuccess) {
+    return (
+      <OTPVerificationSuccessModal
+        onClose={() => navigate('/')}
+      />
+    );
+  }
+
   return (
     <section className="internship-registration">
+      {showNotification && (
+        <Notification message="Application submitted successfully! We will contact you soon." type="success" />
+      )}
       <div className="registration-bg">
         <div className="circuit-pattern"></div>
         <div className="neon-glow"></div>
