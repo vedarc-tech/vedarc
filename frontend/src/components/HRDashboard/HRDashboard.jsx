@@ -64,7 +64,7 @@ export default function HRDashboard() {
     fetchAvailableTracks()
     fetchApplications()
     
-    // Set up auto-refresh every 30 seconds
+    // Set up auto-refresh every 2 minutes
     const autoRefreshInterval = setInterval(() => {
       fetchRegistrations()
       fetchStatistics()
@@ -72,7 +72,7 @@ export default function HRDashboard() {
       if (activeTab === 'applications') {
         fetchApplications()
       }
-    }, 30000) // 30 seconds
+    }, 120000) // 2 minutes
     
     return () => clearInterval(autoRefreshInterval)
   }, [filters, activeTab, applicationsPage])
