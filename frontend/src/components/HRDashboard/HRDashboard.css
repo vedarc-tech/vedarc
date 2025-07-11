@@ -1962,3 +1962,43 @@
   font-size: 0.95em;
   font-weight: 600;
 } 
+
+/* AI Experience Bar Styles */
+.ai-exp-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+.ai-exp-bar-bg {
+  width: 70px;
+  height: 10px;
+  background: rgba(0,249,255,0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.ai-exp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+  border-radius: 6px;
+  box-shadow: 0 0 8px var(--neon-cyan), 0 0 12px var(--neon-magenta);
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.ai-exp-label {
+  color: var(--neon-cyan);
+  font-weight: 600;
+  font-size: 0.98em;
+  min-width: 32px;
+  text-align: right;
+}
+@media (max-width: 768px) {
+  .ai-exp-bar-bg {
+    width: 40px;
+    height: 8px;
+  }
+  .ai-exp-label {
+    font-size: 0.9em;
+    min-width: 24px;
+  }
+} 

@@ -4697,6 +4697,7 @@ def submit_internship_application():
         area_of_interest = request.form['areaOfInterest'].strip()
         why_join = request.form['whyJoin'].strip()
         portfolio_links = request.form.get('portfolioLinks', '').strip()
+        ai_experience = request.form.get('aiExperience', '').strip()
         otp = request.form['otp'].strip()
         
         # Validate OTP
@@ -4751,6 +4752,7 @@ def submit_internship_application():
             'areaOfInterest': area_of_interest,
             'whyJoin': why_join,
             'portfolioLinks': portfolio_links,
+            'aiExperience': int(ai_experience) if ai_experience.isdigit() else 0,
             'resumeFilename': filename,
             'resumePath': file_path,
             'submittedAt': datetime.now(),

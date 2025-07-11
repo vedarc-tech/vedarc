@@ -224,20 +224,93 @@
 }
 
 @media (max-width: 768px) {
-  .nav-menu {
-    display: none;
+  .navbar {
+    min-height: 60px;
+    height: 60px;
+    padding: 0;
   }
-  
+  .navbar-container {
+    padding: 0 12px;
+    height: 60px;
+  }
+  .logo {
+    font-size: 1.1rem;
+    height: 60px;
+  }
+  #logo-container {
+    gap: 6px;
+  }
+  .glitch img {
+    width: 56px;
+  }
+  .nav-menu {
+    display: none !important;
+  }
   .mobile-menu-btn {
+    display: block !important;
+    font-size: 2rem;
+    margin-left: auto;
+    color: var(--text-light);
+    background: none;
+    border: none;
+    height: 60px;
+    width: 48px;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+  }
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10,10,18,0.98);
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 80px;
+    box-sizing: border-box;
+  }
+  .mobile-nav-menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .mobile-nav-menu li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .mobile-nav-menu .nav-btn {
+    font-size: 1.3rem;
+    width: 90vw;
+    max-width: 320px;
+    padding: 18px 0;
+    border-radius: 12px;
+    background: none;
+    color: var(--text-light);
+    text-align: center;
+    margin: 0 auto;
     display: block;
   }
-  
-  .logo {
-    font-size: 1.5rem;
+  .mobile-nav-menu .nav-btn:active,
+  .mobile-nav-menu .nav-btn:focus {
+    background: rgba(255, 45, 117, 0.08);
+    color: var(--neon-magenta);
   }
-  
-  .connection-icon {
-    font-size: 1rem;
+  .tech-border {
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
   }
 }
 

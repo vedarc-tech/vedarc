@@ -1076,6 +1076,7 @@ export default function HRDashboard() {
                       <th>Phone</th>
                       <th>Area of Interest</th>
                       <th>LinkedIn</th>
+                      <th>AI Experience</th> {/* NEW COLUMN */}
                       <th>Submitted</th>
                       <th>Resume</th>
                       <th>Actions</th>
@@ -1100,6 +1101,18 @@ export default function HRDashboard() {
                           >
                             View Profile
                           </a>
+                        </td>
+                        <td>
+                          {typeof application.aiExperience === 'number' ? (
+                            <div className="ai-exp-bar-container">
+                              <div className="ai-exp-bar-bg">
+                                <div className="ai-exp-bar-fill" style={{width: `${application.aiExperience}%`}}></div>
+                              </div>
+                              <span className="ai-exp-label">{application.aiExperience}%</span>
+                            </div>
+                          ) : (
+                            <span className="ai-exp-label">N/A</span>
+                          )}
                         </td>
                         <td>{new Date(application.submittedAt).toLocaleDateString()}</td>
                         <td>

@@ -74,7 +74,8 @@ export default function AIInternshipApplication() {
     linkedinUrl: '',
     areaOfInterest: '',
     whyJoin: '',
-    portfolioLinks: ''
+    portfolioLinks: '',
+    aiExperience: 0 // NEW FIELD
   })
   
   const [resumeFile, setResumeFile] = useState(null)
@@ -135,6 +136,7 @@ export default function AIInternshipApplication() {
       newErrors.whyJoin = 'Please provide a more detailed response (at least 50 characters)'
     }
     
+    // No required validation for aiExperience (optional)
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -175,6 +177,13 @@ export default function AIInternshipApplication() {
     if (errors.areaOfInterest) {
       setErrors(prev => ({ ...prev, areaOfInterest: '' }))
     }
+  }
+
+  const handleSliderChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      aiExperience: Number(e.target.value)
+    }))
   }
 
   const sendOtp = async () => {
@@ -231,6 +240,7 @@ export default function AIInternshipApplication() {
       formDataToSend.append('areaOfInterest', formData.areaOfInterest.value)
       formDataToSend.append('whyJoin', formData.whyJoin)
       formDataToSend.append('portfolioLinks', formData.portfolioLinks)
+      formDataToSend.append('aiExperience', formData.aiExperience) // NEW FIELD
       formDataToSend.append('otp', otp)
       formDataToSend.append('resume', resumeFile)
       
@@ -263,7 +273,8 @@ export default function AIInternshipApplication() {
       linkedinUrl: '',
       areaOfInterest: '',
       whyJoin: '',
-      portfolioLinks: ''
+      portfolioLinks: '',
+      aiExperience: 0 // RESET
     })
     setResumeFile(null)
     setOtp('')
@@ -436,6 +447,23 @@ export default function AIInternshipApplication() {
                   placeholder="GitHub, personal website, project demos, etc. (one per line)"
                   rows="3"
                 />
+              </div>
+
+              {/* Experience on AI */}
+              <div className="form-group full-width">
+                <label className="form-label">
+                  Experience on AI (%)
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={formData.aiExperience}
+                  onChange={handleSliderChange}
+                  className="slider-input"
+                />
+                <div className="slider-value">{formData.aiExperience}%</div>
               </div>
 
               <motion.button
