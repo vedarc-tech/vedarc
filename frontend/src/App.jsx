@@ -16,6 +16,7 @@ import PrivacyPolicy from './components/PrivacyPolicy/PrivacyPolicy'
 import TermsConditions from './pages/TermsConditions/TermsConditions'
 import RefundPolicy from './pages/RefundPolicy/RefundPolicy'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage/PrivacyPolicyPage'
+import NotFound from './components/NotFound/NotFound'
 import './index.css' // Using only index.css for global styles
 import { useState } from 'react'
 import ScrollToTop from './components/ScrollToTop'
@@ -135,6 +136,9 @@ export default function App() {
           
           {/* Test Route */}
           <Route path="/test" element={<div style={{padding: '100px', color: 'white'}}>Test Route Working!</div>} />
+          
+          {/* 404 - Catch all invalid routes */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
