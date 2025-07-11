@@ -458,9 +458,13 @@ export default function AIInternshipApplication() {
                   type="range"
                   min="0"
                   max="100"
-                  step="1"
+                  step="10"
                   value={formData.aiExperience}
-                  onChange={handleSliderChange}
+                  onChange={e => {
+                    let val = Number(e.target.value);
+                    if (val === 100) val = 99;
+                    setFormData(prev => ({ ...prev, aiExperience: val }));
+                  }}
                   className="slider-input"
                 />
                 <div className="slider-value">{formData.aiExperience}%</div>
