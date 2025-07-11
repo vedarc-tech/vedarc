@@ -23,6 +23,10 @@
   padding-left: 1rem;
   padding-right: 1rem;
   word-break: break-word;
+  overflow: visible !important;
+  height: auto !important;
+  position: relative;
+  z-index: 2;
 }
 
 /* Application Title */
@@ -37,6 +41,11 @@
   white-space: normal;
   overflow-wrap: break-word;
   padding: 0 0.5rem;
+  max-width: 100%;
+  text-align: center;
+  background: rgba(0,255,174,0.08); /* Debug: highlight heading */
+  z-index: 10;
+  position: relative;
 }
 
 .application-title .highlight {
@@ -412,20 +421,29 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .application-header {
+    padding-top: 4.5rem !important; /* Extra space for navbar */
+    margin-bottom: 2rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    overflow: visible !important;
+    height: auto !important;
+  }
   .application-title {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     padding-top: 1.2rem;
     padding-bottom: 0.5rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     white-space: normal;
-    word-break: break-word;
-  }
-  .application-header {
-    padding-top: 1.5rem;
-    margin-bottom: 2rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    text-align: center;
+    letter-spacing: 0.5px;
+    background: rgba(255,45,117,0.08); /* Debug: highlight heading */
+    z-index: 10;
+    position: relative;
   }
   .application-container {
     padding: 1.5rem 0.5rem;
@@ -444,18 +462,29 @@
 }
 
 @media (max-width: 480px) {
+  .application-header {
+    padding-top: 4.5rem !important;
+    margin-bottom: 1rem;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    overflow: visible !important;
+    height: auto !important;
+  }
   .application-title {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     padding-top: 0.7rem;
     padding-bottom: 0.3rem;
     padding-left: 0.2rem;
     padding-right: 0.2rem;
-  }
-  .application-header {
-    padding-top: 1rem;
-    margin-bottom: 1rem;
-    padding-left: 0.2rem;
-    padding-right: 0.2rem;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    text-align: center;
+    letter-spacing: 0.2px;
+    background: rgba(0,249,255,0.12); /* Debug: highlight heading */
+    z-index: 10;
+    position: relative;
   }
   .application-container {
     padding: 1rem 0.2rem;
