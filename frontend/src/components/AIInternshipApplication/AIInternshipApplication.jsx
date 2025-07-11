@@ -136,7 +136,7 @@ export default function AIInternshipApplication() {
     }
     
     if (!formData.whyJoin.trim()) {
-      newErrors.whyJoin = 'Please tell us why you want to join this internship'
+      newErrors.whyJoin = 'Please tell us why you want to join this role'
     } else if (formData.whyJoin.length < 50) {
       newErrors.whyJoin = 'Please provide a more detailed response (at least 50 characters)'
     }
@@ -294,7 +294,7 @@ export default function AIInternshipApplication() {
   }
 
   return (
-    <div className="ai-internship-application">
+    <div className="ai-engineer-application">
       <div className="application-container">
         <motion.div
           className="application-header"
@@ -303,10 +303,10 @@ export default function AIInternshipApplication() {
           transition={{ duration: 0.6 }}
         >
           <h1 className="application-title">
-            <span className="highlight">AI</span> Internship Application
+            <span className="highlight">AI Engineer</span> (Part Time Application Form)
           </h1>
           <p className="application-subtitle">
-            Join our cutting-edge AI research and development team
+            Apply for a part-time AI Engineer role and join our cutting-edge AI research and development team
           </p>
         </motion.div>
 
@@ -430,7 +430,7 @@ export default function AIInternshipApplication() {
               {/* Why Join */}
               <div className="form-group full-width">
                 <label className="form-label">
-                  Why do you want to join this internship? *
+                  Why do you want to join this role? *
                 </label>
                 <textarea
                   name="whyJoin"

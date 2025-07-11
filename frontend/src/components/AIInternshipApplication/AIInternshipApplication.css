@@ -25,6 +25,7 @@
   word-break: break-word;
 }
 
+/* Application Title */
 .application-title {
   font-size: 2.5rem;
   font-weight: 700;
