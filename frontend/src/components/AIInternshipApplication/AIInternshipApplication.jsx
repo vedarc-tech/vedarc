@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaUser, FaEnvelope, FaWhatsapp, FaLinkedin, FaFileUpload, FaSpinner, FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash } from 'react-icons/fa'
+import { FaUser, FaEnvelope, FaWhatsapp, FaLinkedin, FaFileUpload, FaSpinner, FaCheckCircle, FaTimesCircle, FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa'
 import './AIInternshipApplication.css'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom';
@@ -68,6 +68,26 @@ const customStyles = {
   }),
 }
 
+function OTPErrorModal({ open, onClose }) {
+  if (!open) return null;
+  return (
+    <div className="otp-error-modal-overlay" onClick={onClose}>
+      <div className="otp-error-modal" onClick={e => e.stopPropagation()}>
+        <button className="close-btn" onClick={onClose} aria-label="Close">
+          <FaTimes />
+        </button>
+        <div className="modal-content">
+          <FaTimesCircle className="modal-icon" style={{ color: '#ff4757', fontSize: 40, marginBottom: 12 }} />
+          <div className="modal-message">
+            Bro You have entered Previous Otp 🫡<br />
+            Check for the new otp and enter or else resend for the new otp
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AIInternshipApplication() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -94,6 +114,9 @@ export default function AIInternshipApplication() {
   const [otpLoading, setOtpLoading] = useState(false)
   const [otpError, setOtpError] = useState('')
   const [showOtp, setShowOtp] = useState(false)
+  const [resendTimer, setResendTimer] = useState(0)
+  const resendIntervalRef = useRef(null)
+  const [showOtpErrorModal, setShowOtpErrorModal] = useState(false);
 
   const navigate = useNavigate();
   const [showOTPSuccess, setShowOTPSuccess] = useState(false);
@@ -191,31 +214,37 @@ export default function AIInternshipApplication() {
     }))
   }
 
-  const sendOtp = async () => {
-    if (!validateForm()) {
+  const sendOtp = async (isResend = false) => {
+    if (!isResend && !validateForm()) {
       return
     }
-
     setOtpLoading(true)
     setOtpError('')
-    
     try {
       const formDataToSend = new FormData()
       formDataToSend.append('email', formData.email)
       formDataToSend.append('fullName', formData.fullName)
-      
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.vedarc.co.in/api'}/internship-application/send-otp`, {
         method: 'POST',
         body: formDataToSend
       })
-      
       const data = await response.json()
-      
       if (response.ok) {
         setOtpSent(true)
         setShowOtpForm(true)
-        setSuccess('OTP sent successfully! Please check your email. (If Not Visible, Check Spam Folder)')
+        setSuccess('OTP sent successfully! Please check your email. (If Not Visible, Check Spam/Promotions Folder)')
         setTimeout(() => setSuccess(''), 3000)
+        setResendTimer(60)
+        if (resendIntervalRef.current) clearInterval(resendIntervalRef.current)
+        resendIntervalRef.current = setInterval(() => {
+          setResendTimer(prev => {
+            if (prev <= 1) {
+              clearInterval(resendIntervalRef.current)
+              return 0
+            }
+            return prev - 1
+          })
+        }, 1000)
       } else {
         setOtpError(data.error || 'Failed to send OTP')
       }
@@ -226,6 +255,12 @@ export default function AIInternshipApplication() {
       setOtpLoading(false)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (resendIntervalRef.current) clearInterval(resendIntervalRef.current)
+    }
+  }, [])
 
   const verifyOtpAndSubmit = async () => {
     if (!otp.trim()) {
@@ -260,7 +295,12 @@ export default function AIInternshipApplication() {
         setShowOTPSuccess(true);
         resetForm()
       } else {
-        setOtpError(data.error || 'Failed to submit application')
+        // Check for expired/previous OTP error
+        if (data.error && (data.error.toLowerCase().includes('expired') || data.error.toLowerCase().includes('not found'))) {
+          setShowOtpErrorModal(true);
+        } else {
+          setOtpError(data.error || 'Failed to submit application')
+        }
       }
     } catch (error) {
       console.error('Error submitting application:', error)
@@ -295,6 +335,7 @@ export default function AIInternshipApplication() {
 
   return (
     <div className="ai-engineer-application">
+      <OTPErrorModal open={showOtpErrorModal} onClose={() => setShowOtpErrorModal(false)} />
       <div className="application-container">
         <motion.div
           className="application-header"
@@ -501,6 +542,11 @@ export default function AIInternshipApplication() {
               <div className="otp-header">
                 <h3>Verify Your Email</h3>
                 <p>We've sent a verification code to <strong>{formData.email}</strong></p>
+                <p className="otp-info-message">
+                  Didn't receive the OTP email? <br />
+                  Please check your <b>spam</b> or <b>promotions</b> folder.<br />
+                  If you still don't see it, you can resend the OTP after 1 minute.
+                </p>
               </div>
               
               <div className="otp-input-group">
@@ -551,6 +597,15 @@ export default function AIInternshipApplication() {
                   disabled={submitting}
                 >
                   Back to Form
+                </button>
+                <button
+                  type="button"
+                  className="resend-otp-btn"
+                  onClick={() => sendOtp(true)}
+                  disabled={resendTimer > 0 || otpLoading}
+                  style={{ marginTop: '1rem', opacity: resendTimer > 0 ? 0.6 : 1 }}
+                >
+                  {resendTimer > 0 ? `Resend OTP (${resendTimer}s)` : 'Resend OTP'}
                 </button>
               </div>
             </div>
