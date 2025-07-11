@@ -1024,7 +1024,7 @@ export default function HRDashboard() {
             onClick={() => setActiveTab('applications')}
           >
             <FaUserTie />
-            AI Internship Applications
+            AI Engineer Applications
             {applicationsTotal > 0 && <span className="badge">{applicationsTotal}</span>}
           </button>
         </motion.div>
@@ -1039,7 +1039,7 @@ export default function HRDashboard() {
           >
             <div className="section-header">
               <div className="header-left">
-                <h2>AI Internship Applications</h2>
+                <h2>AI Engineer Applications</h2>
                 <span className="count">{applicationsTotal} applications</span>
               </div>
               <motion.button

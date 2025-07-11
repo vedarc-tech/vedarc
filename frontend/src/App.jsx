@@ -97,7 +97,7 @@ export default function App() {
           } />
           
           {/* AI Internship Application Route */}
-          <Route path="/internship-apply" element={
+          <Route path="/airole-apply" element={
             <>
               <Navbar />
               <AIInternshipApplication />

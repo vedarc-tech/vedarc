@@ -162,11 +162,11 @@ export default function Footer() {
             <li>
               <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
                 <Link 
-                  to="/internship-apply"
+                  to="/airole-apply"
                   className="footer-link"
-                  onClick={() => console.log('AI Internship Application clicked')}
+                  onClick={() => console.log('AI Engineer Application clicked')}
                 >
-                  AI Internship Application
+                  AI Engineer Application
                 </Link>
               </motion.div>
             </li>
