@@ -51,7 +51,7 @@ const CertificateTemplateEditor = ({
     { key: 'student_name', label: 'Student Name', example: 'John Doe' },
     { key: 'track_name', label: 'Track Name', example: 'Full Stack Development' },
     { key: 'completion_date', label: 'Completion Date', example: '15 December 2024' },
-    { key: 'current_date', label: 'Current Date', example: '27 June 2025' },
+    { key: 'current_date', label: 'Current Date', example: '27 June 2024' },
     { key: 'company_name', label: 'Company Name', example: 'VEDARC TECHNOLOGIES' },
     { key: 'user_id', label: 'User ID', example: 'VEDARC-12345' }
   ];

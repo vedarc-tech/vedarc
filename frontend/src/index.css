@@ -5,9 +5,9 @@
 /* ===== CORE VARIABLES ===== */
 :root {
   /* Cyber Backgrounds */
-  --bg-void: #050508;          /* Deepest black */
-  --bg-dark: #0a0a12;          /* Primary background */
-  --bg-light: #161626;         /* Elevated surfaces */
+  --bg-void: #000000;          /* Deepest black */
+  --bg-dark: #000000;          /* Primary background */
+  --bg-light: #0a0a0a;         /* Elevated surfaces */
   
   /* Neon Cyberpunk Palette */
   --neon-magenta: #00f9ff ;     /* Primary accent */
@@ -47,13 +47,36 @@ html {
 }
 
 body {
-  background: var(--bg-dark);
+  background: #000000;
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
   text-rendering: optimizeSpeed;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: 
+    linear-gradient(rgba(0, 249, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 249, 255, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 25% 25%, rgba(0, 249, 255, 0.02) 0%, transparent 30%),
+    radial-gradient(circle at 75% 75%, rgba(255, 45, 117, 0.02) 0%, transparent 30%),
+    radial-gradient(circle at 75% 25%, rgba(123, 45, 255, 0.02) 0%, transparent 30%),
+    radial-gradient(circle at 25% 75%, rgba(0, 249, 255, 0.02) 0%, transparent 30%);
+  background-size: 50px 50px, 50px 50px, 100px 100px, 100px 100px, 100px 100px, 100px 100px;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-repeat: repeat, repeat, repeat, repeat, repeat, repeat;
+  pointer-events: none;
+  z-index: -1;
+  transform: translateZ(0);
 }
 
 /* ===== TYPOGRAPHY ===== */

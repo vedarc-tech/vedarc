@@ -55,7 +55,7 @@ function PrivacyPolicy({ isVisible, onClose }) {
                 <br />
                 Privacy Policy
               </h2>
-              <p className="terms-date">Last updated: 20-06-2025</p>
+              <p className="terms-date">Last updated: 2024</p>
 
               <div className="terms-section">
                 <p>

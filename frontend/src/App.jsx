@@ -1,6 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Home from './pages/Home/Home'
+import UseCases from './pages/UseCases/UseCases'
+import Investors from './pages/Investors/Investors'
+import Team from './pages/Team/Team'
+import Contact from './pages/Contact/Contact'
 import InternshipRegistration from './components/InternshipRegistration/InternshipRegistration'
 import AIInternshipApplication from './components/AIInternshipApplication/AIInternshipApplication'
 import Navbar from './components/Navbar/Navbar'
@@ -68,6 +72,58 @@ export default function App() {
                 showTerms={showTerms}
                 showRefund={showRefund}
                 showPrivacyPolicy={showPrivacyPolicy}
+              />
+            </>
+          } />
+          
+          {/* Use Cases Route */}
+          <Route path="/use-cases" element={
+            <>
+              <Navbar />
+              <UseCases />
+              <Footer 
+                setShowTerms={setShowTerms}
+                setShowRefundAndCancellationPolicy={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
+              />
+            </>
+          } />
+          
+          {/* Investors Route */}
+          <Route path="/investors" element={
+            <>
+              <Navbar />
+              <Investors />
+              <Footer 
+                setShowTerms={setShowTerms}
+                setShowRefundAndCancellationPolicy={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
+              />
+            </>
+          } />
+          
+          {/* Team Route */}
+          <Route path="/team" element={
+            <>
+              <Navbar />
+              <Team />
+              <Footer 
+                setShowTerms={setShowTerms}
+                setShowRefundAndCancellationPolicy={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
+              />
+            </>
+          } />
+          
+          {/* Contact Route */}
+          <Route path="/contact" element={
+            <>
+              <Navbar />
+              <Contact />
+              <Footer 
+                setShowTerms={setShowTerms}
+                setShowRefundAndCancellationPolicy={setShowRefund}
+                setShowPrivacyPolicy={setShowPrivacyPolicy}
               />
             </>
           } />

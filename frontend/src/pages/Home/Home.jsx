@@ -1,12 +1,13 @@
 import { useRef } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import Hero from '../../components/Hero/Hero'
-import About from '../../components/About/About'
-import Projects from '../../components/Projects/Projects.jsx'
+import SignupForm from '../../components/SignupForm/SignupForm'
+import Roadmap from '../../components/Roadmap/Roadmap'
+import CaseStudies from '../../components/CaseStudies/CaseStudies'
+import FAQ from '../../components/FAQ/FAQ'
 import TermsAndConditions from '../../components/TermsAndConditions/TermsAndCondition';
 import RefundAndCancellationPolicy from '../../components/RefundAndCancellationPolicy/RefundAndCancellationPolicy.jsx';
 import PrivacyPolicy from '../../components/PrivacyPolicy/PrivacyPolicy.jsx';
-// import Contact from '../../components/Contact/Contact'
 import Footer from '../../components/Footer/Footer.jsx'
 
 import './Home.css'
@@ -37,19 +38,23 @@ export default function Home({ setShowTerms, setShowRefund, setShowPrivacyPolicy
         <Hero />
       </section>
 
-      <section id="about">
-        <About />
+      <section id="signup-form">
+        <SignupForm />
       </section>
 
-      <section id="projects">
-        <Projects />
+      <section id="roadmap">
+        <Roadmap />
       </section>
 
-      <section id="contact">
-        {/* <Contact /> */}
-      {/* </section>
+      <section id="case-studies">
+        <CaseStudies />
+      </section>
 
-      <section id="footer"> */}
+      <section id="faq">
+        <FAQ />
+      </section>
+
+      <section id="footer">
         <Footer 
         setShowTerms={setShowTerms}
         setShowRefundAndCancellationPolicy={setShowRefund}

@@ -100,6 +100,107 @@ export default function Hero() {
       {/* Hover Light Beam */}
       <div className="neon-beam" ref={neonBeam} hidden/>
 
+      {/* AI Bots Working Animations */}
+      <div className="ai-bots-container">
+        {/* AI Bot 1 */}
+        <div className="ai-bot">
+          <div className="bot-core"></div>
+          <div className="bot-ring bot-ring-1"></div>
+          <div className="bot-ring bot-ring-2"></div>
+          <div className="bot-ring bot-ring-3"></div>
+          <div className="data-lines">
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+          </div>
+        </div>
+
+        {/* AI Bot 2 */}
+        <div className="ai-bot">
+          <div className="bot-core"></div>
+          <div className="bot-ring bot-ring-1"></div>
+          <div className="bot-ring bot-ring-2"></div>
+          <div className="bot-ring bot-ring-3"></div>
+          <div className="data-lines">
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+          </div>
+        </div>
+
+        {/* AI Bot 3 */}
+        <div className="ai-bot">
+          <div className="bot-core"></div>
+          <div className="bot-ring bot-ring-1"></div>
+          <div className="bot-ring bot-ring-2"></div>
+          <div className="bot-ring bot-ring-3"></div>
+          <div className="data-lines">
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+          </div>
+        </div>
+
+        {/* AI Bot 4 */}
+        <div className="ai-bot">
+          <div className="bot-core"></div>
+          <div className="bot-ring bot-ring-1"></div>
+          <div className="bot-ring bot-ring-2"></div>
+          <div className="bot-ring bot-ring-3"></div>
+          <div className="data-lines">
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+          </div>
+        </div>
+
+        {/* AI Bot 5 */}
+        <div className="ai-bot">
+          <div className="bot-core"></div>
+          <div className="bot-ring bot-ring-1"></div>
+          <div className="bot-ring bot-ring-2"></div>
+          <div className="bot-ring bot-ring-3"></div>
+          <div className="data-lines">
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+          </div>
+        </div>
+
+        {/* AI Bot 6 */}
+        <div className="ai-bot">
+          <div className="bot-core"></div>
+          <div className="bot-ring bot-ring-1"></div>
+          <div className="bot-ring bot-ring-2"></div>
+          <div className="bot-ring bot-ring-3"></div>
+          <div className="data-lines">
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+            <div className="data-line"></div>
+          </div>
+        </div>
+
+        {/* Neural Network Connections */}
+        <div className="neural-connections">
+          <div className="neural-line"></div>
+          <div className="neural-line"></div>
+          <div className="neural-line"></div>
+          <div className="neural-line"></div>
+        </div>
+
+        {/* Processing Nodes */}
+        <div className="processing-node"></div>
+        <div className="processing-node"></div>
+        <div className="processing-node"></div>
+        <div className="processing-node"></div>
+      </div>
+
       {/* 3D Floating Tech Orb */}
       <div className="tech-orb" hidden>
         <div className="orb-core" />
@@ -110,60 +211,18 @@ export default function Hero() {
 
       {/* Content */}
       <div className="hero-content">
-        {/* Glitch Main Heading */}
+        {/* Professional Main Heading */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="glitch-main"
+          className="hero-title-pro"
         >
-          <span className="glitch-line">VEDARC</span>
-          <span className="glitch-line no-break">TECHNOLOGIES</span>
+          <span className="hero-line vedarc">VEDARC</span>
+          <span className="hero-line ai-suite">AI SUITE</span>
         </motion.h1>
-
-        {/* Typing Subheading */}
-        <TypeAnimation
-          sequence={[
-            'Web Development',
-            2000,
-            'AI & Machine Learning',
-            2000,
-            'Full Stack Solutions',
-            2000,
-            'Sustainable Tech Solutions',
-            2000,
-          ]}
-          wrapper="h3"
-          speed={50}
-          repeat={Infinity}
-          className="type-subtitle"
-        />
-
-        {/* CTA Buttons */}
-        <div className="cta-group">
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 25px var(--neon-magenta)" }}
-            whileTap={{ scale: 0.95 }}
-            className="cta-primary"
-            onClick={handleJoinUsClick}
-            disabled={false}
-            style={{ opacity: 1, cursor: 'pointer' }}
-          >
-            Join Us
-          </motion.button>
-          
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 25px var(--neon-cyan)" }}
-            whileTap={{ scale: 0.95 }}
-            className="cta-secondary"
-            onClick={() => {
-              const el = document.getElementById('projects');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            View Projects
-          </motion.button>
-        </div>
+        <div className="coming-soon-pro">Coming Soon</div>
+        {/* Removed problematic button */}
       </div>
 
       {/* Scroll Indicator */}

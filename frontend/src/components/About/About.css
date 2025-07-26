@@ -150,6 +150,32 @@
   font-family: 'Rajdhani', sans-serif;
 }
 
+.tech-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.module-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.feature-tag {
+  background: rgba(0, 249, 255, 0.1);
+  border: 1px solid rgba(0, 249, 255, 0.3);
+  color: var(--neon-cyan);
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
 /* Tech Stack */
 .tech-stack {
   display: flex;

@@ -57,7 +57,7 @@ function TermsAndCondition({ isVisible, onClose }) {
                 Website Terms and Conditions of Use
               </h2>
               {/* ... rest of the content ... */}
-                <p className="terms-date">Last updated: 20-06-2025</p>
+                <p className="terms-date">Last updated: 2024</p>
 
                 <div className="terms-section">
                   <h3>1. Introduction</h3>

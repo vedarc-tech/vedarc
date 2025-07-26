@@ -83,6 +83,14 @@ export default function Footer() {
             >
               <FaInstagram />
             </motion.a>
+            <motion.a
+              href="https://twitter.com/vedarc_tech"
+              target="_blank"
+              whileHover={{ y: -3, color: '#1DA1F2' }}
+              style={{ marginLeft: '8px' }}
+            >
+              <FaTwitter />
+            </motion.a>
           </div>
 
         <br />
@@ -130,21 +138,42 @@ export default function Footer() {
           <ul className="footer-links">
             <li>
               <motion.a 
-                href="#about"
+                href="#roadmap"
                 whileHover={{ x: 5, color: 'var(--neon-cyan)' }}
-                onClick={e => { e.preventDefault(); handleFooterNav('about'); }}
+                onClick={e => { e.preventDefault(); handleFooterNav('roadmap'); }}
               >
-                About Us
+                Roadmap
               </motion.a>
             </li>
             <li>
-              <motion.a 
-                href="#projects"
-                whileHover={{ x: 5, color: 'var(--neon-cyan)' }}
-                onClick={e => { e.preventDefault(); handleFooterNav('projects'); }}
-              >
-                Our Projects
-              </motion.a>
+              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
+                <Link 
+                  to="/use-cases"
+                  className="footer-link"
+                >
+                  Case Studies
+                </Link>
+              </motion.div>
+            </li>
+            <li>
+              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
+                <Link 
+                  to="/investors"
+                  className="footer-link"
+                >
+                  Investors
+                </Link>
+              </motion.div>
+            </li>
+            <li>
+              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
+                <Link 
+                  to="/team"
+                  className="footer-link"
+                >
+                  Team
+                </Link>
+              </motion.div>
             </li>
             {registrationEnabled && (
               <li>
@@ -183,12 +212,22 @@ export default function Footer() {
             </li>
             <li>
               <motion.a 
-                href="#contact"
+                href="#signup-form"
                 whileHover={{ x: 5, color: 'var(--neon-cyan)' }}
-                onClick={e => { e.preventDefault(); handleFooterNav('contact'); }}
+                onClick={e => { e.preventDefault(); handleFooterNav('signup-form'); }}
               >
-                Contact
+                Join Waitlist
               </motion.a>
+            </li>
+            <li>
+              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
+                <Link 
+                  to="/contact"
+                  className="footer-link"
+                >
+                  Contact
+                </Link>
+              </motion.div>
             </li>
           </ul>
         </motion.div>
@@ -204,7 +243,7 @@ export default function Footer() {
         <div className="circuit-line"></div>
         <div className="footer-links">
           <p>
-            &copy; {currentYear} VEDARC TECHNOLOGIES PRIVATE LIMITED. All Rights Reserved.
+            &copy; {currentYear} Vedarc Technologies Private Limited. All Rights Reserved.
           </p>
         </div>
       </div>

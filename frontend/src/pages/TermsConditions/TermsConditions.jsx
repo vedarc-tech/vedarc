@@ -18,102 +18,150 @@ function TermsConditions() {
             <h1 className="policy-title">
               <span className="highlight">VEDARC TECHNOLOGIES PRIVATE LIMITED</span>
               <br />
-              Website Terms and Conditions of Use
+              VEDARC AI Suite - Terms and Conditions of Use
             </h1>
-            <p className="policy-date">Last updated: 20-06-2025</p>
+            <p className="policy-date">Last updated: June 2025</p>
 
             <div className="policy-section">
               <h3>1. Introduction</h3>
               <p>
-                Welcome to VEDARC TECHNOLOGIES PRIVATE LIMITED ("Company", "we", "our", or "us"). These Terms and Conditions ("Terms") govern your use of our website (www.vedarc.co.in) and any services, content, and products available through it.
-                By accessing or using the website, you agree to be bound by these Terms. If you do not agree, please do not use our website.
+                Welcome to VEDARC AI Suite ("Platform", "Service", "we", "our", or "us"), operated by VEDARC TECHNOLOGIES PRIVATE LIMITED. These Terms and Conditions ("Terms") govern your use of our AI-powered platform, including all AI agents, tools, services, and content available through vedarc.co.in.
+              </p>
+              <p>
+                By accessing or using VEDARC AI Suite, you agree to be bound by these Terms. If you do not agree, please do not use our platform.
               </p>
             </div>
 
             <div className="policy-section">
               <h3>2. Definitions</h3>
               <ul>
-                <li>"User" refers to any individual or entity who accesses or uses the website.</li>
-                <li>"Services" include all digital services provided by VEDARC, including software solutions, web development, internship offerings, and digital products.</li>
-                <li>"Client" refers to any individual, company, or organization purchasing services from VEDARC.</li>
+                <li>"User" refers to any individual or entity who accesses or uses VEDARC AI Suite.</li>
+                <li>"AI Suite" refers to our comprehensive AI platform including domain-specific AI agents, tools, and services.</li>
+                <li>"AI Agents" refers to specialized AI models and tools designed for specific domains and use cases.</li>
+                <li>"Content" includes all text, data, files, images, and information processed or generated through our platform.</li>
+                <li>"Subscription" refers to any paid access plan to VEDARC AI Suite features.</li>
               </ul>
             </div>
 
             <div className="policy-section">
-              <h3>3. Use of Website</h3>
+              <h3>3. Platform Access and Use</h3>
               <ul>
-                <li>You agree not to use the website for any unlawful purpose.</li>
-                <li>You may not copy, modify, distribute, or exploit any part of our website or services without written permission.</li>
+                <li>You must be at least 18 years old to use VEDARC AI Suite, or have parental/guardian consent.</li>
+                <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+                <li>You agree not to use the platform for any unlawful, harmful, or malicious purposes.</li>
+                <li>You may not attempt to reverse engineer, decompile, or modify any part of our AI systems.</li>
+                <li>You may not use automated systems to access our platform without prior written consent.</li>
               </ul>
             </div>
 
             <div className="policy-section">
-              <h3>4. Intellectual Property</h3>
+              <h3>4. AI Services and Limitations</h3>
+              <ul>
+                <li>Our AI agents are designed to assist and augment human capabilities, not replace professional judgment.</li>
+                <li>AI-generated content may contain inaccuracies and should be verified independently.</li>
+                <li>We do not guarantee the accuracy, completeness, or reliability of AI-generated outputs.</li>
+                <li>Users are responsible for reviewing and validating all AI-generated content before use.</li>
+                <li>AI models may be updated or modified without prior notice to improve performance.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>5. Data and Privacy</h3>
+              <ul>
+                <li>All data processing is governed by our Privacy Policy and applicable data protection laws.</li>
+                <li>You retain ownership of your input data, but grant us license to process it for service provision.</li>
+                <li>We implement appropriate security measures to protect your data.</li>
+                <li>AI-generated content may be used to improve our models unless you opt out.</li>
+                <li>We do not sell your personal data to third parties.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>6. Intellectual Property</h3>
+              <ul>
+                <li>VEDARC AI Suite, including all AI models, algorithms, and platform technology, is our intellectual property.</li>
+                <li>You retain rights to content you create using our platform, subject to these Terms.</li>
+                <li>You may not copy, distribute, or commercialize our AI models or platform technology.</li>
+                <li>Our trademarks, logos, and branding are protected and may not be used without permission.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>7. Subscription and Payment Terms</h3>
+              <ul>
+                <li>Subscription fees are billed in advance and are non-refundable except as stated in our Refund Policy.</li>
+                <li>We reserve the right to modify pricing with 30 days' notice to existing subscribers.</li>
+                <li>Failed payments may result in service suspension or termination.</li>
+                <li>All payments are processed securely through authorized payment gateways.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>8. Acceptable Use Policy</h3>
+              <ul>
+                <li>You may not use our AI services to generate harmful, illegal, or inappropriate content.</li>
+                <li>You may not attempt to manipulate or exploit our AI systems.</li>
+                <li>You may not use our platform to violate any laws or regulations.</li>
+                <li>You may not interfere with the platform's operation or other users' access.</li>
+                <li>We reserve the right to suspend or terminate accounts that violate these terms.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>9. Service Availability</h3>
+              <ul>
+                <li>We strive to maintain 99.9% uptime but do not guarantee uninterrupted service.</li>
+                <li>Scheduled maintenance will be announced in advance when possible.</li>
+                <li>We are not liable for service interruptions due to factors beyond our control.</li>
+                <li>Service levels may vary based on your subscription tier.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>10. Limitation of Liability</h3>
+              <ul>
+                <li>Our total liability shall not exceed the amount paid by you in the 12 months preceding the claim.</li>
+                <li>We are not liable for indirect, incidental, or consequential damages.</li>
+                <li>We are not responsible for decisions made based on AI-generated content.</li>
+                <li>Our liability is limited to the extent permitted by applicable law.</li>
+              </ul>
+            </div>
+
+            <div className="policy-section">
+              <h3>11. Indemnification</h3>
               <p>
-                All content on this website including logos, graphics, text, images, software, and design is the intellectual property of VEDARC TECHNOLOGIES PRIVATE LIMITED. Unauthorized use is strictly prohibited.
+                You agree to indemnify and hold harmless VEDARC TECHNOLOGIES PRIVATE LIMITED from any claims, damages, or expenses arising from your use of VEDARC AI Suite or violation of these Terms.
               </p>
             </div>
 
             <div className="policy-section">
-              <h3>5. Service Terms</h3>
+              <h3>12. Termination</h3>
               <ul>
-                <li>All service requests must be submitted in writing.</li>
-                <li>We reserve the right to accept or reject any project based on feasibility and internal policies.</li>
-                <li>Project timelines and deliverables will be discussed and confirmed in a written agreement or email before the start of work.</li>
+                <li>You may cancel your subscription at any time through your account settings.</li>
+                <li>We may terminate your access for violation of these Terms or non-payment.</li>
+                <li>Upon termination, your access to the platform will cease immediately.</li>
+                <li>Provisions relating to intellectual property, liability, and indemnification survive termination.</li>
               </ul>
             </div>
 
             <div className="policy-section">
-              <h3>6. Payment Terms</h3>
-              <ul>
-                <li>Invoices must be paid in full as per the agreed schedule before the release of deliverables.</li>
-                <li>All payments are non-refundable unless explicitly stated in a signed agreement.</li>
-                <li>We reserve the right to suspend or terminate services for delayed or incomplete payments.</li>
-              </ul>
-            </div>
-
-            <div className="policy-section">
-              <h3>7. Internships</h3>
-              <ul>
-                <li>Internships offered by VEDARC are subject to availability and selection criteria.</li>
-                <li>Participation in our internship programs does not guarantee employment.</li>
-                <li>Completion certificates and LORs (if applicable) are issued only upon successful completion of all deliverables, tasks and payment (if required).</li>
-              </ul>
-            </div>
-
-            <div className="policy-section">
-              <h3>8. Limitation of Liability</h3>
-              <ul>
-                <li>We are not responsible for any direct, indirect, incidental, or consequential damages resulting from your use of the website or services.</li>
-                <li>We do not guarantee uninterrupted access to the website or error-free content.</li>
-              </ul>
-            </div>
-
-            <div className="policy-section">
-              <h3>9. External Links</h3>
+              <h3>13. Changes to Terms</h3>
               <p>
-                Our website may contain links to third-party sites. We are not responsible for the content, privacy policies, or practices of any third-party website or service.
+                We reserve the right to update these Terms at any time. Material changes will be communicated via email or platform notification. Continued use constitutes acceptance of updated Terms.
               </p>
             </div>
 
             <div className="policy-section">
-              <h3>10. Changes to Terms</h3>
+              <h3>14. Governing Law and Disputes</h3>
               <p>
-                We reserve the right to update or modify these Terms at any time. Changes will be effective upon posting on the website. Continued use of the site constitutes your acceptance of those changes.
+                These Terms shall be governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Hyderabad, Telangana. We encourage resolution through good faith discussions before legal proceedings.
               </p>
             </div>
 
             <div className="policy-section">
-              <h3>11. Governing Law</h3>
+              <h3>15. Contact Information</h3>
               <p>
-                These Terms shall be governed by and construed in accordance with the laws of India. Any disputes arising shall be subject to the jurisdiction of the courts in Hyderabad, Telangana.
-              </p>
-            </div>
-
-            <div className="policy-section">
-              <h3>12. Contact Us</h3>
-              <p>
-                If you have any questions about these Terms, please contact us at:
+                For questions about these Terms or VEDARC AI Suite, please contact us:
                 <br />
                 <strong>Email:</strong> tech@vedarc.co.in | <strong>Phone:</strong> +91 8897140410
                 <br />

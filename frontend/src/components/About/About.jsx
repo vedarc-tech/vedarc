@@ -12,39 +12,44 @@ export default function About() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState(null)
 
-  // Tech focus areas
-  const focusAreas = [
-      {
-          icon: <FaLink className="tech-icon" />,
-          title: "Web Development",
-          desc: "Building scalable, secure, and high-performance web applications"
-        },
-        {
-            icon: <FaAtom className="tech-icon" />,
-            title: "Full Stack Designs",
-            desc: "End-to-end solutions from frontend to backend with cutting-edge technologies"
-        },
-        {
-          icon: <FaBrain className="tech-icon" />,
-          title: "AI & ML",
-          desc: "Transforming industries with advanced neural networks and deep learning"
-        },
-        // New services below
-        {
-          icon: <FaPaintBrush className="tech-icon" />,
-          title: "UI/UX Designs for Websites",
-          desc: "Crafting beautiful, user-centric interfaces and seamless digital experiences"
-        },
-        {
-          icon: <FaRobot className="tech-icon" />,
-          title: "AI Agents and AI Employees",
-          desc: "Empowering businesses with intelligent automation and virtual workforce solutions"
-        },
-        {
-          icon: <FaChartLine className="tech-icon" />,
-          title: "SEO Growth & Digital Visibility",
-          desc: "Boosting your online presence and driving organic growth through proven SEO strategies"
-        },
+  // VEDARC AI Suite Modules
+  const aiModules = [
+    {
+      icon: <FaRobot className="tech-icon" />,
+      title: "Business Solutions",
+      desc: "AI Receptionist, Scheduler, CRM Agent, Invoice generation, Lead Nurturing Bots",
+      features: ["24/7 client handling", "Automated onboarding", "Smart calendar management", "Email follow-ups"]
+    },
+    {
+      icon: <FaBrain className="tech-icon" />,
+      title: "Education & Learning",
+      desc: "Interactive AI Teaching Assistant, Quiz Generator, Exam Evaluation, Study Plan Bot",
+      features: ["Smart content summarization", "Automated evaluation", "Personalized learning paths", "Time management"]
+    },
+    {
+      icon: <FaAtom className="tech-icon" />,
+      title: "Research & Development",
+      desc: "AI Literature Search, Paper Summarizer, Auto Citation, Research Progress Tracker",
+      features: ["Literature analysis", "Citation management", "Progress tracking", "Data insights"]
+    },
+    {
+      icon: <FaShieldAlt className="tech-icon" />,
+      title: "Productivity Suite",
+      desc: "AI Meeting Transcriber, Mail Organizer, Task Prioritization, File Finder",
+      features: ["Voice transcription", "Email automation", "Smart task management", "Digital navigation"]
+    },
+    {
+      icon: <FaChartLine className="tech-icon" />,
+      title: "SEO & Digital Marketing",
+      desc: "AI SEO Planner, Keyword Analyzer, Competitor Audit, Content Rewriting Assistant",
+      features: ["SEO optimization", "Competitor analysis", "Content enhancement", "Performance tracking"]
+    },
+    {
+      icon: <FaLink className="tech-icon" />,
+      title: "Developer Tools",
+      desc: "AI Code Explainer, Bug Detection, Boilerplate Generator, API Documentation Helper",
+      features: ["Code optimization", "Bug prevention", "Documentation automation", "Development acceleration"]
+    }
   ]
 
   // Tech stack items
@@ -70,7 +75,7 @@ export default function About() {
         transition={{ duration: 0.8 }}
         data-text=""
       >
-        BUILDING THE FUTURE OF TECH
+        UNIFIED AI AGENT ECOSYSTEM
       </motion.h2>
 
       {/* Animated Circuit Divider */}
@@ -87,25 +92,30 @@ export default function About() {
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ delay: 0.3, duration: 0.6 }}
       >
-        Merging bleeding-edge research with scalable enterprise solutions
+        One platform. 20+ AI agents. Unlimited possibilities for businesses, education & research
       </motion.p>
 
-      {/* Focus Areas Grid */}
+      {/* VEDARC AI Suite Modules Grid */}
       <div className="focus-grid">
-        {focusAreas.map((area, index) => (
+        {aiModules.map((module, index) => (
           <motion.div
-            key={area.title}
+            key={module.title}
             className="tech-card"
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
             whileHover={{ y: -10 }}
-            onClick={() => { setSelectedService(area); setModalOpen(true); }}
+            onClick={() => { setSelectedService(module); setModalOpen(true); }}
           >
             <div className="card-glow"></div>
-            {area.icon}
-            <h3>{area.title}</h3>
-            <p>{area.desc}</p>
+            {module.icon}
+            <h3>{module.title}</h3>
+            <p>{module.desc}</p>
+            <div className="module-features">
+              {module.features.slice(0, 2).map((feature, idx) => (
+                <span key={idx} className="feature-tag">{feature}</span>
+              ))}
+            </div>
           </motion.div>
         ))}
       </div>

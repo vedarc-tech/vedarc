@@ -29,14 +29,20 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', to: 'hero' },
-    { name: 'About', to: 'about' },
-    { name: 'Projects', to: 'projects' },
-    { name: 'Contact', to: 'contact' }
+    { name: 'Roadmap', to: 'roadmap' },
+    { name: 'Case Studies', to: 'case-studies' },
+    { name: 'FAQ', to: 'faq' },
+    { name: 'Investors', to: '/investors' },
+    { name: 'Team', to: '/team' },
+    { name: 'Contact', to: '/contact' }
   ]
 
   const handleNavClick = (section) => {
     setActiveLink(section)
-    if (location.pathname !== '/') {
+    if (section.startsWith('/')) {
+      // External route
+      navigate(section)
+    } else if (location.pathname !== '/') {
       navigate('/')
       scrollToSection(section)
     } else {
@@ -88,7 +94,7 @@ export default function Navbar() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
             <span id='logo-container'>
-            <span className="glitch" data-text=""> <img src={logo} alt="" /> VEDARC</span>
+            <span className="glitch" data-text=""> <img src={logo} alt="" /></span>
             </span>
           </button>
         </motion.div>

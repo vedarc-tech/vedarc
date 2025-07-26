@@ -55,27 +55,52 @@ export default function HRDashboard() {
   const [applicationsPage, setApplicationsPage] = useState(1)
   const [applicationsTotal, setApplicationsTotal] = useState(0)
   const [applicationsPages, setApplicationsPages] = useState(0)
-  const [activeTab, setActiveTab] = useState('registrations') // 'registrations' or 'applications'
+  
+  // New inquiry states
+  const [waitlistSubscribers, setWaitlistSubscribers] = useState([])
+  const [waitlistLoading, setWaitlistLoading] = useState(true)
+  const [waitlistPage, setWaitlistPage] = useState(1)
+  const [waitlistTotal, setWaitlistTotal] = useState(0)
+  
+  const [contactInquiries, setContactInquiries] = useState([])
+  const [contactLoading, setContactLoading] = useState(true)
+  const [contactPage, setContactPage] = useState(1)
+  const [contactTotal, setContactTotal] = useState(0)
+  
+  const [investorInquiries, setInvestorInquiries] = useState([])
+  const [investorLoading, setInvestorLoading] = useState(true)
+  const [investorPage, setInvestorPage] = useState(1)
+  const [investorTotal, setInvestorTotal] = useState(0)
+  
+  const [activeTab, setActiveTab] = useState('registrations') // 'registrations', 'applications', 'waitlist', 'contact', 'investor'
 
   useEffect(() => {
     fetchRegistrations()
     fetchStatistics()
     fetchPayments()
     fetchAvailableTracks()
-    fetchApplications()
     
     // Set up auto-refresh every 2 minutes
     const autoRefreshInterval = setInterval(() => {
       fetchRegistrations()
       fetchStatistics()
       fetchPayments()
-      if (activeTab === 'applications') {
-        fetchApplications()
-      }
     }, 120000) // 2 minutes
     
     return () => clearInterval(autoRefreshInterval)
-  }, [filters, activeTab, applicationsPage])
+  }, [filters])
+
+  useEffect(() => {
+    if (activeTab === 'applications') {
+      fetchApplications()
+    } else if (activeTab === 'waitlist') {
+      fetchWaitlistSubscribers()
+    } else if (activeTab === 'contact') {
+      fetchContactInquiries()
+    } else if (activeTab === 'investor') {
+      fetchInvestorInquiries()
+    }
+  }, [activeTab, applicationsPage, waitlistPage, contactPage, investorPage])
 
   const fetchRegistrations = async (forceRefresh = false) => {
     setLoading(true)
@@ -136,6 +161,48 @@ export default function HRDashboard() {
       setError('Failed to load applications')
     } finally {
       setApplicationsLoading(false)
+    }
+  }
+
+  const fetchWaitlistSubscribers = async () => {
+    setWaitlistLoading(true)
+    try {
+      const data = await hrAPI.getWaitlistSubscribers(waitlistPage, 50)
+      setWaitlistSubscribers(data.subscribers || [])
+      setWaitlistTotal(data.total || 0)
+    } catch (error) {
+      console.error('Error fetching waitlist subscribers:', error)
+      setError('Failed to load waitlist subscribers')
+    } finally {
+      setWaitlistLoading(false)
+    }
+  }
+
+  const fetchContactInquiries = async () => {
+    setContactLoading(true)
+    try {
+      const data = await hrAPI.getContactInquiries(contactPage, 50)
+      setContactInquiries(data.inquiries || [])
+      setContactTotal(data.total || 0)
+    } catch (error) {
+      console.error('Error fetching contact inquiries:', error)
+      setError('Failed to load contact inquiries')
+    } finally {
+      setContactLoading(false)
+    }
+  }
+
+  const fetchInvestorInquiries = async () => {
+    setInvestorLoading(true)
+    try {
+      const data = await hrAPI.getInvestorInquiries(investorPage, 50)
+      setInvestorInquiries(data.inquiries || [])
+      setInvestorTotal(data.total || 0)
+    } catch (error) {
+      console.error('Error fetching investor inquiries:', error)
+      setError('Failed to load investor inquiries')
+    } finally {
+      setInvestorLoading(false)
     }
   }
 
@@ -1027,6 +1094,30 @@ export default function HRDashboard() {
             AI Engineer Applications
             {applicationsTotal > 0 && <span className="badge">{applicationsTotal}</span>}
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'waitlist' ? 'active' : ''}`}
+            onClick={() => setActiveTab('waitlist')}
+          >
+            <FaEnvelope />
+            Waitlist Subscribers
+            {waitlistTotal > 0 && <span className="badge">{waitlistTotal}</span>}
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'contact' ? 'active' : ''}`}
+            onClick={() => setActiveTab('contact')}
+          >
+            <FaEnvelope />
+            Contact Inquiries
+            {contactTotal > 0 && <span className="badge">{contactTotal}</span>}
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'investor' ? 'active' : ''}`}
+            onClick={() => setActiveTab('investor')}
+          >
+            <FaEnvelope />
+            Investor Inquiries
+            {investorTotal > 0 && <span className="badge">{investorTotal}</span>}
+          </button>
         </motion.div>
 
         {/* Applications Section */}
@@ -1162,6 +1253,233 @@ export default function HRDashboard() {
                     </button>
                   </div>
                 )}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Waitlist Subscribers Section */}
+        {activeTab === 'waitlist' && (
+          <motion.div
+            className="waitlist-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="section-header">
+              <div className="header-left">
+                <h2>Waitlist Subscribers</h2>
+                <span className="count">{waitlistTotal} subscribers</span>
+              </div>
+              <motion.button
+                className="refresh-btn"
+                onClick={() => fetchWaitlistSubscribers()}
+                disabled={waitlistLoading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {waitlistLoading ? <FaSpinner className="spinner" /> : <FaSearch />}
+                Refresh
+              </motion.button>
+            </div>
+
+            {waitlistLoading ? (
+              <div className="loading-container">
+                <FaSpinner className="loading-spinner" />
+                <p>Loading waitlist subscribers...</p>
+              </div>
+            ) : waitlistSubscribers.length === 0 ? (
+              <div className="empty-state">
+                <FaEnvelope />
+                <h3>No waitlist subscribers found</h3>
+                <p>There are no waitlist subscribers yet.</p>
+              </div>
+            ) : (
+              <div className="waitlist-list-container">
+                <table className="waitlist-list-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Subscribed Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {waitlistSubscribers.map((subscriber, index) => (
+                      <tr key={subscriber._id || index}>
+                        <td>{index + 1}</td>
+                        <td>{subscriber.name}</td>
+                        <td>{subscriber.email}</td>
+                        <td>
+                          <span className={`status-badge ${subscriber.status === 'active' ? 'completed' : 'pending'}`}>
+                            {subscriber.status}
+                          </span>
+                        </td>
+                        <td>{new Date(subscriber.subscribed_at).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Contact Inquiries Section */}
+        {activeTab === 'contact' && (
+          <motion.div
+            className="contact-inquiries-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="section-header">
+              <div className="header-left">
+                <h2>Contact Inquiries</h2>
+                <span className="count">{contactTotal} inquiries</span>
+              </div>
+              <motion.button
+                className="refresh-btn"
+                onClick={() => fetchContactInquiries()}
+                disabled={contactLoading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {contactLoading ? <FaSpinner className="spinner" /> : <FaSearch />}
+                Refresh
+              </motion.button>
+            </div>
+
+            {contactLoading ? (
+              <div className="loading-container">
+                <FaSpinner className="loading-spinner" />
+                <p>Loading contact inquiries...</p>
+              </div>
+            ) : contactInquiries.length === 0 ? (
+              <div className="empty-state">
+                <FaEnvelope />
+                <h3>No contact inquiries found</h3>
+                <p>There are no contact inquiries yet.</p>
+              </div>
+            ) : (
+              <div className="contact-inquiries-list-container">
+                <table className="contact-inquiries-list-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Company</th>
+                      <th>Subject</th>
+                      <th>Status</th>
+                      <th>Submitted Date</th>
+                      <th>Message</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contactInquiries.map((inquiry, index) => (
+                      <tr key={inquiry._id || index}>
+                        <td>{index + 1}</td>
+                        <td>{inquiry.name}</td>
+                        <td>{inquiry.email}</td>
+                        <td>{inquiry.company || 'N/A'}</td>
+                        <td>{inquiry.subject || 'General Inquiry'}</td>
+                        <td>
+                          <span className={`status-badge ${inquiry.status === 'new' ? 'pending' : 'completed'}`}>
+                            {inquiry.status}
+                          </span>
+                        </td>
+                        <td>{new Date(inquiry.submitted_at).toLocaleDateString()}</td>
+                        <td>
+                          <div className="message-preview">
+                            {inquiry.message.length > 50 ? `${inquiry.message.substring(0, 50)}...` : inquiry.message}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Investor Inquiries Section */}
+        {activeTab === 'investor' && (
+          <motion.div
+            className="investor-inquiries-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="section-header">
+              <div className="header-left">
+                <h2>Investor Inquiries</h2>
+                <span className="count">{investorTotal} inquiries</span>
+              </div>
+              <motion.button
+                className="refresh-btn"
+                onClick={() => fetchInvestorInquiries()}
+                disabled={investorLoading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {investorLoading ? <FaSpinner className="spinner" /> : <FaSearch />}
+                Refresh
+              </motion.button>
+            </div>
+
+            {investorLoading ? (
+              <div className="loading-container">
+                <FaSpinner className="loading-spinner" />
+                <p>Loading investor inquiries...</p>
+              </div>
+            ) : investorInquiries.length === 0 ? (
+              <div className="empty-state">
+                <FaEnvelope />
+                <h3>No investor inquiries found</h3>
+                <p>There are no investor inquiries yet.</p>
+              </div>
+            ) : (
+              <div className="investor-inquiries-list-container">
+                <table className="investor-inquiries-list-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Company</th>
+                      <th>Investor Type</th>
+                      <th>Status</th>
+                      <th>Submitted Date</th>
+                      <th>Message</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {investorInquiries.map((inquiry, index) => (
+                      <tr key={inquiry._id || index}>
+                        <td>{index + 1}</td>
+                        <td>{inquiry.full_name}</td>
+                        <td>{inquiry.email}</td>
+                        <td>{inquiry.company || 'N/A'}</td>
+                        <td>{inquiry.investor_type}</td>
+                        <td>
+                          <span className={`status-badge ${inquiry.status === 'new' ? 'pending' : 'completed'}`}>
+                            {inquiry.status}
+                          </span>
+                        </td>
+                        <td>{new Date(inquiry.submitted_at).toLocaleDateString()}</td>
+                        <td>
+                          <div className="message-preview">
+                            {inquiry.message ? (inquiry.message.length > 50 ? `${inquiry.message.substring(0, 50)}...` : inquiry.message) : 'No message'}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </motion.div>

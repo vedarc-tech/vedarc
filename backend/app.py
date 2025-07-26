@@ -4524,14 +4524,14 @@ def get_internship_application_email_template(applicant_name, otp):
                   <td align='center' style='padding-bottom: 8px;'>
                     <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
                     <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
-                      AI Internship Application Verification
+                      AI Engineer (Part Time Application) Verification
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
                     <p style='margin: 0 0 12px 0;'>Dear <b>{applicant_name}</b>,</p>
-                    <p style='margin: 0 0 12px 0;'>Thank you for your interest in our AI Internship Program!</p>
+                    <p style='margin: 0 0 12px 0;'>Thank you for your interest in our AI Engineer (Part Time Application) Program!</p>
                     <p style='margin: 0 0 16px 0;'>Please use the following verification code to complete your application:</p>
                     <div style='background: #1a1b2e; border-radius: 8px; padding: 20px; margin-bottom: 16px; border: 1px solid #4f8cff33; text-align: center;'>
                       <div style='color: #4f8cff; font-size: 24px; font-weight: 700; letter-spacing: 4px;'>{otp}</div>
@@ -4564,14 +4564,14 @@ def get_internship_application_confirmation_email(application_data):
                   <td align='center' style='padding-bottom: 8px;'>
                     <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
                     <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
-                      AI Internship Application Received
+                      AI Engineer (Part Time Application) Application Received
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
                     <p style='margin: 0 0 12px 0;'>Dear <b>{application_data['fullName']}</b>,</p>
-                    <p style='margin: 0 0 12px 0;'>Thank you for submitting your application for our AI Internship Program!</p>
+                    <p style='margin: 0 0 12px 0;'>Thank you for submitting your application for our AI Engineer - Part Time Program!</p>
                     <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #4f8cff33;'>
                       <div style='margin-bottom: 8px;'><b>Application Details:</b></div>
                       <div style='margin-bottom: 4px;'>• <b>Name:</b> {application_data['fullName']}</div>
@@ -4610,13 +4610,13 @@ def get_internship_application_notification_email(application_data):
                   <td align='center' style='padding-bottom: 8px;'>
                     <h1 style='margin: 0; color: #4f8cff; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 8px #4f8cff99;'>VEDARC TECHNOLOGIES PRIVATE LIMITED</h1>
                     <div style='color: #ff00cc; font-size: 16px; font-weight: 600; margin-top: 2px; margin-bottom: 18px; letter-spacing: 0.5px; text-shadow: 0 0 6px #ff00cc55;'>
-                      New AI Internship Application Received
+                      New AI Engineer (Part Time Application) Application Received
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td style='color: #e0e6f8; font-size: 16px; padding-bottom: 16px;'>
-                    <p style='margin: 0 0 12px 0;'>A new AI Internship application has been submitted:</p>
+                    <p style='margin: 0 0 12px 0;'>A new AI Engineer (Part Time Application) application has been submitted:</p>
                     <div style='background: #1a1b2e; border-radius: 8px; padding: 16px; margin-bottom: 16px; border: 1px solid #4f8cff33;'>
                       <div style='margin-bottom: 8px;'><b>Applicant Details:</b></div>
                       <div style='margin-bottom: 4px;'>• <b>Name:</b> {application_data['fullName']}</div>
@@ -4671,7 +4671,7 @@ def send_internship_application_otp():
         
         # Send OTP email
         email_body = get_internship_application_email_template(full_name, otp)
-        send_email(email, 'VEDARC AI Internship Application - Email Verification', email_body)
+        send_email(email, 'VEDARC AI Engineer (Part Time Application) - Email Verification', email_body)
         
         return jsonify({'message': 'OTP sent successfully'}), 200
         
@@ -4765,11 +4765,11 @@ def submit_internship_application():
         
         # Send confirmation email to applicant
         confirmation_email = get_internship_application_confirmation_email(application_data)
-        send_email(email, 'VEDARC AI Internship Application - Confirmation', confirmation_email)
+        send_email(email, 'VEDARC AI Engineer (Part Time Application) - Confirmation', confirmation_email)
         
         # Send notification email to HR
         notification_email = get_internship_application_notification_email(application_data)
-        send_email('tech@vedarc.co.in', f'New AI Internship Application - {full_name}', notification_email, attachment_path=file_path)
+        send_email('tech@vedarc.co.in', f'New AI Engineer (Part Time Application) - {full_name}', notification_email, attachment_path=file_path)
         
         # Clean up OTP
         del otp_store[email]
@@ -4873,6 +4873,326 @@ def hr_delete_application(application_id):
     except Exception as e:
         print(f"Error deleting application: {e}")
         return jsonify({'error': 'Failed to delete application'}), 500
+
+# ============================================================================
+# WAITLIST, CONTACT, AND INVESTOR INQUIRY ENDPOINTS
+# ============================================================================
+
+@app.route('/api/waitlist/subscribe', methods=['POST'])
+def waitlist_subscribe():
+    try:
+        data = request.get_json()
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        
+        if not name or not email:
+            return jsonify({'error': 'Name and email are required'}), 400
+        
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Check if already subscribed
+        existing = db.waitlist.find_one({'email': email})
+        if existing:
+            return jsonify({'error': 'Email already subscribed to waitlist'}), 409
+        
+        # Add to waitlist
+        waitlist_entry = {
+            'name': name,
+            'email': email,
+            'subscribed_at': datetime.utcnow(),
+            'status': 'active'
+        }
+        
+        db.waitlist.insert_one(waitlist_entry)
+        
+        # Send notification email to tech@vedarc.co.in
+        subject = f"New Waitlist Subscription: {name}"
+        body = f"""
+        New waitlist subscription received:
+        
+        Name: {name}
+        Email: {email}
+        Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}
+        
+        Total waitlist subscribers: {db.waitlist.count_documents({})}
+        """
+        
+        try:
+            send_email('tech@vedarc.co.in', subject, body)
+        except Exception as e:
+            print(f"Failed to send waitlist notification email: {e}")
+        
+        return jsonify({'message': 'Successfully subscribed to waitlist!'})
+        
+    except Exception as e:
+        print(f"Error in waitlist subscription: {e}")
+        return jsonify({'error': 'Failed to subscribe to waitlist'}), 500
+
+@app.route('/api/contact/submit', methods=['POST'])
+def contact_submit():
+    try:
+        data = request.get_json()
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        company = data.get('company', '').strip()
+        subject = data.get('subject', '').strip()
+        message = data.get('message', '').strip()
+        
+        if not name or not email or not message:
+            return jsonify({'error': 'Name, email, and message are required'}), 400
+        
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Store contact inquiry
+        contact_entry = {
+            'name': name,
+            'email': email,
+            'company': company,
+            'subject': subject,
+            'message': message,
+            'submitted_at': datetime.utcnow(),
+            'status': 'new'
+        }
+        
+        db.contact_inquiries.insert_one(contact_entry)
+        
+        # Send notification email to tech@vedarc.co.in
+        subject = f"New Contact Inquiry: {subject or 'General Inquiry'}"
+        body = f"""
+        New contact inquiry received:
+        
+        Name: {name}
+        Email: {email}
+        Company: {company or 'Not specified'}
+        Subject: {subject or 'General Inquiry'}
+        Message: {message}
+        
+        Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}
+        
+        Total contact inquiries: {db.contact_inquiries.count_documents({})}
+        """
+        
+        try:
+            send_email('tech@vedarc.co.in', subject, body)
+        except Exception as e:
+            print(f"Failed to send contact notification email: {e}")
+        
+        return jsonify({'message': 'Thank you for your message! We\'ll get back to you soon.'})
+        
+    except Exception as e:
+        print(f"Error in contact submission: {e}")
+        return jsonify({'error': 'Failed to submit contact form'}), 500
+
+@app.route('/api/investor/inquiry', methods=['POST'])
+def investor_inquiry():
+    try:
+        data = request.get_json()
+        full_name = data.get('fullName', '').strip()
+        email = data.get('email', '').strip().lower()
+        company = data.get('company', '').strip()
+        investor_type = data.get('investorType', '').strip()
+        message = data.get('message', '').strip()
+        
+        if not full_name or not email or not investor_type:
+            return jsonify({'error': 'Full name, email, and investor type are required'}), 400
+        
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Store investor inquiry
+        investor_entry = {
+            'full_name': full_name,
+            'email': email,
+            'company': company,
+            'investor_type': investor_type,
+            'message': message,
+            'submitted_at': datetime.utcnow(),
+            'status': 'new'
+        }
+        
+        db.investor_inquiries.insert_one(investor_entry)
+        
+        # Send notification email to tech@vedarc.co.in
+        subject = f"New Investor Inquiry: {full_name} from {company or 'Unknown Company'}"
+        body = f"""
+        New investor inquiry received:
+        
+        Name: {full_name}
+        Email: {email}
+        Company: {company or 'Not specified'}
+        Investor Type: {investor_type}
+        Message: {message or 'No additional message'}
+        
+        Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}
+        
+        Total investor inquiries: {db.investor_inquiries.count_documents({})}
+        """
+        
+        try:
+            send_email('tech@vedarc.co.in', subject, body)
+        except Exception as e:
+            print(f"Failed to send investor notification email: {e}")
+        
+        return jsonify({'message': 'Thank you for your interest! We\'ll contact you within 24 hours.'})
+        
+    except Exception as e:
+        print(f"Error in investor inquiry: {e}")
+        return jsonify({'error': 'Failed to submit investor inquiry'}), 500
+
+# ============================================================================
+# HR DASHBOARD EXTENDED ENDPOINTS
+# ============================================================================
+
+@app.route('/api/hr/waitlist-subscribers', methods=['GET'])
+@jwt_required()
+def hr_get_waitlist_subscribers():
+    try:
+        current_user = get_jwt_identity()
+        user_data = db.users.find_one({'_id': ObjectId(current_user)})
+        
+        if not user_data or user_data.get('user_type') != 'hr':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Get waitlist subscribers with pagination
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 50))
+        skip = (page - 1) * limit
+        
+        subscribers = list(db.waitlist.find().sort('subscribed_at', -1).skip(skip).limit(limit))
+        total = db.waitlist.count_documents({})
+        
+        # Convert ObjectId to string for JSON serialization
+        for subscriber in subscribers:
+            subscriber['_id'] = str(subscriber['_id'])
+            subscriber['subscribed_at'] = subscriber['subscribed_at'].isoformat()
+        
+        return jsonify({
+            'subscribers': subscribers,
+            'total': total,
+            'page': page,
+            'pages': (total + limit - 1) // limit
+        })
+        
+    except Exception as e:
+        print(f"Error fetching waitlist subscribers: {e}")
+        return jsonify({'error': 'Failed to fetch waitlist subscribers'}), 500
+
+@app.route('/api/hr/contact-inquiries', methods=['GET'])
+@jwt_required()
+def hr_get_contact_inquiries():
+    try:
+        current_user = get_jwt_identity()
+        user_data = db.users.find_one({'_id': ObjectId(current_user)})
+        
+        if not user_data or user_data.get('user_type') != 'hr':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Get contact inquiries with pagination
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 50))
+        skip = (page - 1) * limit
+        
+        inquiries = list(db.contact_inquiries.find().sort('submitted_at', -1).skip(skip).limit(limit))
+        total = db.contact_inquiries.count_documents({})
+        
+        # Convert ObjectId to string for JSON serialization
+        for inquiry in inquiries:
+            inquiry['_id'] = str(inquiry['_id'])
+            inquiry['submitted_at'] = inquiry['submitted_at'].isoformat()
+        
+        return jsonify({
+            'inquiries': inquiries,
+            'total': total,
+            'page': page,
+            'pages': (total + limit - 1) // limit
+        })
+        
+    except Exception as e:
+        print(f"Error fetching contact inquiries: {e}")
+        return jsonify({'error': 'Failed to fetch contact inquiries'}), 500
+
+@app.route('/api/hr/investor-inquiries', methods=['GET'])
+@jwt_required()
+def hr_get_investor_inquiries():
+    try:
+        current_user = get_jwt_identity()
+        user_data = db.users.find_one({'_id': ObjectId(current_user)})
+        
+        if not user_data or user_data.get('user_type') != 'hr':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Get investor inquiries with pagination
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 50))
+        skip = (page - 1) * limit
+        
+        inquiries = list(db.investor_inquiries.find().sort('submitted_at', -1).skip(skip).limit(limit))
+        total = db.investor_inquiries.count_documents({})
+        
+        # Convert ObjectId to string for JSON serialization
+        for inquiry in inquiries:
+            inquiry['_id'] = str(inquiry['_id'])
+            inquiry['submitted_at'] = inquiry['submitted_at'].isoformat()
+        
+        return jsonify({
+            'inquiries': inquiries,
+            'total': total,
+            'page': page,
+            'pages': (total + limit - 1) // limit
+        })
+        
+    except Exception as e:
+        print(f"Error fetching investor inquiries: {e}")
+        return jsonify({'error': 'Failed to fetch investor inquiries'}), 500
+
+@app.route('/api/hr/update-inquiry-status', methods=['POST'])
+@jwt_required()
+def hr_update_inquiry_status():
+    try:
+        current_user = get_jwt_identity()
+        user_data = db.users.find_one({'_id': ObjectId(current_user)})
+        
+        if not user_data or user_data.get('user_type') != 'hr':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        data = request.get_json()
+        inquiry_id = data.get('inquiry_id')
+        inquiry_type = data.get('inquiry_type')  # 'contact', 'investor', 'waitlist'
+        new_status = data.get('status')
+        notes = data.get('notes', '')
+        
+        if not inquiry_id or not inquiry_type or not new_status:
+            return jsonify({'error': 'Inquiry ID, type, and status are required'}), 400
+        
+        # Update status based on inquiry type
+        if inquiry_type == 'contact':
+            result = db.contact_inquiries.update_one(
+                {'_id': ObjectId(inquiry_id)},
+                {'$set': {'status': new_status, 'notes': notes, 'updated_at': datetime.utcnow()}}
+            )
+        elif inquiry_type == 'investor':
+            result = db.investor_inquiries.update_one(
+                {'_id': ObjectId(inquiry_id)},
+                {'$set': {'status': new_status, 'notes': notes, 'updated_at': datetime.utcnow()}}
+            )
+        elif inquiry_type == 'waitlist':
+            result = db.waitlist.update_one(
+                {'_id': ObjectId(inquiry_id)},
+                {'$set': {'status': new_status, 'notes': notes, 'updated_at': datetime.utcnow()}}
+            )
+        else:
+            return jsonify({'error': 'Invalid inquiry type'}), 400
+        
+        if result.modified_count == 0:
+            return jsonify({'error': 'Inquiry not found'}), 404
+        
+        return jsonify({'message': 'Status updated successfully'})
+        
+    except Exception as e:
+        print(f"Error updating inquiry status: {e}")
+        return jsonify({'error': 'Failed to update inquiry status'}), 500
 
 # --- SYSTEM SETTINGS ENDPOINTS ---
 

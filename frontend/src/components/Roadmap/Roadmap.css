@@ -1,0 +1,201 @@
+.roadmap-section {
+  padding: 100px 20px;
+  background: var(--bg-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.roadmap-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(0, 249, 255, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(255, 45, 117, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.roadmap-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.roadmap-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.roadmap-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin-bottom: 20px;
+  background: var(--gradient-diagonal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.roadmap-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.timeline-container {
+  position: relative;
+  margin-bottom: 60px;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--neon-magenta), var(--neon-cyan));
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.timeline-item:nth-child(odd) {
+  flex-direction: row;
+}
+
+.timeline-item:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.timeline-marker {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.marker-dot {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(45deg, var(--neon-magenta), var(--neon-cyan));
+  border-radius: 50%;
+  border: 4px solid var(--bg-dark);
+  box-shadow: 0 0 20px rgba(0, 249, 255, 0.5);
+  position: relative;
+}
+
+.marker-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-magenta), var(--neon-cyan));
+}
+
+.timeline-item:nth-child(odd) .marker-line {
+  left: 100%;
+}
+
+.timeline-item:nth-child(even) .marker-line {
+  right: 100%;
+  left: auto;
+}
+
+.timeline-content {
+  flex: 1;
+  padding: 0 40px;
+  max-width: 400px;
+}
+
+.milestone-quarter {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  color: var(--neon-magenta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.milestone-title {
+  font-size: 1.5rem;
+  color: var(--text-glowing);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.milestone-description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.roadmap-cta {
+  text-align: center;
+}
+
+.cta-button {
+  background: linear-gradient(45deg, var(--neon-magenta), var(--neon-cyan));
+  color: var(--text-glowing);
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta));
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .roadmap-section {
+    padding: 80px 20px;
+  }
+  
+  .timeline-container::before {
+    left: 20px;
+  }
+  
+  .timeline-item {
+    flex-direction: row !important;
+    margin-left: 20px;
+  }
+  
+  .timeline-content {
+    padding-left: 40px;
+    padding-right: 0;
+    max-width: none;
+  }
+  
+  .marker-line {
+    display: none;
+  }
+  
+  .roadmap-header {
+    margin-bottom: 60px;
+  }
+  
+  .roadmap-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  
+  .roadmap-subtitle {
+    font-size: 1rem;
+  }
+} 

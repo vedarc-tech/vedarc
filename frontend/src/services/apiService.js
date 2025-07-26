@@ -139,7 +139,25 @@ export const publicAPI = {
       method: 'POST',
       body: data
     }).then(response => response.json())
-  }
+  },
+  
+  // Waitlist subscription
+  subscribeToWaitlist: (data) => apiRequest('/waitlist/subscribe', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }),
+  
+  // Contact form submission
+  submitContactForm: (data) => apiRequest('/contact/submit', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }),
+  
+  // Investor inquiry submission
+  submitInvestorInquiry: (data) => apiRequest('/investor/inquiry', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 }
 
 // ============================================================================
@@ -338,6 +356,21 @@ export const hrAPI = {
   // Delete application
   deleteApplication: (applicationId) => apiRequest(`/hr/internship-applications/${applicationId}`, {
     method: 'DELETE'
+  }),
+  
+  // Get waitlist subscribers
+  getWaitlistSubscribers: (page = 1, limit = 50) => apiRequest(`/hr/waitlist-subscribers?page=${page}&limit=${limit}`),
+  
+  // Get contact inquiries
+  getContactInquiries: (page = 1, limit = 50) => apiRequest(`/hr/contact-inquiries?page=${page}&limit=${limit}`),
+  
+  // Get investor inquiries
+  getInvestorInquiries: (page = 1, limit = 50) => apiRequest(`/hr/investor-inquiries?page=${page}&limit=${limit}`),
+  
+  // Update inquiry status
+  updateInquiryStatus: (data) => apiRequest('/hr/update-inquiry-status', {
+    method: 'POST',
+    body: JSON.stringify(data)
   })
 }
 
