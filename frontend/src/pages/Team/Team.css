@@ -326,7 +326,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .founder-section-direct {
-    padding: 40px 20px 40px;
+    padding: 80px 20px 40px;
   }
   
   .founder-card-main {
@@ -335,12 +335,19 @@
   
   .founder-content {
     flex-direction: column;
+    align-items: center;
     gap: 25px;
     text-align: center;
   }
   
+  .founder-image-main {
+    order: -1;
+    margin-bottom: 10px;
+  }
+  
   .founder-info-main {
     text-align: center;
+    width: 100%;
   }
   
   .founder-name-main {
@@ -384,6 +391,14 @@
 }
 
 @media (max-width: 480px) {
+  .founder-section-direct {
+    padding: 60px 15px 30px;
+  }
+  
+  .founder-card-main {
+    padding: 25px 20px;
+  }
+  
   .founder-photo,
   .image-placeholder-main {
     width: 120px;
