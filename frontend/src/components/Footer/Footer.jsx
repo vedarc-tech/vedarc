@@ -40,18 +40,8 @@ export default function Footer() {
 
   return (
     <footer className="footer">
-      {/* Circuit Board Top Border */}
-      <div className="circuit-border">
-        <svg viewBox="0 0 1200 20" preserveAspectRatio="none">
-          <path 
-            d="M0,10 Q300,20 600,10 T1200,10" 
-            stroke="var(--neon-purple)" 
-            strokeWidth="2" 
-            fill="none"
-            strokeDasharray="10 5"
-          />
-        </svg>
-      </div>
+      {/* Elegant Top Border */}
+      <div className="elegant-border"></div>
 
       <div className="footer-container">
         {/* Company Info */}
@@ -71,7 +61,7 @@ export default function Footer() {
             <motion.a 
               href="https://www.linkedin.com/company/vedarc-technologies-private-limited" 
               target="_blank"
-              whileHover={{ y: -3, color: 'var(--neon-cyan)' }}
+              whileHover={{ y: -3, color: 'var(--primary-gold)' }}
             >
               <FaLinkedin />
             </motion.a>

@@ -27,6 +27,7 @@ function PrivacyPolicyPage() {
                 At VEDARC TECHNOLOGIES PRIVATE LIMITED ("VEDARC", "Company", "we", "our", or "us"), we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use VEDARC AI Suite, our AI-powered platform available at <a href="http://www.vedarc.co.in" target="_blank" rel="noopener noreferrer">www.vedarc.co.in</a>.
               </p>
               <p>
+                
                 By using VEDARC AI Suite, you agree to the collection and use of information in accordance with this Privacy Policy.
               </p>
             </div>

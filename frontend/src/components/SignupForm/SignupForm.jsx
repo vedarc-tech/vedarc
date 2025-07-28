@@ -49,34 +49,20 @@ export default function SignupForm() {
   return (
     <section id="signup-form" className="signup-section">
       <div className="signup-container">
-        <motion.div
-          className="signup-content"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="signup-content">
           <h2 className="signup-title">Join Our Waitlist</h2>
           <p className="signup-subtitle">
             Be the first to experience VEDARC AI Suite when we launch
           </p>
           
           {error && (
-            <motion.div 
-              className="error-message"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
+            <div className="error-message">
               {error}
-            </motion.div>
+            </div>
           )}
           
           {!isSubmitted ? (
-            <motion.form 
-              className="signup-form"
-              onSubmit={handleSubmit}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
+            <form className="signup-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <input
                   type="text"
@@ -105,25 +91,20 @@ export default function SignupForm() {
                 type="submit"
                 className="submit-btn"
                 disabled={isLoading}
-                whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(0, 249, 255, 0.4)" }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 {isLoading ? 'Joining...' : 'Join Waitlist'}
               </motion.button>
-            </motion.form>
+            </form>
           ) : (
-            <motion.div 
-              className="success-message"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="success-message">
               <div className="success-icon">✓</div>
               <h3>Thank you! You're on the list.</h3>
               <p>We'll notify you when we launch.</p>
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

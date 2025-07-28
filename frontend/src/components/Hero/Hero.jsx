@@ -6,25 +6,19 @@ import './Hero.css'
 import { publicAPI } from '../../services/apiService'
 
 export default function Hero() {
-  const neonBeam = useRef(null)
   const navigate = useNavigate()
   const [showRegistrationPopup, setShowRegistrationPopup] = useState(false)
   const [registrationPopupMsg, setRegistrationPopupMsg] = useState('')
   const [registrationPopupLoading, setRegistrationPopupLoading] = useState(false)
 
-  const handleHover = (e) => {
-    const x = e.clientX / window.innerWidth * 100
-    const y = e.clientY / window.innerHeight * 100
-    neonBeam.current.style.background = `radial-gradient(circle at ${x}% ${y}%, 
-      rgba(255, 45, 117, 0.3), transparent 70%)`
-  }
+
 
   const handleJoinUsClick = () => {
     window.open('https://wa.me/918897140410?text=Hey%20I%20would%20like%20to%20know%20more%20about%20your%20services', '_blank')
   }
 
   return (
-    <section id="hero" className="hero-section" onMouseMove={handleHover}>
+    <section id="hero" className="hero-section">
       {/* Particle Background */}
       {/* Temporarily disabled due to version compatibility issues */}
       {/*
@@ -83,126 +77,35 @@ export default function Hero() {
       />
       */}
       
-      {/* CSS-based particle effect as temporary replacement */}
-      <div className="css-particles">
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
+      {/* Elegant particle effect */}
+      <div className="elegant-particles">
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
+        <div className="elegant-particle"></div>
       </div>
 
-      {/* Hover Light Beam */}
-      <div className="neon-beam" ref={neonBeam} hidden/>
+      {/* Elegant Overlay */}
+      <div className="elegant-overlay"></div>
 
-      {/* AI Bots Working Animations */}
-      <div className="ai-bots-container">
-        {/* AI Bot 1 */}
-        <div className="ai-bot">
-          <div className="bot-core"></div>
-          <div className="bot-ring bot-ring-1"></div>
-          <div className="bot-ring bot-ring-2"></div>
-          <div className="bot-ring bot-ring-3"></div>
-          <div className="data-lines">
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-          </div>
-        </div>
-
-        {/* AI Bot 2 */}
-        <div className="ai-bot">
-          <div className="bot-core"></div>
-          <div className="bot-ring bot-ring-1"></div>
-          <div className="bot-ring bot-ring-2"></div>
-          <div className="bot-ring bot-ring-3"></div>
-          <div className="data-lines">
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-          </div>
-        </div>
-
-        {/* AI Bot 3 */}
-        <div className="ai-bot">
-          <div className="bot-core"></div>
-          <div className="bot-ring bot-ring-1"></div>
-          <div className="bot-ring bot-ring-2"></div>
-          <div className="bot-ring bot-ring-3"></div>
-          <div className="data-lines">
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-          </div>
-        </div>
-
-        {/* AI Bot 4 */}
-        <div className="ai-bot">
-          <div className="bot-core"></div>
-          <div className="bot-ring bot-ring-1"></div>
-          <div className="bot-ring bot-ring-2"></div>
-          <div className="bot-ring bot-ring-3"></div>
-          <div className="data-lines">
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-          </div>
-        </div>
-
-        {/* AI Bot 5 */}
-        <div className="ai-bot">
-          <div className="bot-core"></div>
-          <div className="bot-ring bot-ring-1"></div>
-          <div className="bot-ring bot-ring-2"></div>
-          <div className="bot-ring bot-ring-3"></div>
-          <div className="data-lines">
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-          </div>
-        </div>
-
-        {/* AI Bot 6 */}
-        <div className="ai-bot">
-          <div className="bot-core"></div>
-          <div className="bot-ring bot-ring-1"></div>
-          <div className="bot-ring bot-ring-2"></div>
-          <div className="bot-ring bot-ring-3"></div>
-          <div className="data-lines">
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-            <div className="data-line"></div>
-          </div>
-        </div>
-
-        {/* Neural Network Connections */}
-        <div className="neural-connections">
-          <div className="neural-line"></div>
-          <div className="neural-line"></div>
-          <div className="neural-line"></div>
-          <div className="neural-line"></div>
-        </div>
-
-        {/* Processing Nodes */}
-        <div className="processing-node"></div>
-        <div className="processing-node"></div>
-        <div className="processing-node"></div>
-        <div className="processing-node"></div>
+      {/* Elegant Decorative Elements */}
+      <div className="elegant-decorations">
+        <div className="elegant-line"></div>
+        <div className="elegant-line"></div>
+        <div className="elegant-line"></div>
+        <div className="elegant-dot"></div>
+        <div className="elegant-dot"></div>
+        <div className="elegant-dot"></div>
       </div>
 
-      {/* 3D Floating Tech Orb */}
-      <div className="tech-orb" hidden>
+      {/* 3D Elegant Orb */}
+      <div className="elegant-orb">
         <div className="orb-core" />
         <div className="orb-ring orb-ring-1" />
         <div className="orb-ring orb-ring-2" />

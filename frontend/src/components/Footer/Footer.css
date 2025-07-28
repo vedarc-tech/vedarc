@@ -1,24 +1,26 @@
 .footer {
   position: relative;
-  background: var(--bg-darker);
+  background: var(--bg-dark);
   color: var(--text-muted);
   padding: 60px 0 0;
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+  border-top: 1px solid var(--border-light);
 }
 
-.circuit-border {
+.elegant-border {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 20px;
-  overflow: hidden;
-}
-
-.circuit-border svg {
-  width: 100%;
-  height: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--primary-gold), 
+    var(--accent-bronze), 
+    var(--primary-gold), 
+    transparent);
+  opacity: 0.6;
 }
 
 .footer-container {
@@ -36,22 +38,24 @@
 }
 
 .footer-heading {
-  color: var(--neon-cyan);
+  color: var(--primary-gold);
   font-size: 1.3rem;
   margin-bottom: 20px;
-  font-family: 'Rajdhani', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .highlight {
-  color: var(--neon-magenta);
-  text-shadow: var(--glow-primary);
+  color: var(--primary-gold-light);
+  font-weight: 600;
 }
 
 .footer-text {
   margin-bottom: 20px;
   line-height: 1.6;
+  font-family: 'Lora', Georgia, serif;
+  color: var(--text-secondary);
 }
 
 .social-links {
@@ -64,6 +68,11 @@
   color: var(--text-muted);
   font-size: 1.3rem;
   transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  color: var(--primary-gold);
+  transform: translateY(-2px);
 }
 
 .footer-links {
@@ -80,19 +89,21 @@
 }
 
 .footer-links a {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-block;
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
 }
 
 .footer-link {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-block;
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
 }
 
 .contact-info {
@@ -101,37 +112,38 @@
 }
 
 .contact-info li {
-  display: flex;
-  align-items: flex-start;
   margin-bottom: 15px;
-  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .contact-icon {
-  color: var(--neon-purple);
-  margin-right: 10px;
-  margin-top: 3px;
-  flex-shrink: 0;
+  color: var(--primary-gold);
+  font-size: 1.1rem;
+  min-width: 20px;
 }
 
 .contact-info a {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .contact-info a:hover {
-  color: var(--neon-cyan);
+  color: var(--primary-gold);
 }
 
 .copyright {
-  text-align: center;
+  background: var(--bg-light);
   padding: 20px 0;
-  position: relative;
-  font-size: 0.9rem;
+  text-align: center;
+  border-top: 1px solid var(--border-light);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-subtle);
 }
 
-.circuit-line {
+.elegant-line {
   position: absolute;
   top: 0;
   left: 0;
@@ -139,42 +151,43 @@
   height: 1px;
   background: linear-gradient(90deg, 
     transparent, 
-    var(--neon-purple), 
+    var(--primary-gold), 
     transparent);
+  opacity: 0.4;
 }
 
 .copyright .footer-links {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 20px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .policy-links {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  font-size: 0.85rem;
+  gap: 20px;
+  margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .copyright a {
-  color: var(--text-muted);
+  color: var(--text-subtle);
   text-decoration: none;
   transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .copyright a:hover {
-  color: var(--neon-cyan);
+  color: var(--primary-gold);
 }
 
-/* Hover Effects */
 a:hover {
-  color: var(--neon-cyan);
+  color: var(--primary-gold);
+  transform: translateY(-1px);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .footer-container {
     grid-template-columns: 1fr;
@@ -191,12 +204,11 @@ a:hover {
   
   .contact-info li {
     justify-content: center;
-    text-align: left;
   }
   
   .policy-links {
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
   }
   
   .policy-links span {

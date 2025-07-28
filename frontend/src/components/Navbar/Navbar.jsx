@@ -79,10 +79,10 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: [0.6, 0.05, -0.01, 0.9] }}
     >
-      {/* Animated Tech Border */}
-      <div className="tech-border"></div>
+      {/* Elegant Border */}
+      <div className="elegant-border"></div>
       <div className="navbar-container">
-        {/* Logo with Glitch Effect */}
+        {/* Logo with Elegant Styling */}
         <motion.div 
           className={`logo${isLogoOnly ? ' logo-center' : ''}`}
           whileHover={{ scale: 1.05 }}
@@ -94,7 +94,7 @@ export default function Navbar() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
             <span id='logo-container'>
-            <span className="glitch" data-text=""> <img src={logo} alt="" /></span>
+            <span className="elegant-logo"> <img src={logo} alt="" /></span>
             </span>
           </button>
         </motion.div>

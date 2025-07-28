@@ -1,34 +1,51 @@
-/* ===== ULTRA-TECH DARK THEME ===== */
-/* Font Imports (Directly in CSS) */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&family=Inter:wght@400;500;700&display=swap');
+/* ===== PROFESSIONAL DARK THEME ===== */
+/* Font Imports - Rich, Classic Typography */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
 
 /* ===== CORE VARIABLES ===== */
 :root {
-  /* Cyber Backgrounds */
-  --bg-void: #000000;          /* Deepest black */
-  --bg-dark: #000000;          /* Primary background */
-  --bg-light: #0a0a0a;         /* Elevated surfaces */
+  /* Professional Dark Backgrounds */
+  --bg-void: #0a0a0a;          /* Deepest black */
+  --bg-dark: #111111;          /* Primary background */
+  --bg-light: #1a1a1a;         /* Elevated surfaces */
+  --bg-card: #1e1e1e;          /* Card backgrounds */
+  --bg-overlay: #000000;       /* Overlay backgrounds */
   
-  /* Neon Cyberpunk Palette */
-  --neon-magenta: #00f9ff ;     /* Primary accent */
-  --neon-cyan:  #ff2d75;        /* Secondary accent */
-  --neon-purple: #7b2dff;      /* Tertiary accent */
-  --neon-orange: #ff2d75;      /* Highlight accent */
+  /* Sophisticated Color Palette */
+  --primary-gold: #d4af37;     /* Rich gold accent */
+  --primary-gold-light: #e6c547;
+  --primary-gold-dark: #b8941f;
+  --accent-bronze: #cd7f32;    /* Bronze accent */
+  --accent-copper: #b87333;    /* Copper accent */
+  --accent-silver: #c0c0c0;    /* Silver accent */
   
   /* Text Colors */
-  --text-glowing: #ffffff;      /* Pure white */
-  --text-primary: #f0f0f0;      /* Slightly muted */
-  --text-secondary: #b8b8d8;    /* Low priority text */
+  --text-primary: #ffffff;      /* Pure white */
+  --text-secondary: #e0e0e0;    /* Light gray */
+  --text-muted: #b0b0b0;        /* Muted text */
+  --text-subtle: #888888;       /* Subtle text */
   
-  /* Glow Effects */
-  --glow-magenta: 0 0 15px rgba(0, 249, 255, 0.5);
-  --glow-cyan: 0 0 15px rgba(255, 45, 117, 0.7) ;
-  --glow-purple: 0 0 20px rgba(123, 45, 255, 0.6);
+  /* Borders and Dividers */
+  --border-light: #2a2a2a;
+  --border-medium: #3a3a3a;
+  --border-accent: #d4af37;
+  
+  /* Shadows */
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.15);
   
   /* Gradients */
-  --gradient-horizontal: linear-gradient(90deg, var(--neon-magenta), var(--neon-purple));
-  --gradient-diagonal: linear-gradient(45deg, var(--neon-magenta), var(--neon-orange));
-  --gradient-cyber: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  --gradient-gold: linear-gradient(135deg, #d4af37, #e6c547);
+  --gradient-dark: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  --gradient-overlay: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
+  
+  /* Responsive Breakpoints */
+  --mobile: 480px;
+  --tablet: 768px;
+  --desktop: 1024px;
+  --large-desktop: 1200px;
 }
 
 /* ===== BASE RESET ===== */
@@ -44,19 +61,24 @@
 html {
   scroll-behavior: smooth;
   background: var(--bg-void);
+  font-size: 16px; /* Base font size for rem calculations */
 }
 
 body {
-  background: #000000;
+  background: var(--bg-dark);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
-  text-rendering: optimizeSpeed;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   position: relative;
+  font-size: 1rem;
 }
 
+/* Subtle texture overlay */
 body::before {
   content: '';
   position: fixed;
@@ -65,92 +87,177 @@ body::before {
   width: 100vw;
   height: 100vh;
   background-image: 
-    linear-gradient(rgba(0, 249, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 249, 255, 0.04) 1px, transparent 1px),
-    radial-gradient(circle at 25% 25%, rgba(0, 249, 255, 0.02) 0%, transparent 30%),
-    radial-gradient(circle at 75% 75%, rgba(255, 45, 117, 0.02) 0%, transparent 30%),
-    radial-gradient(circle at 75% 25%, rgba(123, 45, 255, 0.02) 0%, transparent 30%),
-    radial-gradient(circle at 25% 75%, rgba(0, 249, 255, 0.02) 0%, transparent 30%);
-  background-size: 50px 50px, 50px 50px, 100px 100px, 100px 100px, 100px 100px, 100px 100px;
-  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
-  background-repeat: repeat, repeat, repeat, repeat, repeat, repeat;
+    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
+  background-size: 200px 200px;
+  background-position: 0 0;
   pointer-events: none;
   z-index: -1;
-  transform: translateZ(0);
 }
 
 /* ===== TYPOGRAPHY ===== */
-h1, h2, h3, h4 {
-  font-family: 'Orbitron', 'Rajdhani', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   line-height: 1.2;
-  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 0.5em;
 }
 
 h1 {
   font-size: clamp(2.5rem, 8vw, 4.5rem);
-  background: var(--gradient-diagonal);
+  font-weight: 700;
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: var(--glow-magenta);
+  margin-bottom: 1rem;
 }
 
 h2 {
   font-size: clamp(2rem, 6vw, 3rem);
-  color: var(--neon-cyan);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+h4 {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+h5 {
+  font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+h6 {
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
 }
 
 p {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Lora', Georgia, serif;
   color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.7;
   max-width: 65ch;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--primary-gold);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-gold-light);
+  text-decoration: underline;
 }
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
-  width: 10px;
-  background: var(--bg-void);
+  width: 12px;
+  background: var(--bg-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gradient-horizontal);
-  border-radius: 5px;
+  background: var(--border-medium);
+  border-radius: 6px;
+  border: 2px solid var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-gold);
 }
 
 /* ===== SELECTION STYLES ===== */
 ::selection {
-  background: var(--neon-magenta);
-  color: var(--text-glowing);
+  background: var(--primary-gold);
+  color: var(--bg-dark);
   text-shadow: none;
 }
 
-/* ===== ANIMATION KEYFRAMES ===== */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-@keyframes glitch {
-  0% { text-shadow: 2px 0 var(--neon-cyan); }
-  25% { text-shadow: -2px 0 var(--neon-purple); }
-  50% { text-shadow: 2px 0 var(--neon-orange); }
-  75% { text-shadow: -2px 0 var(--neon-magenta); }
-  100% { text-shadow: 2px 0 var(--neon-cyan); }
-}
-
 /* ===== UTILITY CLASSES ===== */
-.glitch-text {
-  animation: glitch 1.5s linear infinite;
+.text-gold {
+  color: var(--primary-gold);
 }
 
-.neon-glow {
-  text-shadow: var(--glow-cyan);
+.text-muted {
+  color: var(--text-muted);
 }
 
-.pulse-effect {
-  animation: pulse 2s ease-in-out infinite;
+.text-subtle {
+  color: var(--text-subtle);
+}
+
+.bg-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: var(--shadow-light);
+}
+
+.bg-elevated {
+  background: var(--bg-light);
+  border: 1px solid var(--border-medium);
+  border-radius: 12px;
+  box-shadow: var(--shadow-medium);
+}
+
+.gradient-text {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.6s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.6s ease-out;
 }
 
 /* ===== FORCE DARK THEME ===== */
@@ -158,5 +265,154 @@ p {
   body {
     background: var(--bg-dark) !important;
     color: var(--text-primary) !important;
+  }
+}
+
+/* ===== RESPONSIVE TYPOGRAPHY ===== */
+@media (max-width: 1200px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 1024px) {
+  html {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  }
+  
+  h3 {
+    font-size: clamp(1.25rem, 6vw, 1.8rem);
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: clamp(2rem, 12vw, 3rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 10vw, 2.5rem);
+  }
+  
+  h3 {
+    font-size: clamp(1.25rem, 8vw, 1.8rem);
+  }
+  
+  h4 {
+    font-size: clamp(1.1rem, 6vw, 1.4rem);
+  }
+  
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  body {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+  
+  h1 {
+    font-size: clamp(1.8rem, 14vw, 2.5rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.4rem, 12vw, 2rem);
+  }
+  
+  h3 {
+    font-size: clamp(1.2rem, 10vw, 1.6rem);
+  }
+  
+  h4 {
+    font-size: clamp(1rem, 8vw, 1.3rem);
+  }
+  
+  p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  body {
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+/* Focus styles for keyboard navigation */
+*:focus {
+  outline: 2px solid var(--primary-gold);
+  outline-offset: 2px;
+}
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-gold);
+  color: var(--bg-dark);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 10000;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  p, blockquote, table {
+    page-break-inside: avoid;
   }
 }
