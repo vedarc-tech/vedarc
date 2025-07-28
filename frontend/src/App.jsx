@@ -175,7 +175,7 @@ export default function App() {
             } />
             
             {/* AI Internship Application Route */}
-            <Route path="/ai-internship-application" element={
+            <Route path="/airole-apply" element={
               <>
                 <Navbar />
                 <AIInternshipApplication />
@@ -194,7 +194,7 @@ export default function App() {
             <Route path="/internship-manager-dashboard" element={<InternshipManagerDashboard />} />
             
             {/* Login Route */}
-            <Route path="/login" element={<UnifiedLogin />} />
+            <Route path="/unified-login" element={<UnifiedLogin />} />
             
             {/* Policy Routes */}
             <Route path="/terms-conditions" element={<TermsConditions />} />

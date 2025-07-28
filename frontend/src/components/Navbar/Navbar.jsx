@@ -29,6 +29,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', to: 'hero' },
+    { name: 'Recognition', to: 'recognition' },
     { name: 'Roadmap', to: 'roadmap' },
     { name: 'Case Studies', to: 'case-studies' },
     { name: 'FAQ', to: 'faq' },

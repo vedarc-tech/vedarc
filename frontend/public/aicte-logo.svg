@@ -1,0 +1,7 @@
+<svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="80" rx="8" fill="#1a1a1a" stroke="#d4af37" stroke-width="2"/>
+  <text x="60" y="35" text-anchor="middle" fill="#d4af37" font-family="Arial, sans-serif" font-size="14" font-weight="bold">AICTE</text>
+  <text x="60" y="55" text-anchor="middle" fill="#d4af37" font-family="Arial, sans-serif" font-size="10">All India Council for</text>
+  <text x="60" y="68" text-anchor="middle" fill="#d4af37" font-family="Arial, sans-serif" font-size="10">Technical Education</text>
+  <circle cx="60" cy="15" r="6" fill="#d4af37"/>
+</svg> 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { FaLinkedin, FaInstagram } from 'react-icons/fa'
 import { publicAPI } from '../../services/apiService'
 import './Contact.css'
 
@@ -69,7 +70,7 @@ export default function Contact() {
   const officeLocations = [
     {
       city: 'Hyderabad',
-      address: 'Hyderabad, Telangana, India',
+      address: 'Telangana, India',
       type: 'Headquarters'
     }
   ]
@@ -219,7 +220,7 @@ export default function Contact() {
                   type="submit"
                   className="submit-btn"
                   disabled={isLoading}
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(0, 249, 255, 0.4)" }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   {isLoading ? 'Sending...' : 'Send Message'}
@@ -246,7 +247,7 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <h2 className="section-title">Our Offices</h2>
+            <h2 className="section-title">Our Office</h2>
             <div className="locations-grid">
               {officeLocations.map((location, index) => (
                 <motion.div
@@ -278,19 +279,35 @@ export default function Contact() {
             
             <div className="info-card">
               <h3>Business Hours</h3>
-              <p>Monday - Friday: 9:00 AM - 6:00 PM IST</p>
+              <p>Monday - Saturday: 9:00 AM - 8:00 PM IST</p>
             </div>
             
             <div className="info-card">
               <h3>Follow Us</h3>
-                          <div className="social-links">
-              <a href="https://www.linkedin.com/company/vedarc-technologies-private-limited" target="_blank" rel="noopener noreferrer" className="social-link">
-                LinkedIn
-              </a>
-              <a href="https://www.instagram.com/vedarc.tech?igsh=bmYxcTZuZndncHB1&utm_source=qr" target="_blank" rel="noopener noreferrer" className="social-link">
-                Instagram
-              </a>
-            </div>
+              <div className="social-links">
+                <motion.a 
+                  href="https://www.linkedin.com/company/vedarc-technologies-private-limited" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="social-link linkedin"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FaLinkedin className="social-icon" />
+                  <span>LinkedIn</span>
+                </motion.a>
+                <motion.a 
+                  href="https://www.instagram.com/vedarc.tech?igsh=bmYxcTZuZndncHB1&utm_source=qr" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="social-link instagram"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FaInstagram className="social-icon" />
+                  <span>Instagram</span>
+                </motion.a>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import Hero from '../../components/Hero/Hero'
+import Recognition from '../../components/Recognition/Recognition'
 import SignupForm from '../../components/SignupForm/SignupForm'
 import Roadmap from '../../components/Roadmap/Roadmap'
 import CaseStudies from '../../components/CaseStudies/CaseStudies'
@@ -36,6 +37,10 @@ export default function Home({ setShowTerms, setShowRefund, setShowPrivacyPolicy
       {/* Sections */}
       <section id="hero">
         <Hero />
+      </section>
+
+      <section id="recognition">
+        <Recognition />
       </section>
 
       <section id="signup-form">

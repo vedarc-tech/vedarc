@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { FaLinkedin, FaEnvelope } from 'react-icons/fa'
+import { FaLinkedin, FaEnvelope, FaChartLine, FaRocket, FaUsers, FaGlobe, FaShieldAlt, FaLightbulb } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { publicAPI } from '../../services/apiService'
 import './Investors.css'
@@ -58,12 +58,66 @@ export default function Investors() {
   }
 
   const investmentHighlights = [
-    'Unified AI agent ecosystem with 20+ specialized agents',
-    'Subscription-based revenue model with multiple tiers',
-    'Targeting $50B+ AI market with proven use cases',
-    'Strategic partnerships with educational institutions',
-    'Launching soon with beta access for early adopters',
-    'AI agent marketplace potential for future expansion'
+    {
+      icon: <FaRocket />,
+      title: 'Unified AI Ecosystem',
+      description: '40+ specialized AI agents working seamlessly together in one platform'
+    },
+    {
+      icon: <FaChartLine />,
+      title: 'Proven Revenue Model',
+      description: 'Subscription-based model with multiple tiers targeting $50B+ AI market'
+    },
+    {
+      icon: <FaUsers />,
+      title: 'Strategic Partnerships',
+      description: 'Established relationships with educational institutions and industry leaders'
+    },
+    {
+      icon: <FaGlobe />,
+      title: 'Global Market Reach',
+      description: 'Targeting international markets with scalable AI solutions'
+    },
+    {
+      icon: <FaShieldAlt />,
+      title: 'Government Recognition',
+      description: 'Recognized by Startup India, AICTE, and other government bodies'
+    },
+    {
+      icon: <FaLightbulb />,
+      title: 'Innovation Pipeline',
+      description: 'Continuous R&D with cutting-edge AI technologies and use cases'
+    }
+  ]
+
+  const marketStats = [
+    { number: '$50B+', label: 'Target Market Size' },
+    { number: '40+', label: 'AI Agents' },
+    { number: '100+', label: 'Use Cases' },
+    { number: '24/7', label: 'AI Support' }
+  ]
+
+  const seedRoundMilestones = [
+    {
+      milestone: 'Product Development',
+      description: 'Complete AI agent ecosystem development and testing',
+      timeline: '6-8 months'
+    },
+    {
+      milestone: 'Team Expansion',
+      description: 'Hire key technical and business development roles',
+      timeline: '3-4 months'
+    },
+    {
+      milestone: 'Market Validation',
+      description: 'Beta testing with early adopters and pilot programs',
+      timeline: '4-6 months'
+    },
+    {
+      milestone: 'Go-to-Market',
+      description: 'Launch commercial version and customer acquisition',
+      timeline: '2-3 months'
+    }
   ]
 
   return (
@@ -71,9 +125,9 @@ export default function Investors() {
       {/* Hero Section */}
       <section className="investors-hero">
         <div className="hero-background">
-          <div className="ai-particles"></div>
-          <div className="ai-particles"></div>
-          <div className="ai-particles"></div>
+          <div className="elegant-particles"></div>
+          <div className="elegant-particles"></div>
+          <div className="elegant-particles"></div>
         </div>
         
         <div className="hero-content">
@@ -94,6 +148,37 @@ export default function Investors() {
           >
             VEDARC AI Suite is a unified AI agent ecosystem poised to revolutionize how businesses, educational institutions, and researchers leverage artificial intelligence. We're seeking strategic investors to accelerate our mission.
           </motion.p>
+
+          <motion.div
+            className="hero-cta"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <a href="#investment-opportunity" className="cta-button">
+              Explore Investment Opportunity
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Market Stats Section */}
+      <section className="stats-section">
+        <div className="container">
+          <div className="stats-grid">
+            {marketStats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="stat-item"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <div className="stat-number">{stat.number}</div>
+                <div className="stat-label">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -107,6 +192,9 @@ export default function Investors() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="section-title">Why Invest in Vedarc?</h2>
+            <p className="section-subtitle">
+              Join us in building the next generation of AI-powered solutions that will transform industries worldwide.
+            </p>
           </motion.div>
 
           <div className="highlights-grid">
@@ -118,8 +206,13 @@ export default function Investors() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <div className="highlight-icon">✓</div>
-                <p className="highlight-text">{highlight}</p>
+                <div className="highlight-icon">
+                  {highlight.icon}
+                </div>
+                <div className="highlight-content">
+                  <h3 className="highlight-title">{highlight.title}</h3>
+                  <p className="highlight-text">{highlight.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -137,6 +230,53 @@ export default function Investors() {
               <cite>- VEDARC Technologies Private Limited</cite>
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Seed Round Roadmap Section */}
+      <section id="investment-opportunity" className="seed-roadmap-section">
+        <div className="container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="section-title">Seed Round Investment</h2>
+            <p className="section-subtitle">
+              We're seeking ₹60 Lakhs to ₹1 Crore in seed funding to accelerate our AI platform development and market entry.
+            </p>
+            <div className="investment-amount">
+              <span className="amount-label">Investment Target:</span>
+              <span className="amount-value">₹60 Lakhs - ₹1 Crore</span>
+            </div>
+          </motion.div>
+
+          <div className="roadmap-container">
+            <div className="roadmap-line"></div>
+            {seedRoundMilestones.map((milestone, index) => (
+              <motion.div
+                key={index}
+                className="milestone-item"
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+              >
+                <div className="milestone-marker">
+                  <div className="marker-dot"></div>
+                  <div className="marker-number">{index + 1}</div>
+                </div>
+                <div className="milestone-content">
+                  <h3 className="milestone-title">{milestone.milestone}</h3>
+                  <p className="milestone-description">{milestone.description}</p>
+                  <div className="milestone-timeline">
+                    <span className="timeline-icon">⏱️</span>
+                    <span className="timeline-text">{milestone.timeline}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -236,7 +376,7 @@ export default function Investors() {
                   type="submit"
                   className="submit-button"
                   disabled={isLoading}
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(0, 249, 255, 0.4)" }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   {isLoading ? 'Sending...' : 'Send Message'}
