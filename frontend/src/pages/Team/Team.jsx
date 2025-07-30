@@ -20,13 +20,13 @@ export default function Team() {
       linkedin: 'https://www.linkedin.com/in/srinivascharank/',
       image: 'https://i.ibb.co/Q3Wj103M/Whats-App-Image-2025-07-30-at-07-53-33-c3330b0c.jpg'
     },
-    //{
-      //name: 'Vuddagiri Naga Venkat',
-      //role: 'CSO',
-      //bio: 'Chief Strategic Officer with expertise in business strategy, market analysis, and strategic planning. Driving organizational growth and competitive positioning through innovative strategic initiatives and market expansion.',
-      //linkedin: 'https://www.linkedin.com/in/vuddagiri-naga-venkat-769aa5257/',
-      //image: 'https://media.licdn.com/dms/image/v2/D5603AQH-vGCEqYbk8g/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1730140600423?e=1756339200&v=beta&t=5C7VLVDrEygYuKb21jz_-QNVi1qnI4DkmWn9arIsThc'
-    //},
+    {
+      name: 'Vuddagiri Naga Venkat',
+      role: 'CSO',
+      bio: 'Chief Strategic Officer with expertise in business strategy, market analysis, and strategic planning. Driving organizational growth and competitive positioning through innovative strategic initiatives and market expansion.',
+      linkedin: 'https://www.linkedin.com/in/vuddagiri-naga-venkat-769aa5257/',
+      image: 'https://media.licdn.com/dms/image/v2/D5603AQEEyOzdqbdTqQ/profile-displayphoto-scale_400_400/B56Zhay4EwHUAg-/0/1753869944011?e=1756944000&v=beta&t=goY9c4AjCSa8eu-9T61NnqRTkUEHwShI_5hyGbjxOMw'
+    },
     {
       name: 'Krishna Saran NC',
       role: 'CHRO',
