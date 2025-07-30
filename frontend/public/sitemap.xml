@@ -44,6 +44,13 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Internship Registration -->
+  <url>
+    <loc>https://www.vedarc.co.in/internship-registration</loc>
+    <lastmod>2024-12-30T00:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   
   <!-- AI Engineer Application -->
   <url>
