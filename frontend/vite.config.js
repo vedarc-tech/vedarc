@@ -115,28 +115,6 @@ export default defineConfig({
     ],
     exclude: [],
   },
-  css: {
-    devSourcemap: false,
-    // Enable CSS optimization
-    postcss: {
-      plugins: [
-        // Add autoprefixer for better browser compatibility
-        require('autoprefixer'),
-        // Add cssnano for production optimization
-        process.env.NODE_ENV === 'production' && require('cssnano')({
-          preset: ['default', {
-            discardComments: {
-              removeAll: true,
-            },
-            normalizeWhitespace: true,
-            colormin: true,
-            minifyFontValues: true,
-            minifySelectors: true,
-          }],
-        }),
-      ].filter(Boolean),
-    },
-  },
   // Enable experimental features for better performance
   experimental: {
     renderBuiltUrl(filename, { hostType }) {
