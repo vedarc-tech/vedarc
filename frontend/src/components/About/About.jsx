@@ -12,43 +12,43 @@ export default function About() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState(null)
 
-  // VEDARC AI Suite Modules
+  // AgentX AI Suite Modules
   const aiModules = [
     {
       icon: <FaRobot className="tech-icon" />,
-      title: "Business Solutions",
-      desc: "AI Receptionist, Scheduler, CRM Agent, Invoice generation, Lead Nurturing Bots",
-      features: ["24/7 client handling", "Automated onboarding", "Smart calendar management", "Email follow-ups"]
+      title: "Business AI Suite",
+      desc: "AI Receptionist, Customer Support Bot, Sales Assistant, Business Analytics AI, HR Assistant",
+      features: ["24/7 automation", "Lead management", "Revenue forecasting", "Recruitment screening"]
     },
     {
       icon: <FaBrain className="tech-icon" />,
-      title: "Education & Learning",
-      desc: "Interactive AI Teaching Assistant, Quiz Generator, Exam Evaluation, Study Plan Bot",
-      features: ["Smart content summarization", "Automated evaluation", "Personalized learning paths", "Time management"]
+      title: "Education AI Suite",
+      desc: "Study Planner & Assistant, Doubt Solver, Exam Prep AI, Assignment Helper, Research Guide AI",
+      features: ["Personalized learning", "Automated evaluation", "Smart content generation", "Research assistance"]
     },
     {
       icon: <FaAtom className="tech-icon" />,
-      title: "Research & Development",
-      desc: "AI Literature Search, Paper Summarizer, Auto Citation, Research Progress Tracker",
-      features: ["Literature analysis", "Citation management", "Progress tracking", "Data insights"]
+      title: "Personal Productivity AI Suite",
+      desc: "Daily Scheduler, Goal Tracker, Smart Reminder, Mental Wellness AI",
+      features: ["Calendar integration", "Habit tracking", "Context-aware reminders", "Wellness support"]
     },
     {
       icon: <FaShieldAlt className="tech-icon" />,
-      title: "Productivity Suite",
-      desc: "AI Meeting Transcriber, Mail Organizer, Task Prioritization, File Finder",
-      features: ["Voice transcription", "Email automation", "Smart task management", "Digital navigation"]
+      title: "Developer Tools AI Suite",
+      desc: "Code Helper AI, Code Generator, API Tester Agent, Documentation Generator",
+      features: ["Code explanation", "Bug detection", "API testing", "Auto documentation"]
     },
     {
       icon: <FaChartLine className="tech-icon" />,
-      title: "SEO & Digital Marketing",
-      desc: "AI SEO Planner, Keyword Analyzer, Competitor Audit, Content Rewriting Assistant",
-      features: ["SEO optimization", "Competitor analysis", "Content enhancement", "Performance tracking"]
+      title: "Marketing & SEO Suite",
+      desc: "Content Creator AI, SEO Assistant, Analytics Dashboard, Email Campaign Generator",
+      features: ["Content generation", "SEO optimization", "Performance tracking", "Campaign automation"]
     },
     {
       icon: <FaLink className="tech-icon" />,
-      title: "Developer Tools",
-      desc: "AI Code Explainer, Bug Detection, Boilerplate Generator, API Documentation Helper",
-      features: ["Code optimization", "Bug prevention", "Documentation automation", "Development acceleration"]
+      title: "Finance & Startup AI Suite",
+      desc: "Financial Tracker, Startup Assistant, Grant Finder AI, VC Pitch Simulator",
+      features: ["Financial planning", "Business development", "Funding discovery", "Pitch preparation"]
     }
   ]
 
@@ -67,7 +67,7 @@ export default function About() {
         <div className="hex-grid__inner"></div>
       </div>
 
-      {/* Glitch Title */}
+      {/* AgentX Title */}
       <motion.h2 
         className="glitch-title"
         initial={{ opacity: 0, y: 20 }}
@@ -75,7 +75,7 @@ export default function About() {
         transition={{ duration: 0.8 }}
         data-text=""
       >
-        UNIFIED AI AGENT ECOSYSTEM
+        VEDARC TECHNOLOGIES PRESENTS
       </motion.h2>
 
       {/* Animated Circuit Divider */}
@@ -92,10 +92,10 @@ export default function About() {
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ delay: 0.3, duration: 0.6 }}
       >
-        One platform. 20+ AI agents. Unlimited possibilities for businesses, education & research
+        AgentX: One platform. 7 AI suites. 30+ specialized agents. Transform your productivity across all domains.
       </motion.p>
 
-      {/* VEDARC AI Suite Modules Grid */}
+      {/* AgentX AI Suite Modules Grid */}
       <div className="focus-grid">
         {aiModules.map((module, index) => (
           <motion.div

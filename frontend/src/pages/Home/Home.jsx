@@ -5,6 +5,7 @@ import Recognition from '../../components/Recognition/Recognition'
 import SignupForm from '../../components/SignupForm/SignupForm'
 import Roadmap from '../../components/Roadmap/Roadmap'
 import CaseStudies from '../../components/CaseStudies/CaseStudies'
+import Testimonials from '../../components/Testimonials/Testimonials'
 import FAQ from '../../components/FAQ/FAQ'
 import TermsAndConditions from '../../components/TermsAndConditions/TermsAndCondition';
 import RefundAndCancellationPolicy from '../../components/RefundAndCancellationPolicy/RefundAndCancellationPolicy.jsx';
@@ -53,6 +54,10 @@ export default function Home({ setShowTerms, setShowRefund, setShowPrivacyPolicy
 
       <section id="case-studies">
         <CaseStudies />
+      </section>
+
+      <section id="testimonials">
+        <Testimonials />
       </section>
 
       <section id="faq">

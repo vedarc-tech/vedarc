@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   right: 0;
-  background: var(--bg-void);
+  background: #000000;
   border-bottom: 1px solid var(--neon-magenta);
   z-index: 1002;
   padding: 8px 0;

@@ -4,12 +4,12 @@
 
 /* ===== CORE VARIABLES ===== */
 :root {
-  /* Professional Dark Backgrounds */
-  --bg-void: #0a0a0a;          /* Deepest black */
-  --bg-dark: #111111;          /* Primary background */
-  --bg-light: #1a1a1a;         /* Elevated surfaces */
-  --bg-card: #1e1e1e;          /* Card backgrounds */
-  --bg-overlay: #000000;       /* Overlay backgrounds */
+  /* Uniform Black Backgrounds */
+  --bg-void: #000000;          /* Pure black */
+  --bg-dark: #000000;          /* Primary background - pure black */
+  --bg-light: #000000;         /* Elevated surfaces - pure black */
+  --bg-card: #000000;          /* Card backgrounds - pure black */
+  --bg-overlay: #000000;       /* Overlay backgrounds - pure black */
   
   /* Sophisticated Color Palette */
   --primary-gold: #d4af37;     /* Rich gold accent */
@@ -60,12 +60,12 @@
 /* ===== GLOBAL STYLES ===== */
 html {
   scroll-behavior: smooth;
-  background: var(--bg-void);
+  background: #000000;
   font-size: 16px; /* Base font size for rem calculations */
 }
 
 body {
-  background: var(--bg-dark);
+  background: #000000;
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
@@ -78,21 +78,9 @@ body {
   font-size: 1rem;
 }
 
-/* Subtle texture overlay */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
-  background-size: 200px 200px;
-  background-position: 0 0;
-  pointer-events: none;
-  z-index: -1;
+/* Fix for Framer Motion scroll container warning */
+html, body {
+  position: relative;
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -173,13 +161,13 @@ a:hover {
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 12px;
-  background: var(--bg-dark);
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-medium);
   border-radius: 6px;
-  border: 2px solid var(--bg-dark);
+  border: 2px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -207,14 +195,14 @@ a:hover {
 }
 
 .bg-card {
-  background: var(--bg-card);
+  background: #000000;
   border: 1px solid var(--border-light);
   border-radius: 8px;
   box-shadow: var(--shadow-light);
 }
 
 .bg-elevated {
-  background: var(--bg-light);
+  background: #000000;
   border: 1px solid var(--border-medium);
   border-radius: 12px;
   box-shadow: var(--shadow-medium);
@@ -263,7 +251,7 @@ a:hover {
 /* ===== FORCE DARK THEME ===== */
 @media (prefers-color-scheme: light) {
   body {
-    background: var(--bg-dark) !important;
+    background: #000000 !important;
     color: var(--text-primary) !important;
   }
 }

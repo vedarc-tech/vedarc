@@ -1,7 +1,7 @@
 .faq-section {
   padding: 100px 20px 100px 20px;
   padding-top: 120px;
-  background: var(--bg-dark);
+  background: #000000;
   position: relative;
   overflow: hidden;
 }
@@ -54,7 +54,7 @@
 }
 
 .faq-item {
-  background: var(--bg-card);
+  background: #000000;
   border: 1px solid var(--border-light);
   border-radius: 12px;
   overflow: hidden;
@@ -108,7 +108,7 @@
 
 .faq-answer {
   overflow: hidden;
-  background: var(--bg-light);
+  background: #000000;
 }
 
 .faq-answer p {

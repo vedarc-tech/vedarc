@@ -1,6 +1,6 @@
 .footer {
   position: relative;
-  background: var(--bg-dark);
+  background: #000000;
   color: var(--text-muted);
   padding: 60px 0 0;
   font-family: 'Inter', sans-serif;
@@ -135,7 +135,7 @@
 }
 
 .copyright {
-  background: var(--bg-light);
+  background: #000000;
   padding: 20px 0;
   text-align: center;
   border-top: 1px solid var(--border-light);

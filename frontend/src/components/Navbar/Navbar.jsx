@@ -32,6 +32,7 @@ export default function Navbar() {
     { name: 'Recognition', to: 'recognition' },
     { name: 'Roadmap', to: 'roadmap' },
     { name: 'Case Studies', to: 'case-studies' },
+    { name: 'Testimonials', to: 'testimonials' },
     { name: 'FAQ', to: 'faq' },
     { name: 'Investors', to: '/investors' },
     { name: 'Team', to: '/team' },
@@ -92,10 +93,21 @@ export default function Navbar() {
           <button 
             onClick={() => handleNavClick('hero')} 
             className="logo-btn"
-            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              padding: 0, 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%'
+            }}
           >
             <span id='logo-container'>
-            <span className="elegant-logo"> <img src={logo} alt="" /></span>
+              <span className="elegant-logo">
+                <img src={logo} alt="Vedarc Technologies" />
+              </span>
+              <span className="brand-text">AgentX</span>
             </span>
           </button>
         </motion.div>
@@ -127,6 +139,11 @@ export default function Navbar() {
             </motion.ul>
           )}
         </AnimatePresence>
+        
+        {/* Right spacer for balance */}
+        {!isLogoOnly && (
+          <div className="nav-spacer" style={{ width: '200px', flexShrink: 0 }}></div>
+        )}
         {/* Mobile Menu Button (hidden in logo-only mode) */}
         {!isLogoOnly && (
         <motion.div 

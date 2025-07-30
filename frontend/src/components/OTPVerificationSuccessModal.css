@@ -14,7 +14,7 @@
   
   .otp-success-modal {
     position: relative;
-    background: linear-gradient(135deg, rgba(10,10,18,0.98) 0%, rgba(22,22,38,0.98) 100%);
+    background: #000000;
     border: 2.5px solid var(--neon-cyan, #00f9ff);
     border-radius: 22px;
     box-shadow: 0 0 40px 0 rgba(0,249,255,0.18), 0 2px 24px 0 rgba(255,45,117,0.13);

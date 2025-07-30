@@ -35,7 +35,7 @@ const LoadingSpinner = () => (
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    background: 'var(--bg-dark)',
+    background: '#000000',
     color: 'var(--primary-gold)',
     fontSize: '1.2rem',
     fontFamily: 'Inter, sans-serif'

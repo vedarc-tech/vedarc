@@ -1,8 +1,31 @@
 .about-section {
   position: relative;
   padding: 100px 5%;
-  background: var(--bg-dark);
+  background: #000000;
   overflow: hidden;
+}
+
+/* Subtle background animation */
+.about-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(212, 175, 55, 0.05) 0%,
+    transparent 50%
+  );
+  animation: about-glow 8s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes about-glow {
+  0% { opacity: 0.3; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(1.1); }
 }
 
 /* Hex Grid Background */
@@ -17,8 +40,7 @@
 }
 
 .hex-grid__inner {
-  background-image: 
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50 0L100 25V75L50 100L0 75V25Z' fill='none' stroke='%2300f9ff' stroke-width='0.5'/%3E%3C/svg%3E");
+  background: #000000;
   background-size: 50px 50px;
   width: 100%;
   height: 100%;

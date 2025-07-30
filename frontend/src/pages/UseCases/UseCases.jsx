@@ -7,79 +7,67 @@ export default function UseCases() {
       id: 1,
       title: 'MSME - AI Receptionist & CRM Integration',
       client: 'A regional logistics startup with 25 employees',
-      logo: '🏢',
       industry: 'Logistics & MSME',
       status: 'Conceptual pilot validated through domain research',
       problem: 'High lead drop-off due to late follow-ups and inconsistent communication',
-      solution: 'Implemented VEDARC AI Receptionist for 24/7 website chat + voice support, Integrated AI CRM Agent for automated follow-ups and meeting scheduling',
-      outcome: '40% increase in lead response speed, Reduced manual follow-up time by 70%, Improved client retention through consistent nurturing',
-      metrics: ['40% response speed increase', '70% follow-up time reduction', 'Improved client retention'],
-      context: '🚀 This case study demonstrates how VEDARC AI Suite can transform lead management for small and medium businesses through intelligent automation.'
+      solution: 'Research indicates this can be solved by implementing an AI receptionist for 24/7 website chat and voice support, integrated with an AI CRM agent for automated follow-ups and meeting scheduling.',
+      outcome: 'Lead response speed would improve significantly, manual follow-up time would be reduced substantially, and client retention would improve through consistent nurturing.',
+      context: 'This case study demonstrates how AgentX can transform lead management for small and medium businesses through intelligent automation.'
     },
     {
       id: 2,
       title: 'Educational Institution - AI Teaching Assistant',
       client: 'Tier-2 private engineering college in India',
-      logo: '👨‍🏫',
       industry: 'Education',
       status: 'Strategic consultation and preliminary user interviews',
       problem: 'Limited faculty bandwidth for student doubt resolution and revision assistance',
-      solution: 'Deployed AI Teaching Assistant integrated with LMS, Enabled Smart Notes Summarizer and Quiz Generator from PDFs',
-      outcome: '30% improvement in student engagement, Faculty time saved: ~6 hours/week per subject, Reduced student drop-off in MOOCs by 20%',
-      metrics: ['30% engagement improvement', '6 hours/week saved', '20% drop-off reduction'],
-      context: '📚 This solution addresses the critical need for scalable educational support in institutions with limited faculty resources.'
+      solution: 'Our research suggests this can be addressed by implementing an AI teaching assistant integrated with LMS, along with smart notes summarizer and quiz generator from PDFs.',
+      outcome: 'Student engagement would improve noticeably, faculty would save significant time per week per subject, and student drop-off in MOOCs would be reduced.',
+      context: 'This solution addresses the critical need for scalable educational support in institutions with limited faculty resources.'
     },
     {
       id: 3,
       title: 'Independent Researcher – Literature & Citation Bot',
       client: 'Ph.D. Scholar in Biomedical Sciences',
-      logo: '🧪',
       industry: 'Research & Academia',
       status: 'Domain research and use case validation',
       problem: 'Struggled with managing citations and understanding technical papers quickly',
-      solution: 'Used Literature Search Agent and Paper Summarizer, Integrated Auto-Citation Tool for BibTeX and APA exports',
-      outcome: 'Literature review time reduced by 60%, Enhanced research pace, increased paper submissions, Improved citation accuracy',
-      metrics: ['60% time reduction', 'Enhanced research pace', 'Improved accuracy'],
-      context: '🎓 VEDARC AI Suite accelerates research productivity by automating time-consuming literature review and citation management tasks.'
+      solution: 'Market analysis shows this can be resolved by implementing a literature search agent and paper summarizer, integrated with an auto-citation tool for BibTeX and APA exports.',
+      outcome: 'Literature review time would be reduced significantly, research pace would be enhanced, and citation accuracy would improve.',
+      context: 'AgentX accelerates research productivity by automating time-consuming literature review and citation management tasks.'
     },
     {
       id: 4,
       title: 'Solopreneur – Personal Productivity Suite',
       client: 'Freelance brand consultant',
-      logo: '💼',
       industry: 'Freelance & Consulting',
       status: 'User interview insights and workflow analysis',
       problem: 'Manual task handling, inbox overload, unstructured files',
-      solution: 'Deployed Task Prioritizer Bot and Mail Organizer, Enabled File Finder and Meeting Transcriber',
-      outcome: 'Saved ~10 hours/week in admin tasks, Faster turnaround on client proposals, Boosted client communication clarity',
-      metrics: ['10 hours/week saved', 'Faster proposals', 'Better communication'],
-      context: '💼 This case study shows how VEDARC AI Suite can be a game-changer for solo entrepreneurs and freelancers.'
+      solution: 'Industry research indicates this can be solved by implementing a task prioritizer bot and mail organizer, along with file finder and meeting transcriber capabilities.',
+      outcome: 'Significant time would be saved in admin tasks, faster turnaround on client proposals, and boosted client communication clarity.',
+      context: 'This case study shows how AgentX can be a game-changer for solo entrepreneurs and freelancers.'
     },
     {
       id: 5,
       title: 'Digital Agency – SEO & Marketing Automation',
       client: 'Mid-size digital marketing agency',
-      logo: '🌐',
       industry: 'Digital Marketing',
       status: 'Industry consultation and market research',
       problem: 'Manual SEO audits and repetitive content tasks',
-      solution: 'Integrated SEO Planner, Competitor Audit Bot, and Content Rewriter, Team used shared workspace with tailored AI tools',
-      outcome: 'SEO audit time cut by 50%, Scaled content generation by 2x, Increased campaign ROIs through quicker turnarounds',
-      metrics: ['50% audit time reduction', '2x content scale', 'Improved ROIs'],
-      context: '🌐 VEDARC AI Suite enables marketing agencies to scale operations and deliver better results through intelligent automation.'
+      solution: 'Research suggests this can be addressed by implementing an SEO planner, competitor audit bot, and content rewriter, with a shared workspace featuring tailored AI tools.',
+      outcome: 'SEO audit time would be reduced substantially, content generation could be scaled significantly, and campaign ROIs would improve through quicker turnarounds.',
+      context: 'AgentX enables marketing agencies to scale operations and deliver better results through intelligent automation.'
     },
     {
       id: 6,
       title: 'Dev Team – AI Coding Assistant',
       client: 'Early-stage SaaS product team (4 devs)',
-      logo: '👨‍💻',
       industry: 'Software Development',
       status: 'Technical consultation and development workflow analysis',
       problem: 'High onboarding time, unclear legacy code, and repeated bug triage',
-      solution: 'Used AI Code Explainer, Boilerplate Generator, and Bug Detection Assistant, Paired with API Doc Helper for clean documentation',
-      outcome: '40% faster onboarding for new developers, Code review cycles reduced by 35%, Fewer post-deployment bugs',
-      metrics: ['40% faster onboarding', '35% review reduction', 'Fewer bugs'],
-      context: '👨‍💻 This demonstrates how VEDARC AI Suite can significantly improve development efficiency and code quality.'
+      solution: 'Startup ecosystem research indicates this can be solved by implementing an AI code explainer, boilerplate generator, and bug detection assistant, paired with API doc helper for clean documentation.',
+      outcome: 'Onboarding for new developers would be faster, code review cycles would be reduced, and fewer post-deployment bugs would occur.',
+      context: 'This demonstrates how AgentX can significantly improve development efficiency and code quality.'
     }
   ]
 
@@ -101,7 +89,7 @@ export default function UseCases() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="hero-subtitle"
           >
-            Discover how VEDARC AI Suite transforms businesses across industries
+            Discover how AgentX transforms businesses across industries
           </motion.p>
         </div>
       </section>
@@ -119,7 +107,6 @@ export default function UseCases() {
                 whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(0, 249, 255, 0.2)" }}
               >
                 <div className="card-header">
-                  <div className="company-logo">{study.logo}</div>
                   <div className="company-info">
                     <h3 className="study-title">{study.title}</h3>
                     <p className="company-name">{study.client}</p>
@@ -135,7 +122,7 @@ export default function UseCases() {
                   </div>
                   
                   <div className="study-section">
-                    <h4 className="section-label">Solution</h4>
+                    <h4 className="section-label">Research-Based Solution</h4>
                     <p className="section-text">{study.solution}</p>
                   </div>
                   
@@ -144,20 +131,9 @@ export default function UseCases() {
                     <p className="section-text result">{study.outcome}</p>
                   </div>
                   
-                                     <div className="metrics-section">
-                     <h4 className="section-label">Key Metrics</h4>
-                     <div className="metrics-grid">
-                       {study.metrics.map((metric, idx) => (
-                         <div key={idx} className="metric-item">
-                           <span className="metric-text">{metric}</span>
-                         </div>
-                       ))}
-                     </div>
-                   </div>
-                   
-                   <div className="context-section">
-                     <p className="context-text">{study.context}</p>
-                   </div>
+                  <div className="context-section">
+                    <p className="context-text">{study.context}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -172,7 +148,7 @@ export default function UseCases() {
         >
           <div className="container">
             <p className="disclaimer-text">
-              ✅ The case studies listed here are conceptual pilots reflecting real-world applications of the VEDARC AI Suite. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. Development will begin upon securing the seed round.
+              The case studies listed here are conceptual pilots reflecting real-world applications of AgentX. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. <span className="last-line">Development will begin upon securing the seed round.</span>
             </p>
           </div>
         </motion.div>

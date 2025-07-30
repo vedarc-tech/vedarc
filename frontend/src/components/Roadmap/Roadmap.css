@@ -1,6 +1,6 @@
 .roadmap-section {
   padding: 100px 20px;
-  background: var(--bg-dark);
+  background: #000000;
   position: relative;
   overflow: hidden;
 }

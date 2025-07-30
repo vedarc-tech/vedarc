@@ -1,12 +1,12 @@
 .team-page {
-  background: var(--bg-void);
+  background: #000000;
   min-height: 100vh;
 }
 
 /* Direct Founder Section - Starting immediately */
 .founder-section-direct {
   padding: 120px 20px 60px;
-  background: var(--bg-light);
+  background: #000000;
   position: relative;
 }
 
@@ -17,8 +17,8 @@
 
 /* Main Founder Card */
 .founder-card-main {
-  background: var(--bg-void);
-  border: 1px solid var(--bg-dark);
+  background: #000000;
+  border: 1px solid #000000;
   border-radius: 20px;
   padding: 40px;
   transition: all 0.3s ease;
@@ -175,7 +175,7 @@
 /* Leadership Section */
 .leadership-section {
   padding: 60px 20px 80px;
-  background: var(--bg-dark);
+  background: #000000;
   position: relative;
 }
 
@@ -217,8 +217,8 @@
 }
 
 .leadership-card {
-  background: var(--bg-void);
-  border: 1px solid var(--bg-light);
+  background: #000000;
+  border: 1px solid #000000;
   border-radius: 16px;
   padding: 30px;
   transition: all 0.3s ease;

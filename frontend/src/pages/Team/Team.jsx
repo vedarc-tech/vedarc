@@ -18,7 +18,7 @@ export default function Team() {
       role: 'CTO',
       bio: 'Technical visionary with deep expertise in AI systems, cloud architecture, and scalable engineering solutions. Leading our technology strategy and product development with a focus on innovation and reliability.',
       linkedin: 'https://www.linkedin.com/in/srinivascharank/',
-      image: 'https://media.licdn.com/dms/image/v2/D5603AQETZojDM92fBQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1720287913517?e=1756339200&v=beta&t=THJs3Ojs2yWLli_L08SHhu6P7XBOUbOIo_7goNziTn4'
+      image: 'https://i.ibb.co/Q3Wj103M/Whats-App-Image-2025-07-30-at-07-53-33-c3330b0c.jpg'
     },
     //{
       //name: 'Vuddagiri Naga Venkat',

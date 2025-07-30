@@ -78,7 +78,10 @@ const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(url, config)
     return await handleResponse(response, responseType)
   } catch (error) {
-    console.error('API Request Error:', error)
+    // Only log errors in production or when not a CORS error
+    if (process.env.NODE_ENV === 'production' || !error.message.includes('Failed to fetch')) {
+      console.error('API Request Error:', error)
+    }
     throw error
   }
 }

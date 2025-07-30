@@ -2,7 +2,7 @@
 .recognition-section {
   position: relative;
   min-height: 100vh;
-  background: var(--bg-dark);
+  background: #000000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -140,7 +140,7 @@
 /* Items */
 .recognition-item {
   position: relative;
-  background: var(--bg-card);
+  background: #000000;
   border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 40px 50px;

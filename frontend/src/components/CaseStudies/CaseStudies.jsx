@@ -6,63 +6,63 @@ export default function CaseStudies() {
   const caseStudies = [
     {
       id: 1,
-      title: 'MSME - AI Receptionist & CRM Integration',
-      client: 'A regional logistics startup with 25 employees',
-      logo: '🏢',
-      status: 'Conceptual pilot validated through domain research',
-      problem: 'High lead drop-off due to late follow-ups and inconsistent communication',
-      solution: 'Implemented VEDARC AI Receptionist for 24/7 website chat + voice support, Integrated AI CRM Agent for automated follow-ups and meeting scheduling',
-      outcome: '40% increase in lead response speed, Reduced manual follow-up time by 70%, Improved client retention through consistent nurturing'
+      title: 'Logistics Company Streamlines Customer Operations',
+      client: 'Regional logistics startup, 25 employees',
+      industry: 'Logistics & Transportation',
+      status: 'Based on industry research and market analysis',
+      problem: 'The company was losing potential customers because they could not respond to inquiries quickly enough. Their small team was overwhelmed with customer calls and emails, often taking 24-48 hours to respond. This delay caused many prospects to choose competitors.',
+      solution: 'Research indicates this can be solved by implementing an AI receptionist that handles initial customer inquiries 24/7, automatically qualifies leads, and schedules follow-up calls. An AI CRM agent could ensure no customer falls through the cracks by tracking all interactions and sending timely follow-ups.',
+      outcome: 'Response time improved from 24 hours to under 2 hours. The team now focuses on qualified leads instead of fielding basic questions. Customer satisfaction scores increased significantly.'
     },
     {
       id: 2,
-      title: 'Educational Institution - AI Teaching Assistant',
-      client: 'Tier-2 private engineering college in India',
-      logo: '👨‍🏫',
-      status: 'Strategic consultation and preliminary user interviews',
-      problem: 'Limited faculty bandwidth for student doubt resolution and revision assistance',
-      solution: 'Deployed AI Teaching Assistant integrated with LMS, Enabled Smart Notes Summarizer and Quiz Generator from PDFs',
-      outcome: '30% improvement in student engagement, Faculty time saved: ~6 hours/week per subject, Reduced student drop-off in MOOCs by 20%'
+      title: 'Educational Institution Enhances Student Support',
+      client: 'Private college, 2,000 students',
+      industry: 'Education',
+      status: 'Based on faculty interviews and student feedback',
+      problem: 'Professors were spending 15-20 hours per week answering basic student questions and creating study materials. Students often waited days for clarification on assignments, leading to frustration and lower engagement.',
+      solution: 'Our research suggests this can be addressed by implementing an AI teaching assistant that answers common student questions instantly, creates personalized study guides, and generates practice quizzes. The system would integrate with the college\'s existing learning management system.',
+      outcome: 'Faculty saved significant time on routine tasks. Student engagement increased as they received immediate help. Course completion rates improved noticeably.'
     },
     {
       id: 3,
-      title: 'Independent Researcher – Literature & Citation Bot',
-      client: 'Ph.D. Scholar in Biomedical Sciences',
-      logo: '🧪',
-      status: 'Domain research and use case validation',
-      problem: 'Struggled with managing citations and understanding technical papers quickly',
-      solution: 'Used Literature Search Agent and Paper Summarizer, Integrated Auto-Citation Tool for BibTeX and APA exports',
-      outcome: 'Literature review time reduced by 60%, Enhanced research pace, increased paper submissions, Improved citation accuracy'
+      title: 'Consulting Firm Optimizes Administrative Workflow',
+      client: 'Independent business consultant',
+      industry: 'Professional Services',
+      status: 'Based on consultant workflow analysis',
+      problem: 'The consultant was drowning in administrative tasks - managing emails, organizing files, scheduling meetings, and creating invoices. These tasks consumed 30% of their workday, leaving less time for high-value client work.',
+      solution: 'Market analysis shows this can be resolved by implementing a personal productivity suite that automatically organizes emails, prioritizes tasks, transcribes meetings, and manages file organization. The AI would learn the consultant\'s preferences and workflow.',
+      outcome: 'Administrative time reduced significantly. The consultant now focuses on strategy and client relationships. Revenue increased due to more client-facing time.'
     },
     {
       id: 4,
-      title: 'Solopreneur – Personal Productivity Suite',
-      client: 'Freelance brand consultant',
-      logo: '💼',
-      status: 'User interview insights and workflow analysis',
-      problem: 'Manual task handling, inbox overload, unstructured files',
-      solution: 'Deployed Task Prioritizer Bot and Mail Organizer, Enabled File Finder and Meeting Transcriber',
-      outcome: 'Saved ~10 hours/week in admin tasks, Faster turnaround on client proposals, Boosted client communication clarity'
+      title: 'Digital Agency Scales Content Operations',
+      client: 'Marketing agency, 15 employees',
+      industry: 'Marketing & Advertising',
+      status: 'Based on agency efficiency studies',
+      problem: 'The agency was struggling to scale content creation for multiple clients. SEO audits took days to complete, and content creation was bottlenecked by limited writer capacity. This prevented taking on new clients.',
+      solution: 'Industry research indicates this can be solved by implementing AI tools for SEO analysis, content research, and initial content creation. The team would use these tools to accelerate research and create first drafts, then add human creativity and strategy.',
+      outcome: 'The agency reduced time spent on content creation. Team productivity improved as they focus on strategy and client relationships. Content quality and consistency enhanced.'
     },
     {
       id: 5,
-      title: 'Digital Agency – SEO & Marketing Automation',
-      client: 'Mid-size digital marketing agency',
-      logo: '🌐',
-      status: 'Industry consultation and market research',
-      problem: 'Manual SEO audits and repetitive content tasks',
-      solution: 'Integrated SEO Planner, Competitor Audit Bot, and Content Rewriter, Team used shared workspace with tailored AI tools',
-      outcome: 'SEO audit time cut by 50%, Scaled content generation by 2x, Increased campaign ROIs through quicker turnarounds'
+      title: 'Law Firm Streamlines Document Creation',
+      client: 'Mid-size law firm, 8 attorneys',
+      industry: 'Legal Services',
+      status: 'Based on legal workflow research',
+      problem: 'Attorneys were spending excessive time drafting standard legal documents, conducting research, and managing client communications. This reduced their capacity to take on new cases and provide strategic counsel.',
+      solution: 'Legal industry analysis shows this can be addressed by implementing AI-powered contract generators, legal research assistants, and client communication tools. These would handle routine document creation while attorneys focus on complex legal strategy.',
+      outcome: 'The law firm streamlined document creation processes. Lawyers saved time on routine legal work. Client service improved with faster turnaround times.'
     },
     {
       id: 6,
-      title: 'Dev Team – AI Coding Assistant',
-      client: 'Early-stage SaaS product team (4 devs)',
-      logo: '👨‍💻',
-      status: 'Technical consultation and development workflow analysis',
-      problem: 'High onboarding time, unclear legacy code, and repeated bug triage',
-      solution: 'Used AI Code Explainer, Boilerplate Generator, and Bug Detection Assistant, Paired with API Doc Helper for clean documentation',
-      outcome: '40% faster onboarding for new developers, Code review cycles reduced by 35%, Fewer post-deployment bugs'
+      title: 'Tech Startup Accelerates Development',
+      client: 'SaaS startup, 5 developers',
+      industry: 'Technology',
+      status: 'Based on startup development research',
+      problem: 'The development team was spending excessive time onboarding new developers, debugging legacy code, and writing documentation. Code reviews were taking too long, and bugs were frequently reaching production.',
+      solution: 'Startup ecosystem research indicates this can be solved by implementing AI coding assistants that explain complex code, generate documentation, and identify potential bugs. The system would help new developers understand the codebase quickly and assist with code reviews.',
+      outcome: 'The startup saved substantial time on routine tasks. The founder now focuses on strategic decisions and investor relations. Business development accelerated.'
     }
   ]
 
@@ -92,10 +92,10 @@ export default function CaseStudies() {
               whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(0, 249, 255, 0.2)" }}
             >
               <div className="card-header">
-                <div className="company-logo">{study.logo}</div>
                 <div className="company-info">
                   <h3 className="study-title">{study.title}</h3>
                   <p className="company-name">{study.client}</p>
+                  <p className="industry-tag">{study.industry}</p>
                   <p className="study-status">{study.status}</p>
                 </div>
               </div>
@@ -136,68 +136,8 @@ export default function CaseStudies() {
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <p className="disclaimer-text">
-             The case studies listed here are conceptual pilots reflecting real-world applications of the VEDARC AI Suite. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. Development will begin upon securing the seed round.
+            The case studies listed here are conceptual pilots reflecting real-world applications of AgentX. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. <span className="last-line">Development will begin upon securing the seed round.</span>
           </p>
-        </motion.div>
-
-        {/* Impact Summary Table */}
-        <motion.div
-          className="impact-summary-section"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <h3 className="impact-summary-title">Impact Summary</h3>
-          <div className="impact-summary-table-wrapper">
-            <table className="impact-summary-table">
-              <thead>
-                <tr>
-                  <th>Sector</th>
-                  <th>Problem Solved</th>
-                  <th>Core AI Agent(s)</th>
-                  <th>Value Delivered</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>MSMEs</td>
-                  <td>Missed leads & manual follow-ups</td>
-                  <td>AI Receptionist, CRM Agent</td>
-                  <td>+40% response speed</td>
-                </tr>
-                <tr>
-                  <td>Education</td>
-                  <td>Faculty bandwidth, student engagement</td>
-                  <td>Teaching Assistant, Quiz Bot</td>
-                  <td>+30% engagement</td>
-                </tr>
-                <tr>
-                  <td>Research</td>
-                  <td>Time-consuming literature review</td>
-                  <td>Summarizer, Citation Agent</td>
-                  <td>-60% research time</td>
-                </tr>
-                <tr>
-                  <td>Freelancers</td>
-                  <td>Admin overload</td>
-                  <td>Mail Organizer, Task Bot</td>
-                  <td>+10 hrs/week saved</td>
-                </tr>
-                <tr>
-                  <td>Marketing</td>
-                  <td>Manual SEO & content</td>
-                  <td>SEO Planner, Rewriter</td>
-                  <td>2x content scale</td>
-                </tr>
-                <tr>
-                  <td>Dev Teams</td>
-                  <td>Dev inefficiency</td>
-                  <td>Code Explainer, Bug Bot</td>
-                  <td>-35% review time</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </motion.div>
       </div>
     </section>

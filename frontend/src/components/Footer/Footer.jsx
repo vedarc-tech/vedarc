@@ -22,11 +22,20 @@ export default function Footer() {
   const location = useLocation()
 
   useEffect(() => {
-    publicAPI.getSystemSettings()
-      .then(res => {
-        setRegistrationEnabled(res.internship_registration_enabled)
-      })
-      .catch(() => setRegistrationEnabled(true)) // Default to true if error
+    // Only make API call in production or when API is available
+    if (process.env.NODE_ENV === 'production' || window.location.hostname !== 'localhost') {
+      publicAPI.getSystemSettings()
+        .then(res => {
+          setRegistrationEnabled(res.internship_registration_enabled)
+        })
+        .catch(() => {
+          // Silently handle error and default to true
+          setRegistrationEnabled(true)
+        })
+    } else {
+      // In development, default to true without API call
+      setRegistrationEnabled(true)
+    }
   }, [])
 
   const handleFooterNav = (section) => {
@@ -55,7 +64,7 @@ export default function Footer() {
             <span className="highlight">VEDARC</span> TECHNOLOGIES
           </h3>
           <p className="footer-text">
-            Building the future with cutting-edge technology solutions and innovative digital experiences.
+            Building the future with AgentX - India's most comprehensive AI suite platform with 30+ specialized agents.
           </p>
           <div className="social-links">
             <motion.a 

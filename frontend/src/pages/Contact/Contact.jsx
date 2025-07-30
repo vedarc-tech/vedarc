@@ -43,8 +43,14 @@ export default function Contact() {
         }, 5000)
       }
     } catch (err) {
-      setError('Failed to submit form. Please try again.')
       console.error('Contact form error:', err)
+      if (err.message && err.message.includes('Failed to fetch')) {
+        setError('Network error. Please check your connection and try again.')
+      } else if (err.status === 400) {
+        setError(err.message || 'Please check your input and try again.')
+      } else {
+        setError('Failed to submit form. Please try again later.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -57,21 +63,6 @@ export default function Contact() {
       details: 'tech@vedarc.co.in',
       description: 'For all inquiries and support',
       action: 'mailto:tech@vedarc.co.in?subject=VEDARC AI Suite Inquiry&body=Hello VEDARC Team,%0D%0A%0D%0AI am interested in learning more about VEDARC AI Suite.%0D%0A%0D%0ABest regards,'
-    },
-    {
-      icon: '📱',
-      title: 'WhatsApp',
-      details: '+91 8897140410',
-      description: 'Quick responses and instant support',
-      action: 'https://wa.me/918897140410?text=Hello%20VEDARC%20Team!%20I%20am%20interested%20in%20learning%20more%20about%20VEDARC%20AI%20Suite.%20Can%20you%20help%20me%20with%20more%20information?'
-    }
-  ]
-
-  const officeLocations = [
-    {
-      city: 'Hyderabad',
-      address: 'Telangana, India',
-      type: 'Headquarters'
     }
   ]
 
@@ -87,51 +78,31 @@ export default function Contact() {
         >
           <h1 className="contact-title">Get In Touch</h1>
           <p className="contact-subtitle">
-            Ready to transform your business with AI? Let's discuss how VEDARC AI Suite can help you achieve your goals.
+            Ready to transform your business with AI? Let's discuss how our AgentX - VEDARC AI Suite can help you achieve your goals.
           </p>
         </motion.div>
 
         <div className="contact-content">
-          {/* Contact Methods */}
-          <motion.div
-            className="contact-methods"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h2 className="section-title">Contact Methods</h2>
-            <div className="methods-grid">
-              {contactMethods.map((method, index) => (
-                <motion.a
-                  key={index}
-                  href={method.action}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="method-card clickable"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="method-icon">{method.icon}</div>
-                  <h3 className="method-title">{method.title}</h3>
-                  <p className="method-details">{method.details}</p>
-                  <p className="method-description">{method.description}</p>
-                  <div className="click-indicator">Click to contact →</div>
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-
           {/* Contact Form */}
           <motion.div
             className="contact-form-section"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h2 className="section-title">Send Us a Message</h2>
+            
+            {error && (
+              <motion.div 
+                className="error-message"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="error-icon">⚠</div>
+                <p>{error}</p>
+              </motion.div>
+            )}
             
             {!isSubmitted ? (
               <motion.form 
@@ -240,74 +211,69 @@ export default function Contact() {
             )}
           </motion.div>
 
-          {/* Office Locations */}
+          {/* Contact Methods */}
           <motion.div
-            className="office-locations"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            className="contact-methods"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="section-title">Our Office</h2>
-            <div className="locations-grid">
-              {officeLocations.map((location, index) => (
-                <motion.div
+            <h2 className="section-title">Email Us</h2>
+            <div className="methods-grid">
+              {contactMethods.map((method, index) => (
+                <motion.a
                   key={index}
-                  className="location-card"
+                  href={method.action}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="method-card clickable"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
+                  transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <div className="location-type">{location.type}</div>
-                  <h3 className="location-city">{location.city}</h3>
-                  <p className="location-address">{location.address}</p>
-                </motion.div>
+                  <div className="method-icon">{method.icon}</div>
+                  <h3 className="method-title">{method.title}</h3>
+                  <p className="method-details">{method.details}</p>
+                  <p className="method-description">{method.description}</p>
+                  <div className="click-indicator">Click to contact →</div>
+                </motion.a>
               ))}
             </div>
           </motion.div>
 
-          {/* Additional Info */}
+          {/* Social Links */}
           <motion.div
-            className="additional-info"
+            className="social-section"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <div className="info-card">
-              <h3>Response Time</h3>
-              <p>We typically respond to all inquiries within 24 hours during business days.</p>
-            </div>
-            
-            <div className="info-card">
-              <h3>Business Hours</h3>
-              <p>Monday - Saturday: 9:00 AM - 8:00 PM IST</p>
-            </div>
-            
-            <div className="info-card">
-              <h3>Follow Us</h3>
-              <div className="social-links">
-                <motion.a 
-                  href="https://www.linkedin.com/company/vedarc-technologies-private-limited" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="social-link linkedin"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <FaLinkedin className="social-icon" />
-                  <span>LinkedIn</span>
-                </motion.a>
-                <motion.a 
-                  href="https://www.instagram.com/vedarc.tech?igsh=bmYxcTZuZndncHB1&utm_source=qr" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="social-link instagram"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <FaInstagram className="social-icon" />
-                  <span>Instagram</span>
-                </motion.a>
-              </div>
+            <h2 className="section-title">Follow Us</h2>
+            <div className="social-links">
+              <motion.a 
+                href="https://www.linkedin.com/company/vedarc-technologies-private-limited" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="social-link linkedin"
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaLinkedin className="social-icon" />
+                <span>LinkedIn</span>
+              </motion.a>
+              <motion.a 
+                href="https://www.instagram.com/vedarc.tech?igsh=bmYxcTZuZndncHB1&utm_source=qr" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="social-link instagram"
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaInstagram className="social-icon" />
+                <span>Instagram</span>
+              </motion.a>
             </div>
           </motion.div>
         </div>
