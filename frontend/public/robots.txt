@@ -1,0 +1,51 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.vedarc.co.in/sitemap.xml
+
+# Crawl delay (optional - helps with server load)
+Crawl-delay: 1
+
+# Disallow admin and dashboard areas
+Disallow: /admin-dashboard/
+Disallow: /hr-dashboard/
+Disallow: /student-dashboard/
+Disallow: /internship-manager-dashboard/
+
+# Allow important pages
+Allow: /use-cases/
+Allow: /investors/
+Allow: /team/
+Allow: /contact/
+Allow: /internship-registration/
+Allow: /airole-apply/
+Allow: /terms-conditions/
+Allow: /refund-policy/
+Allow: /privacy-policy/
+
+# Block common bot traps
+Disallow: /api/
+Disallow: /_next/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /package.json
+Disallow: /package-lock.json
+
+# Allow assets
+Allow: /assets/
+Allow: /images/
+Allow: /fonts/
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.ico
+Allow: /*.woff
+Allow: /*.woff2
+Allow: /*.ttf
+Allow: /*.eot 
