@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { lazy, Suspense } from 'react'
-import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import UnifiedLogin from './components/UnifiedLogin/UnifiedLogin'
@@ -90,10 +89,9 @@ export default function App() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false)
 
   return (
-    <HelmetProvider>
-      <Router>
-        <ScrollToTop />
-        <div className="App">
+    <Router>
+      <ScrollToTop />
+      <div className="App">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             {/* Main Home Route */}
@@ -233,7 +231,6 @@ export default function App() {
           )}
         </AnimatePresence>
       </div>
-      </Router>
-    </HelmetProvider>
+    </Router>
   )
 }

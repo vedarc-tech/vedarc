@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 
 const SEO = ({ 
   title, 
@@ -27,93 +26,129 @@ const SEO = ({
 
     // Update meta description
     if (description) {
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', description);
+      let metaDescription = document.querySelector('meta[name="description"]');
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta');
+        metaDescription.name = 'description';
+        document.head.appendChild(metaDescription);
       }
+      metaDescription.setAttribute('content', description);
+    }
+
+    // Update keywords
+    if (keywords) {
+      let metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (!metaKeywords) {
+        metaKeywords = document.createElement('meta');
+        metaKeywords.name = 'keywords';
+        document.head.appendChild(metaKeywords);
+      }
+      metaKeywords.setAttribute('content', keywords);
     }
 
     // Update canonical URL
     if (canonical) {
-      const canonicalLink = document.querySelector('link[rel="canonical"]');
-      if (canonicalLink) {
-        canonicalLink.setAttribute('href', canonical);
+      let canonicalLink = document.querySelector('link[rel="canonical"]');
+      if (!canonicalLink) {
+        canonicalLink = document.createElement('link');
+        canonicalLink.rel = 'canonical';
+        document.head.appendChild(canonicalLink);
       }
+      canonicalLink.setAttribute('href', canonical);
     }
-  }, [title, description, canonical]);
 
-  const robots = noindex || nofollow ? 
-    `${noindex ? 'noindex' : 'index'}, ${nofollow ? 'nofollow' : 'follow'}` : 
-    'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    // Update robots meta
+    const robots = noindex || nofollow ? 
+      `${noindex ? 'noindex' : 'index'}, ${nofollow ? 'nofollow' : 'follow'}` : 
+      'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.name = 'robots';
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.setAttribute('content', robots);
 
-  const defaultImage = 'https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031';
-  const defaultUrl = 'https://www.vedarc.co.in';
-  const defaultSiteName = 'VEDARC Technologies Private Limited';
+    // Update Open Graph tags
+    const defaultImage = 'https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031';
+    const defaultUrl = 'https://www.vedarc.co.in';
+    const defaultSiteName = 'VEDARC Technologies Private Limited';
 
-  return (
-    <Helmet>
-      {/* Basic Meta Tags */}
-      {title && <title>{title}</title>}
-      {description && <meta name="description" content={description} />}
-      {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="robots" content={robots} />
+    const ogTags = {
+      'og:title': title || 'AgentX by Vedarc Technologies',
+      'og:description': description,
+      'og:image': image || defaultImage,
+      'og:url': url || defaultUrl,
+      'og:type': type,
+      'og:site_name': defaultSiteName,
+      'og:locale': 'en_US'
+    };
+
+    Object.entries(ogTags).forEach(([property, content]) => {
+      if (content) {
+        let ogTag = document.querySelector(`meta[property="${property}"]`);
+        if (!ogTag) {
+          ogTag = document.createElement('meta');
+          ogTag.setAttribute('property', property);
+          document.head.appendChild(ogTag);
+        }
+        ogTag.setAttribute('content', content);
+      }
+    });
+
+    // Update Twitter tags
+    const twitterTags = {
+      'twitter:card': 'summary_large_image',
+      'twitter:title': title || 'AgentX by Vedarc Technologies',
+      'twitter:description': description,
+      'twitter:image': image || defaultImage,
+      'twitter:site': '@vedarc_tech',
+      'twitter:creator': '@vedarc_tech'
+    };
+
+    Object.entries(twitterTags).forEach(([name, content]) => {
+      if (content) {
+        let twitterTag = document.querySelector(`meta[name="${name}"]`);
+        if (!twitterTag) {
+          twitterTag = document.createElement('meta');
+          twitterTag.setAttribute('name', name);
+          document.head.appendChild(twitterTag);
+        }
+        twitterTag.setAttribute('content', content);
+      }
+    });
+
+    // Add structured data
+    if (structuredData) {
+      let existingScript = document.querySelector('script[data-seo-structured-data]');
+      if (existingScript) {
+        existingScript.remove();
+      }
       
-      {/* Canonical URL */}
-      {canonical && <link rel="canonical" href={canonical} />}
-      
-      {/* Alternate Languages */}
-      {Object.entries(alternateLanguages).map(([lang, url]) => (
-        <link key={lang} rel="alternate" hrefLang={lang} href={url} />
-      ))}
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.setAttribute('data-seo-structured-data', 'true');
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
 
-      {/* Open Graph / Facebook */}
-      <meta property="og:title" content={title || 'AgentX by Vedarc Technologies'} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={image || defaultImage} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:image:type" content="image/png" />
-      <meta property="og:image:alt" content={title || 'VEDARC Technologies - AI Suite & Tech Solutions'} />
-      <meta property="og:url" content={url || defaultUrl} />
-      <meta property="og:type" content={type} />
-      <meta property="og:site_name" content={defaultSiteName} />
-      <meta property="og:locale" content="en_US" />
-      {publishedTime && <meta property="article:published_time" content={publishedTime} />}
-      {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
-      {author && <meta property="article:author" content={author} />}
-      {section && <meta property="article:section" content={section} />}
-      {tags && tags.map((tag, index) => (
-        <meta key={index} property="article:tag" content={tag} />
-      ))}
+    // Add alternate language links
+    Object.entries(alternateLanguages).forEach(([lang, url]) => {
+      let alternateLink = document.querySelector(`link[hreflang="${lang}"]`);
+      if (!alternateLink) {
+        alternateLink = document.createElement('link');
+        alternateLink.rel = 'alternate';
+        alternateLink.hreflang = lang;
+        document.head.appendChild(alternateLink);
+      }
+      alternateLink.href = url;
+    });
 
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title || 'AgentX by Vedarc Technologies'} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image || defaultImage} />
-      <meta name="twitter:image:alt" content={title || 'AgentX by Vedarc Technologies - AI Suite Platform'} />
-      <meta name="twitter:site" content="@vedarc_tech" />
-      <meta name="twitter:creator" content="@vedarc_tech" />
+  }, [title, description, keywords, canonical, noindex, nofollow, image, url, type, structuredData, alternateLanguages]);
 
-      {/* Structured Data */}
-      {structuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      )}
-
-      {/* Additional Meta Tags */}
-      <meta name="author" content={author || 'VEDARC Technologies Private Limited'} />
-      <meta name="language" content="English" />
-      <meta name="revisit-after" content="7 days" />
-      <meta name="rating" content="General" />
-      <meta name="distribution" content="Global" />
-      <meta name="coverage" content="Worldwide" />
-      <meta name="target" content="all" />
-      <meta name="HandheldFriendly" content="true" />
-      <meta name="MobileOptimized" content="width" />
-    </Helmet>
-  );
+  // This component doesn't render anything visible
+  return null;
 };
 
 export default SEO; 

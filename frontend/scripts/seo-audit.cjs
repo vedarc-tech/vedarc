@@ -198,11 +198,14 @@ class SEOAuditor {
     if (this.checkFileExists(seoPath, 'SEO component')) {
       const content = fs.readFileSync(seoPath, 'utf8');
       
-      if (!content.includes('react-helmet-async')) {
-        this.logWarning('React Helmet Async not imported');
+      if (!content.includes('useEffect')) {
+        this.logWarning('useEffect not used for SEO updates');
       }
-      if (!content.includes('Helmet')) {
-        this.logWarning('Helmet component not used');
+      if (!content.includes('document.title')) {
+        this.logWarning('Document title not being updated');
+      }
+      if (!content.includes('meta[name="description"]')) {
+        this.logWarning('Meta description not being updated');
       }
     }
   }
