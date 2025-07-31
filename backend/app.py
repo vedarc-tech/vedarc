@@ -308,20 +308,37 @@ def validate_session(session_id, user_id, user_type):
     return True
 
 # Cloudinary Helper Functions
-def upload_image_to_cloudinary(image_file, folder="vedarc/interns"):
+def upload_image_to_cloudinary(image_file, folder="vedarc/interns", alignment=None):
     """Upload image to Cloudinary and return the URL"""
     try:
         if not CLOUDINARY_CLOUD_NAME:
             return None, "Cloudinary not configured"
         
+        # Default transformations
+        transformations = [
+            {'width': 400, 'height': 400, 'crop': 'fill', 'gravity': 'face'},
+            {'quality': 'auto', 'fetch_format': 'auto'}
+        ]
+        
+        # Apply custom alignment if provided
+        if alignment and isinstance(alignment, dict):
+            x_offset = alignment.get('x', 0)
+            y_offset = alignment.get('y', 0)
+            scale = alignment.get('scale', 1)
+            
+            # Apply custom positioning and scaling
+            custom_transformations = [
+                {'width': int(400 * scale), 'height': int(400 * scale), 'crop': 'fill'},
+                {'x': x_offset, 'y': y_offset, 'crop': 'fill', 'width': 400, 'height': 400},
+                {'quality': 'auto', 'fetch_format': 'auto'}
+            ]
+            transformations = custom_transformations
+        
         # Upload to Cloudinary
         result = cloudinary.uploader.upload(
             image_file,
             folder=folder,
-            transformation=[
-                {'width': 400, 'height': 400, 'crop': 'fill', 'gravity': 'face'},
-                {'quality': 'auto', 'fetch_format': 'auto'}
-            ]
+            transformation=transformations
         )
         
         return result['secure_url'], None
@@ -339,8 +356,8 @@ def delete_image_from_cloudinary(public_id):
     except Exception as e:
         return False, str(e)
 
-def get_optimized_image_url(cloudinary_url, width=400, height=400):
-    """Get optimized image URL from Cloudinary"""
+def get_optimized_image_url(cloudinary_url, width=400, height=400, alignment=None):
+    """Get optimized image URL from Cloudinary with optional alignment"""
     try:
         if not cloudinary_url or not CLOUDINARY_CLOUD_NAME:
             return cloudinary_url
@@ -357,12 +374,29 @@ def get_optimized_image_url(cloudinary_url, width=400, height=400):
                     public_id_parts = parts[upload_index + 2:]
                     public_id = '/'.join(public_id_parts).split('.')[0]  # Remove extension
                     
-                    # Generate optimized URL
-                    optimized_url = cloudinary.CloudinaryImage(public_id).build_url(
-                        transformation=[
-                            {'width': width, 'height': height, 'crop': 'fill', 'gravity': 'face'},
+                    # Default transformations
+                    transformations = [
+                        {'width': width, 'height': height, 'crop': 'fill', 'gravity': 'face'},
+                        {'quality': 'auto', 'fetch_format': 'auto'}
+                    ]
+                    
+                    # Apply custom alignment if provided
+                    if alignment and isinstance(alignment, dict):
+                        x_offset = alignment.get('x', 0)
+                        y_offset = alignment.get('y', 0)
+                        scale = alignment.get('scale', 1)
+                        
+                        # Apply custom positioning and scaling
+                        custom_transformations = [
+                            {'width': int(width * scale), 'height': int(height * scale), 'crop': 'fill'},
+                            {'x': x_offset, 'y': y_offset, 'crop': 'fill', 'width': width, 'height': height},
                             {'quality': 'auto', 'fetch_format': 'auto'}
                         ]
+                        transformations = custom_transformations
+                    
+                    # Generate optimized URL
+                    optimized_url = cloudinary.CloudinaryImage(public_id).build_url(
+                        transformation=transformations
                     )
                     return optimized_url
         
@@ -5361,8 +5395,10 @@ def verify_certificate(intern_id):
         
         # Optimize profile picture URL if it's a Cloudinary URL
         profile_picture = intern.get('profilePicture')
+        alignment = intern.get('imageAlignment', {'x': 0, 'y': 0, 'scale': 1})
+        
         if profile_picture:
-            optimized_url = get_optimized_image_url(profile_picture, width=300, height=300)
+            optimized_url = get_optimized_image_url(profile_picture, width=300, height=300, alignment=alignment)
             profile_picture = optimized_url
         
         # Return certificate details (excluding sensitive information)
@@ -5376,6 +5412,7 @@ def verify_certificate(intern_id):
             'internshipTitle': intern.get('internshipTitle'),
             'grade': intern.get('grade'),
             'profilePicture': profile_picture,
+            'imageAlignment': alignment,
             'created_at': intern.get('created_at')
         }
         
@@ -5438,15 +5475,26 @@ def manager_add_intern_certificate():
         
         # Handle form data with file upload
         profile_picture = None
+        image_alignment = request.form.get('imageAlignment')
+        alignment_data = None
+        
+        if image_alignment:
+            try:
+                alignment_data = json.loads(image_alignment)
+                print(f"📐 Image alignment data received: {alignment_data}")
+            except json.JSONDecodeError as e:
+                print(f"⚠️ Invalid image alignment data: {e}")
+                alignment_data = None
+        
         if 'profilePicture' in request.files:
             file = request.files['profilePicture']
             if file and file.filename:
                 try:
-                    # Try to upload to Cloudinary first
-                    cloudinary_url, error = upload_image_to_cloudinary(file)
+                    # Try to upload to Cloudinary first with alignment
+                    cloudinary_url, error = upload_image_to_cloudinary(file, alignment=alignment_data)
                     if cloudinary_url:
                         profile_picture = cloudinary_url
-                        print(f"✅ Image uploaded to Cloudinary: {cloudinary_url}")
+                        print(f"✅ Image uploaded to Cloudinary with alignment: {cloudinary_url}")
                     else:
                         print(f"⚠️ Cloudinary upload failed: {error}")
                         # Fallback to local storage
@@ -5479,6 +5527,19 @@ def manager_add_intern_certificate():
             'created_at': datetime.utcnow(),
             'created_by': username
         }
+        
+        # Handle image alignment data
+        image_alignment = request.form.get('imageAlignment')
+        if image_alignment:
+            try:
+                alignment_data = json.loads(image_alignment)
+                intern_data['imageAlignment'] = alignment_data
+                print(f"✅ Image alignment data saved: {alignment_data}")
+            except json.JSONDecodeError as e:
+                print(f"⚠️ Invalid image alignment data: {e}")
+                intern_data['imageAlignment'] = {'x': 0, 'y': 0, 'scale': 1}
+        else:
+            intern_data['imageAlignment'] = {'x': 0, 'y': 0, 'scale': 1}
         
         # Validate required fields
         required_fields = ['firstName', 'lastName', 'internId', 'institute', 'startDate', 'endDate', 'internshipTitle', 'grade']
