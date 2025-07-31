@@ -5246,6 +5246,176 @@ def manager_update_system_settings():
         'internship_registration_enabled': updated.get('internship_registration_enabled', True)
     })
 
+# ============================================================================
+# CERTIFICATE VERIFIER ENDPOINTS
+# ============================================================================
+
+@app.route('/api/certificate/verify/<intern_id>', methods=['GET'])
+def verify_certificate(intern_id):
+    """Public endpoint to verify an intern certificate"""
+    try:
+        # Find the intern certificate
+        intern = db.intern_certificates.find_one({'internId': intern_id})
+        
+        if not intern:
+            return jsonify({'error': 'Certificate not found'}), 404
+        
+        # Return certificate details (excluding sensitive information)
+        certificate_data = {
+            'firstName': intern.get('firstName'),
+            'lastName': intern.get('lastName'),
+            'internId': intern.get('internId'),
+            'institute': intern.get('institute'),
+            'startDate': intern.get('startDate'),
+            'endDate': intern.get('endDate'),
+            'internshipTitle': intern.get('internshipTitle'),
+            'grade': intern.get('grade'),
+            'profilePicture': intern.get('profilePicture'),
+            'created_at': intern.get('created_at')
+        }
+        
+        return jsonify({'certificate': certificate_data})
+    except Exception as e:
+        print(f"Error verifying certificate: {e}")
+        return jsonify({'error': 'Failed to verify certificate'}), 500
+
+@app.route('/api/manager/certificates/interns', methods=['GET'])
+@jwt_required()
+def manager_get_intern_certificates():
+    """Get all intern certificates for manager"""
+    try:
+        user_id = get_jwt_identity()
+        user = db.users.find_one({'_id': ObjectId(user_id)})
+        
+        if not user or user.get('user_type') != 'manager':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Get all intern certificates
+        interns = list(db.intern_certificates.find().sort('created_at', -1))
+        
+        # Convert ObjectId to string for JSON serialization
+        for intern in interns:
+            intern['_id'] = str(intern['_id'])
+        
+        return jsonify({'interns': interns})
+    except Exception as e:
+        print(f"Error fetching intern certificates: {e}")
+        return jsonify({'error': 'Failed to fetch intern certificates'}), 500
+
+@app.route('/api/manager/certificates/interns', methods=['POST'])
+@jwt_required()
+def manager_add_intern_certificate():
+    """Add a new intern certificate"""
+    try:
+        user_id = get_jwt_identity()
+        user = db.users.find_one({'_id': ObjectId(user_id)})
+        
+        if not user or user.get('user_type') != 'manager':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Handle form data with file upload
+        if 'profilePicture' in request.files:
+            file = request.files['profilePicture']
+            if file and file.filename:
+                # Save file to a secure location or cloud storage
+                # For now, we'll store the filename
+                filename = secure_filename(file.filename)
+                file_path = f"uploads/profile_pictures/{filename}"
+                file.save(file_path)
+                profile_picture = file_path
+            else:
+                profile_picture = None
+        else:
+            profile_picture = None
+        
+        # Get form data
+        intern_data = {
+            'firstName': request.form.get('firstName'),
+            'lastName': request.form.get('lastName'),
+            'internId': request.form.get('internId'),
+            'institute': request.form.get('institute'),
+            'startDate': request.form.get('startDate'),
+            'endDate': request.form.get('endDate'),
+            'internshipTitle': request.form.get('internshipTitle'),
+            'grade': request.form.get('grade'),
+            'profilePicture': profile_picture,
+            'created_at': datetime.utcnow(),
+            'created_by': user_id
+        }
+        
+        # Validate required fields
+        required_fields = ['firstName', 'lastName', 'internId', 'institute', 'startDate', 'endDate', 'internshipTitle', 'grade']
+        for field in required_fields:
+            if not intern_data.get(field):
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Check if intern ID already exists
+        existing_intern = db.intern_certificates.find_one({'internId': intern_data['internId']})
+        if existing_intern:
+            return jsonify({'error': 'Intern ID already exists'}), 400
+        
+        # Insert the intern certificate
+        result = db.intern_certificates.insert_one(intern_data)
+        
+        # Return the created intern data
+        intern_data['_id'] = str(result.inserted_id)
+        
+        return jsonify({'intern': intern_data, 'message': 'Intern certificate added successfully'})
+    except Exception as e:
+        print(f"Error adding intern certificate: {e}")
+        return jsonify({'error': 'Failed to add intern certificate'}), 500
+
+@app.route('/api/manager/certificates/qr-code', methods=['POST'])
+@jwt_required()
+def manager_save_qr_code():
+    """Save QR code for an intern certificate"""
+    try:
+        user_id = get_jwt_identity()
+        user = db.users.find_one({'_id': ObjectId(user_id)})
+        
+        if not user or user.get('user_type') != 'manager':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        data = request.get_json()
+        intern_id = data.get('internId')
+        qr_code_data_url = data.get('qrCodeDataUrl')
+        
+        if not intern_id or not qr_code_data_url:
+            return jsonify({'error': 'Missing required fields'}), 400
+        
+        # Update the intern certificate with QR code
+        db.intern_certificates.update_one(
+            {'internId': intern_id},
+            {'$set': {'qrCodeDataUrl': qr_code_data_url}}
+        )
+        
+        return jsonify({'message': 'QR code saved successfully'})
+    except Exception as e:
+        print(f"Error saving QR code: {e}")
+        return jsonify({'error': 'Failed to save QR code'}), 500
+
+@app.route('/api/manager/certificates/interns/<intern_id>', methods=['DELETE'])
+@jwt_required()
+def manager_delete_intern_certificate(intern_id):
+    """Delete an intern certificate"""
+    try:
+        user_id = get_jwt_identity()
+        user = db.users.find_one({'_id': ObjectId(user_id)})
+        
+        if not user or user.get('user_type') != 'manager':
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Delete the intern certificate
+        result = db.intern_certificates.delete_one({'internId': intern_id})
+        
+        if result.deleted_count == 0:
+            return jsonify({'error': 'Intern certificate not found'}), 404
+        
+        return jsonify({'message': 'Intern certificate deleted successfully'})
+    except Exception as e:
+        print(f"Error deleting intern certificate: {e}")
+        return jsonify({'error': 'Failed to delete intern certificate'}), 500
+
 if __name__ == '__main__':
     # Test database connection at startup
     if client is not None and db is not None:
