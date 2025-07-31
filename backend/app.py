@@ -5291,13 +5291,18 @@ def manager_get_intern_certificates():
             return jsonify({'error': 'Unauthorized access'}), 403
         
         # Get all intern certificates
-        interns = list(db.intern_certificates.find().sort('created_at', -1))
-        
-        # Convert ObjectId to string for JSON serialization
-        for intern in interns:
-            intern['_id'] = str(intern['_id'])
-        
-        return jsonify({'interns': interns})
+        try:
+            interns = list(db.intern_certificates.find().sort('created_at', -1))
+            
+            # Convert ObjectId to string for JSON serialization
+            for intern in interns:
+                intern['_id'] = str(intern['_id'])
+            
+            return jsonify({'interns': interns})
+        except Exception as db_error:
+            print(f"Database error fetching interns: {db_error}")
+            return jsonify({'interns': [], 'message': 'No intern certificates found'})
+            
     except Exception as e:
         print(f"Error fetching intern certificates: {e}")
         return jsonify({'error': 'Failed to fetch intern certificates'}), 500
@@ -5314,19 +5319,24 @@ def manager_add_intern_certificate():
             return jsonify({'error': 'Unauthorized access'}), 403
         
         # Handle form data with file upload
+        profile_picture = None
         if 'profilePicture' in request.files:
             file = request.files['profilePicture']
             if file and file.filename:
-                # Save file to a secure location or cloud storage
-                # For now, we'll store the filename
-                filename = secure_filename(file.filename)
-                file_path = f"uploads/profile_pictures/{filename}"
-                file.save(file_path)
-                profile_picture = file_path
-            else:
-                profile_picture = None
-        else:
-            profile_picture = None
+                try:
+                    # Create uploads directory if it doesn't exist
+                    upload_dir = "uploads/profile_pictures"
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    # Save file to a secure location
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(upload_dir, filename)
+                    file.save(file_path)
+                    profile_picture = file_path
+                except Exception as file_error:
+                    print(f"Error saving file: {file_error}")
+                    # Continue without profile picture if file save fails
+                    profile_picture = None
         
         # Get form data
         intern_data = {
@@ -5355,12 +5365,17 @@ def manager_add_intern_certificate():
             return jsonify({'error': 'Intern ID already exists'}), 400
         
         # Insert the intern certificate
-        result = db.intern_certificates.insert_one(intern_data)
-        
-        # Return the created intern data
-        intern_data['_id'] = str(result.inserted_id)
-        
-        return jsonify({'intern': intern_data, 'message': 'Intern certificate added successfully'})
+        try:
+            result = db.intern_certificates.insert_one(intern_data)
+            
+            # Return the created intern data
+            intern_data['_id'] = str(result.inserted_id)
+            
+            return jsonify({'intern': intern_data, 'message': 'Intern certificate added successfully'})
+        except Exception as db_error:
+            print(f"Database error: {db_error}")
+            return jsonify({'error': 'Failed to save intern certificate to database'}), 500
+            
     except Exception as e:
         print(f"Error adding intern certificate: {e}")
         return jsonify({'error': 'Failed to add intern certificate'}), 500
@@ -5384,12 +5399,20 @@ def manager_save_qr_code():
             return jsonify({'error': 'Missing required fields'}), 400
         
         # Update the intern certificate with QR code
-        db.intern_certificates.update_one(
-            {'internId': intern_id},
-            {'$set': {'qrCodeDataUrl': qr_code_data_url}}
-        )
-        
-        return jsonify({'message': 'QR code saved successfully'})
+        try:
+            result = db.intern_certificates.update_one(
+                {'internId': intern_id},
+                {'$set': {'qrCodeDataUrl': qr_code_data_url}}
+            )
+            
+            if result.matched_count == 0:
+                return jsonify({'error': 'Intern certificate not found'}), 404
+            
+            return jsonify({'message': 'QR code saved successfully'})
+        except Exception as db_error:
+            print(f"Database error saving QR code: {db_error}")
+            return jsonify({'error': 'Failed to save QR code to database'}), 500
+            
     except Exception as e:
         print(f"Error saving QR code: {e}")
         return jsonify({'error': 'Failed to save QR code'}), 500
