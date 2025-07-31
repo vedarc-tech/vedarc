@@ -5250,6 +5250,23 @@ def manager_update_system_settings():
 # CERTIFICATE VERIFIER ENDPOINTS
 # ============================================================================
 
+@app.route('/api/debug/certificate-db', methods=['GET'])
+def debug_certificate_db():
+    """Debug endpoint to test certificate database connection"""
+    try:
+        # Test database connection
+        collections = db.list_collection_names()
+        return jsonify({
+            'status': 'success',
+            'collections': collections,
+            'intern_certificates_exists': 'intern_certificates' in collections
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'error': str(e)
+        }), 500
+
 @app.route('/api/certificate/verify/<intern_id>', methods=['GET'])
 def verify_certificate(intern_id):
     """Public endpoint to verify an intern certificate"""
@@ -5290,8 +5307,14 @@ def manager_get_intern_certificates():
         if not user or user.get('user_type') != 'manager':
             return jsonify({'error': 'Unauthorized access'}), 403
         
-        # Get all intern certificates
+        # Test database connection first
         try:
+            # Check if collection exists, if not create it
+            if 'intern_certificates' not in db.list_collection_names():
+                db.create_collection('intern_certificates')
+                print("Created intern_certificates collection")
+            
+            # Get all intern certificates
             interns = list(db.intern_certificates.find().sort('created_at', -1))
             
             # Convert ObjectId to string for JSON serialization
