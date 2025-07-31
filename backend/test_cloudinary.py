@@ -1,28 +1,40 @@
 #!/usr/bin/env python3
 """
-Test script to verify Cloudinary connection
+Test script to verify Cloudinary connection using environment variables
 """
 
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import os
+from dotenv import load_dotenv
 
-# Your Cloudinary credentials
-CLOUDINARY_CLOUD_NAME = "dkduhmrfp"
-CLOUDINARY_API_KEY = "532412838481764"
-CLOUDINARY_API_SECRET = "2ByTwqrNy1Xut979U_Hm2mitqOQ"
+# Load environment variables
+load_dotenv()
 
 def test_cloudinary_connection():
     """Test Cloudinary connection and configuration"""
     print("🔍 Testing Cloudinary Connection...")
     
+    # Get credentials from environment variables
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME')
+    api_key = os.getenv('CLOUDINARY_API_KEY')
+    api_secret = os.getenv('CLOUDINARY_API_SECRET')
+    
+    if not all([cloud_name, api_key, api_secret]):
+        print("❌ Cloudinary credentials not found in environment variables")
+        print("Please set the following environment variables:")
+        print("CLOUDINARY_CLOUD_NAME")
+        print("CLOUDINARY_API_KEY")
+        print("CLOUDINARY_API_SECRET")
+        return False
+    
     try:
         # Configure Cloudinary
         cloudinary.config(
-            cloud_name=CLOUDINARY_CLOUD_NAME,
-            api_key=CLOUDINARY_API_KEY,
-            api_secret=CLOUDINARY_API_SECRET
+            cloud_name=cloud_name,
+            api_key=api_key,
+            api_secret=api_secret
         )
         
         print("✅ Cloudinary configured successfully")
@@ -36,9 +48,9 @@ def test_cloudinary_connection():
         print(f"✅ Cloudinary resources access successful")
         
         print("\n🎉 Cloudinary is working perfectly!")
-        print(f"Cloud Name: {CLOUDINARY_CLOUD_NAME}")
-        print(f"API Key: {CLOUDINARY_API_KEY}")
-        print(f"API Secret: {CLOUDINARY_API_SECRET[:8]}...")
+        print(f"Cloud Name: {cloud_name}")
+        print(f"API Key: {api_key[:8]}...")
+        print(f"API Secret: {api_secret[:8]}...")
         
         return True
         
@@ -87,8 +99,8 @@ def test_image_upload():
         return False
 
 if __name__ == "__main__":
-    print("🚀 Cloudinary Test Script")
-    print("=" * 40)
+    print("🚀 Cloudinary Test Script (Environment Variables)")
+    print("=" * 50)
     
     # Test connection
     connection_ok = test_cloudinary_connection()
@@ -102,9 +114,12 @@ if __name__ == "__main__":
         else:
             print("\n⚠️ Connection works but upload failed.")
     else:
-        print("\n❌ Cloudinary connection failed. Check credentials.")
+        print("\n❌ Cloudinary connection failed. Check environment variables.")
     
-    print("\n📋 Environment Variables for Render:")
-    print("CLOUDINARY_CLOUD_NAME=dkduhmrfp")
-    print("CLOUDINARY_API_KEY=532412838481764")
-    print("CLOUDINARY_API_SECRET=2ByTwqrNy1Xut979U_Hm2mitqOQ") 
+    print("\n📋 Environment Variables Setup:")
+    print("1. Create a .env file in the backend directory")
+    print("2. Add your Cloudinary credentials:")
+    print("   CLOUDINARY_CLOUD_NAME=your_cloud_name")
+    print("   CLOUDINARY_API_KEY=your_api_key")
+    print("   CLOUDINARY_API_SECRET=your_api_secret")
+    print("3. For Render deployment, add these as environment variables in your dashboard") 
