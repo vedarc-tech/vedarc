@@ -5301,10 +5301,11 @@ def verify_certificate(intern_id):
 def manager_get_intern_certificates():
     """Get all intern certificates for manager"""
     try:
-        user_id = get_jwt_identity()
-        user = db.users.find_one({'_id': ObjectId(user_id)})
+        username = get_jwt_identity()
         
-        if not user or user.get('user_type') != 'manager':
+        # Verify manager using admin_users collection
+        manager = admin_users.find_one({"username": username, "user_type": "manager"})
+        if not manager:
             return jsonify({'error': 'Unauthorized access'}), 403
         
         # Test database connection first
@@ -5335,10 +5336,11 @@ def manager_get_intern_certificates():
 def manager_add_intern_certificate():
     """Add a new intern certificate"""
     try:
-        user_id = get_jwt_identity()
-        user = db.users.find_one({'_id': ObjectId(user_id)})
+        username = get_jwt_identity()
         
-        if not user or user.get('user_type') != 'manager':
+        # Verify manager using admin_users collection
+        manager = admin_users.find_one({"username": username, "user_type": "manager"})
+        if not manager:
             return jsonify({'error': 'Unauthorized access'}), 403
         
         # Handle form data with file upload
@@ -5373,7 +5375,7 @@ def manager_add_intern_certificate():
             'grade': request.form.get('grade'),
             'profilePicture': profile_picture,
             'created_at': datetime.utcnow(),
-            'created_by': user_id
+            'created_by': username
         }
         
         # Validate required fields
@@ -5408,10 +5410,11 @@ def manager_add_intern_certificate():
 def manager_save_qr_code():
     """Save QR code for an intern certificate"""
     try:
-        user_id = get_jwt_identity()
-        user = db.users.find_one({'_id': ObjectId(user_id)})
+        username = get_jwt_identity()
         
-        if not user or user.get('user_type') != 'manager':
+        # Verify manager using admin_users collection
+        manager = admin_users.find_one({"username": username, "user_type": "manager"})
+        if not manager:
             return jsonify({'error': 'Unauthorized access'}), 403
         
         data = request.get_json()
@@ -5445,10 +5448,11 @@ def manager_save_qr_code():
 def manager_delete_intern_certificate(intern_id):
     """Delete an intern certificate"""
     try:
-        user_id = get_jwt_identity()
-        user = db.users.find_one({'_id': ObjectId(user_id)})
+        username = get_jwt_identity()
         
-        if not user or user.get('user_type') != 'manager':
+        # Verify manager using admin_users collection
+        manager = admin_users.find_one({"username": username, "user_type": "manager"})
+        if not manager:
             return jsonify({'error': 'Unauthorized access'}), 403
         
         # Delete the intern certificate
