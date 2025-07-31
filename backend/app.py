@@ -26,6 +26,9 @@ import ssl
 import razorpay
 import hashlib
 import hmac
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Load environment variables
 load_dotenv()
@@ -218,6 +221,21 @@ else:
     user_sessions = None
     system_settings = None
 
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
+CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
+CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
+
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET
+    )
+    print("✅ Cloudinary configured successfully")
+else:
+    print("⚠️ Cloudinary not configured - using local file storage")
+
 # Email Configuration
 SMTP_SERVER = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
 SMTP_PORT = int(os.getenv('SMTP_PORT', 587))
@@ -288,6 +306,70 @@ def validate_session(session_id, user_id, user_type):
     # Update last activity
     update_session_activity(session_id)
     return True
+
+# Cloudinary Helper Functions
+def upload_image_to_cloudinary(image_file, folder="vedarc/interns"):
+    """Upload image to Cloudinary and return the URL"""
+    try:
+        if not CLOUDINARY_CLOUD_NAME:
+            return None, "Cloudinary not configured"
+        
+        # Upload to Cloudinary
+        result = cloudinary.uploader.upload(
+            image_file,
+            folder=folder,
+            transformation=[
+                {'width': 400, 'height': 400, 'crop': 'fill', 'gravity': 'face'},
+                {'quality': 'auto', 'fetch_format': 'auto'}
+            ]
+        )
+        
+        return result['secure_url'], None
+    except Exception as e:
+        return None, str(e)
+
+def delete_image_from_cloudinary(public_id):
+    """Delete image from Cloudinary"""
+    try:
+        if not CLOUDINARY_CLOUD_NAME:
+            return False, "Cloudinary not configured"
+        
+        result = cloudinary.uploader.destroy(public_id)
+        return result.get('result') == 'ok', None
+    except Exception as e:
+        return False, str(e)
+
+def get_optimized_image_url(cloudinary_url, width=400, height=400):
+    """Get optimized image URL from Cloudinary"""
+    try:
+        if not cloudinary_url or not CLOUDINARY_CLOUD_NAME:
+            return cloudinary_url
+        
+        # Extract public_id from URL
+        if 'res.cloudinary.com' in cloudinary_url:
+            # URL format: https://res.cloudinary.com/cloud_name/image/upload/v1234567890/folder/image.jpg
+            parts = cloudinary_url.split('/')
+            if len(parts) >= 8:
+                # Find the upload index
+                upload_index = parts.index('upload')
+                if upload_index < len(parts) - 2:
+                    # Get everything after upload/v1234567890/
+                    public_id_parts = parts[upload_index + 2:]
+                    public_id = '/'.join(public_id_parts).split('.')[0]  # Remove extension
+                    
+                    # Generate optimized URL
+                    optimized_url = cloudinary.CloudinaryImage(public_id).build_url(
+                        transformation=[
+                            {'width': width, 'height': height, 'crop': 'fill', 'gravity': 'face'},
+                            {'quality': 'auto', 'fetch_format': 'auto'}
+                        ]
+                    )
+                    return optimized_url
+        
+        return cloudinary_url
+    except Exception as e:
+        print(f"Error optimizing image URL: {e}")
+        return cloudinary_url
 
 def send_email(to_email, subject, body, attachment_path=None):
     """Send email using SMTP with optional attachment"""
@@ -5277,6 +5359,12 @@ def verify_certificate(intern_id):
         if not intern:
             return jsonify({'error': 'Certificate not found'}), 404
         
+        # Optimize profile picture URL if it's a Cloudinary URL
+        profile_picture = intern.get('profilePicture')
+        if profile_picture:
+            optimized_url = get_optimized_image_url(profile_picture, width=300, height=300)
+            profile_picture = optimized_url
+        
         # Return certificate details (excluding sensitive information)
         certificate_data = {
             'firstName': intern.get('firstName'),
@@ -5287,7 +5375,7 @@ def verify_certificate(intern_id):
             'endDate': intern.get('endDate'),
             'internshipTitle': intern.get('internshipTitle'),
             'grade': intern.get('grade'),
-            'profilePicture': intern.get('profilePicture'),
+            'profilePicture': profile_picture,
             'created_at': intern.get('created_at')
         }
         
@@ -5318,9 +5406,14 @@ def manager_get_intern_certificates():
             # Get all intern certificates
             interns = list(db.intern_certificates.find().sort('created_at', -1))
             
-            # Convert ObjectId to string for JSON serialization
+            # Convert ObjectId to string for JSON serialization and optimize profile pictures
             for intern in interns:
                 intern['_id'] = str(intern['_id'])
+                
+                # Optimize profile picture URL if it's a Cloudinary URL
+                if intern.get('profilePicture'):
+                    optimized_url = get_optimized_image_url(intern['profilePicture'], width=200, height=200)
+                    intern['profilePicture'] = optimized_url
             
             return jsonify({'interns': interns})
         except Exception as db_error:
@@ -5349,18 +5442,27 @@ def manager_add_intern_certificate():
             file = request.files['profilePicture']
             if file and file.filename:
                 try:
-                    # Create uploads directory if it doesn't exist
-                    upload_dir = "uploads/profile_pictures"
-                    os.makedirs(upload_dir, exist_ok=True)
-                    
-                    # Save file to a secure location
-                    filename = secure_filename(file.filename)
-                    file_path = os.path.join(upload_dir, filename)
-                    file.save(file_path)
-                    profile_picture = file_path
+                    # Try to upload to Cloudinary first
+                    cloudinary_url, error = upload_image_to_cloudinary(file)
+                    if cloudinary_url:
+                        profile_picture = cloudinary_url
+                        print(f"✅ Image uploaded to Cloudinary: {cloudinary_url}")
+                    else:
+                        print(f"⚠️ Cloudinary upload failed: {error}")
+                        # Fallback to local storage
+                        try:
+                            upload_dir = "uploads/profile_pictures"
+                            os.makedirs(upload_dir, exist_ok=True)
+                            filename = secure_filename(file.filename)
+                            file_path = os.path.join(upload_dir, filename)
+                            file.save(file_path)
+                            profile_picture = file_path
+                            print(f"✅ Image saved locally: {file_path}")
+                        except Exception as local_error:
+                            print(f"❌ Local file save failed: {local_error}")
+                            profile_picture = None
                 except Exception as file_error:
-                    print(f"Error saving file: {file_error}")
-                    # Continue without profile picture if file save fails
+                    print(f"❌ File upload error: {file_error}")
                     profile_picture = None
         
         # Get form data
