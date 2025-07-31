@@ -78,11 +78,11 @@
 }
 
 .verification-header h1 {
-  color: var(--neon-cyan);
+  color: var(--primary-gold);
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  text-shadow: 0 0 20px rgba(0, 249, 255, 0.5);
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
 }
 
 .verification-header p {
@@ -98,8 +98,8 @@
 }
 
 .search-card {
-  background: rgba(22, 22, 38, 0.9);
-  border: 1px solid rgba(0, 249, 255, 0.2);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 20px;
   padding: 3rem 2rem;
   text-align: center;
@@ -110,9 +110,9 @@
 
 .search-icon {
   font-size: 3rem;
-  color: var(--neon-cyan);
+  color: var(--primary-gold);
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 20px rgba(0, 249, 255, 0.5));
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
 }
 
 .search-card h2 {
@@ -142,9 +142,9 @@
 .search-input {
   flex: 1;
   padding: 1rem 1.5rem;
-  border: 2px solid rgba(0, 249, 255, 0.3);
+  border: 2px solid rgba(212, 175, 55, 0.3);
   border-radius: 50px;
-  background: rgba(22, 22, 38, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   color: #fff;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -152,8 +152,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 20px rgba(0, 249, 255, 0.3);
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 .search-input::placeholder {
@@ -161,8 +161,8 @@
 }
 
 .search-btn {
-  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
-  color: #fff;
+  background: var(--gradient-gold);
+  color: #000;
   border: none;
   padding: 1rem 2rem;
   border-radius: 50px;
