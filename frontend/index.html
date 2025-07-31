@@ -86,13 +86,13 @@
     <meta name="msapplication-TileImage" content="/LOGO VEDARC.png" />
     <meta name="application-name" content="AgentX by Vedarc Technologies" />
     <meta name="apple-mobile-web-app-title" content="AgentX" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
     
     <!-- Performance Hints -->
-    <link rel="preload" href="/LOGO VEDARC.png" as="image" type="image/png" />
+    <!-- Logo preload removed to prevent unused resource warning -->
     
     <!-- Structured Data for Organization -->
     <script type="application/ld+json">
@@ -214,7 +214,6 @@
 
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />

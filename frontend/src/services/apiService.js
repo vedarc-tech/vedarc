@@ -160,7 +160,10 @@ export const publicAPI = {
   submitInvestorInquiry: (data) => apiRequest('/investor/inquiry', {
     method: 'POST',
     body: JSON.stringify(data)
-  })
+  }),
+  
+  // Certificate verification
+  verifyCertificate: (internId) => apiRequest(`/certificate/verify/${internId}`)
 }
 
 // ============================================================================
@@ -535,6 +538,29 @@ export const managerAPI = {
     method: 'PUT',
     body: JSON.stringify(settings)
   }),
+  
+  // Certificate Verifier Management
+  getInternCertificates: () => apiRequest('/manager/certificates/interns'),
+  
+  addInternCertificate: (formData) => {
+    return fetch(`${API_BASE_URL}/manager/certificates/interns`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('manager_token')}`,
+        'X-Session-ID': sessionStorage.getItem('session_id') || ''
+      },
+      body: formData
+    }).then(response => response.json())
+  },
+  
+  saveQRCode: (internId, qrCodeDataUrl) => apiRequest('/manager/certificates/qr-code', {
+    method: 'POST',
+    body: JSON.stringify({ internId, qrCodeDataUrl })
+  }),
+  
+  deleteInternCertificate: (internId) => apiRequest(`/manager/certificates/interns/${internId}`, {
+    method: 'DELETE'
+  })
 }
 
 // ============================================================================

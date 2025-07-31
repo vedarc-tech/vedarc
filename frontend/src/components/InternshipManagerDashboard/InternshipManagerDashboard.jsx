@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaUserTie, FaSignOutAlt, FaSpinner, FaCheckCircle, FaTimesCircle, FaPlus, FaEdit, FaTrash, FaCode, FaCalendarAlt, FaTrophy, FaBullhorn, FaUsers, FaLink, FaFile, FaFilter, FaSearch, FaEye, FaCertificate, FaUnlock, FaLock, FaDownload, FaExclamationTriangle, FaFileAlt } from 'react-icons/fa'
+import { FaUserTie, FaSignOutAlt, FaSpinner, FaCheckCircle, FaTimesCircle, FaPlus, FaEdit, FaTrash, FaCode, FaCalendarAlt, FaTrophy, FaBullhorn, FaUsers, FaLink, FaFile, FaFilter, FaSearch, FaEye, FaCertificate, FaUnlock, FaLock, FaDownload, FaExclamationTriangle, FaFileAlt, FaQrcode } from 'react-icons/fa'
 import { saveAs } from 'file-saver'
 import { managerAPI, authService } from '../../services/apiService'
+import CertificateVerifier from './CertificateVerifier'
 import './InternshipManagerDashboard.css'
 
 // Add at the top, after imports
@@ -914,6 +915,13 @@ export default function InternshipManagerDashboard() {
             Student Reports
           </button>
           <button
+            className={`nav-tab ${activeTab === 'certificate-verifier' ? 'active' : ''}`}
+            onClick={() => setActiveTab('certificate-verifier')}
+          >
+            <FaQrcode />
+            Certificate Verifier
+          </button>
+          <button
             className={`nav-tab ${activeTab === 'announcements' ? 'active' : ''}`}
             onClick={() => setActiveTab('announcements')}
           >
@@ -1602,6 +1610,18 @@ export default function InternshipManagerDashboard() {
                       </div>
                     </div>
                   )}
+                </motion.div>
+              )}
+
+              {activeTab === 'certificate-verifier' && (
+                <motion.div
+                  key="certificate-verifier"
+                  className="tab-content"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                >
+                  <CertificateVerifier />
                 </motion.div>
               )}
 

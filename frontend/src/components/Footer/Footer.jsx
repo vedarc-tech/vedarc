@@ -214,6 +214,16 @@ export default function Footer() {
             <li>
               <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
                 <Link 
+                  to="/verify-certificate"
+                  className="footer-link"
+                >
+                  Verify Your Internship Certificate
+                </Link>
+              </motion.div>
+            </li>
+            <li>
+              <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
+                <Link 
                   to="/contact"
                   className="footer-link"
                 >

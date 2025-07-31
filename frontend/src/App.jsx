@@ -27,6 +27,7 @@ const InternshipManagerDashboard = lazy(() => import('./components/InternshipMan
 const TermsConditions = lazy(() => import('./pages/TermsConditions/TermsConditions'))
 const RefundPolicy = lazy(() => import('./pages/RefundPolicy/RefundPolicy'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage/PrivacyPolicyPage'))
+const CertificateVerification = lazy(() => import('./pages/CertificateVerification/CertificateVerification'))
 
 // Loading component
 const LoadingSpinner = () => (
@@ -200,6 +201,30 @@ export default function App() {
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            
+            {/* Certificate Verification Routes */}
+            <Route path="/verify-certificate" element={
+              <>
+                <Navbar />
+                <CertificateVerification />
+                <Footer 
+                  setShowTerms={setShowTerms}
+                  setShowRefundAndCancellationPolicy={setShowRefund}
+                  setShowPrivacyPolicy={setShowPrivacyPolicy}
+                />
+              </>
+            } />
+            <Route path="/verify-certificate/:internId" element={
+              <>
+                <Navbar />
+                <CertificateVerification />
+                <Footer 
+                  setShowTerms={setShowTerms}
+                  setShowRefundAndCancellationPolicy={setShowRefund}
+                  setShowPrivacyPolicy={setShowPrivacyPolicy}
+                />
+              </>
+            } />
             
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
