@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaPlus, FaDownload, FaEye, FaTrash, FaQrcode, FaUser, FaCalendarAlt, FaGraduationCap, FaTrophy, FaSpinner, FaTimesCircle, FaCheckCircle } from 'react-icons/fa'
+import { FaPlus, FaDownload, FaEye, FaTrash, FaQrcode, FaUser, FaCalendarAlt, FaGraduationCap, FaTrophy, FaSpinner, FaTimesCircle, FaCheckCircle, FaCrop, FaArrowsAlt, FaUndo } from 'react-icons/fa'
 import QRCode from 'qrcode'
 import { saveAs } from 'file-saver'
 import { managerAPI } from '../../services/apiService'
@@ -13,6 +13,10 @@ export default function CertificateVerifier() {
   const [showAddForm, setShowAddForm] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [selectedIntern, setSelectedIntern] = useState(null)
+  const [showImageEditor, setShowImageEditor] = useState(false)
+  const [imageAlignment, setImageAlignment] = useState({ x: 0, y: 0, scale: 1 })
+  const canvasRef = useRef(null)
+  const imageRef = useRef(null)
   
   // Form state
   const [formData, setFormData] = useState({
@@ -24,10 +28,12 @@ export default function CertificateVerifier() {
     startDate: '',
     endDate: '',
     internshipTitle: '',
-    grade: 'A'
+    grade: 'A',
+    imageAlignment: { x: 0, y: 0, scale: 1 }
   })
 
   const [previewUrl, setPreviewUrl] = useState('')
+  const [originalImageUrl, setOriginalImageUrl] = useState('')
 
   const grades = ['O', 'E', 'A', 'B', 'C', 'D', 'P', 'F']
 
@@ -64,12 +70,35 @@ export default function CertificateVerifier() {
     const file = e.target.files[0]
     if (file) {
       setFormData(prev => ({ ...prev, profilePicture: file }))
+      const url = URL.createObjectURL(file)
+      setOriginalImageUrl(url)
+      setShowImageEditor(true)
     }
   }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleAlignmentChange = (type, value) => {
+    setImageAlignment(prev => ({ ...prev, [type]: value }))
+  }
+
+  const resetAlignment = () => {
+    setImageAlignment({ x: 0, y: 0, scale: 1 })
+  }
+
+  const applyAlignment = () => {
+    setFormData(prev => ({ ...prev, imageAlignment }))
+    setShowImageEditor(false)
+  }
+
+  const cancelAlignment = () => {
+    setShowImageEditor(false)
+    setImageAlignment({ x: 0, y: 0, scale: 1 })
+    setFormData(prev => ({ ...prev, profilePicture: null }))
+    setOriginalImageUrl('')
   }
 
   const handleSubmit = async (e) => {
@@ -82,6 +111,8 @@ export default function CertificateVerifier() {
       Object.keys(formData).forEach(key => {
         if (key === 'profilePicture' && formData[key]) {
           formDataToSend.append(key, formData[key])
+        } else if (key === 'imageAlignment') {
+          formDataToSend.append(key, JSON.stringify(formData[key]))
         } else if (key !== 'profilePicture') {
           formDataToSend.append(key, formData[key])
         }
@@ -95,12 +126,11 @@ export default function CertificateVerifier() {
         width: 300,
         margin: 2,
         color: {
-          dark: '#00f9ff',
-          light: '#ffffff'
+          dark: '#d4af37',
+          light: '#000000'
         }
       })
 
-      // Save QR code to backend
       await managerAPI.saveQRCode(formData.internId, qrCodeDataUrl)
 
       // Reset form
@@ -113,13 +143,14 @@ export default function CertificateVerifier() {
         startDate: '',
         endDate: '',
         internshipTitle: '',
-        grade: 'A'
+        grade: 'A',
+        imageAlignment: { x: 0, y: 0, scale: 1 }
       })
       setShowAddForm(false)
-      
-      // Refresh interns list
+      setOriginalImageUrl('')
+      setImageAlignment({ x: 0, y: 0, scale: 1 })
+
       await fetchInterns()
-      
       setError('')
     } catch (error) {
       console.error('Error adding intern certificate:', error)
@@ -450,6 +481,138 @@ export default function CertificateVerifier() {
                   </motion.button>
                 </div>
               </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Image Editor Modal */}
+      <AnimatePresence>
+        {showImageEditor && originalImageUrl && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={cancelAlignment}
+          >
+            <motion.div
+              className="modal image-editor-modal"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h3>Adjust Profile Picture</h3>
+                <button 
+                  className="close-btn"
+                  onClick={cancelAlignment}
+                >
+                  <FaTimesCircle />
+                </button>
+              </div>
+
+              <div className="image-editor-content">
+                <div className="image-preview-container">
+                  <div className="circular-crop-container">
+                    <img
+                      ref={imageRef}
+                      src={originalImageUrl}
+                      alt="Profile Preview"
+                      className="profile-preview-image"
+                      style={{
+                        transform: `translate(${imageAlignment.x}px, ${imageAlignment.y}px) scale(${imageAlignment.scale})`,
+                        transition: 'transform 0.2s ease'
+                      }}
+                    />
+                    <div className="circular-crop-overlay"></div>
+                  </div>
+                </div>
+
+                <div className="alignment-controls">
+                  <div className="control-group">
+                    <label>Horizontal Position</label>
+                    <div className="slider-container">
+                      <input
+                        type="range"
+                        min="-50"
+                        max="50"
+                        value={imageAlignment.x}
+                        onChange={(e) => handleAlignmentChange('x', parseInt(e.target.value))}
+                        className="alignment-slider"
+                      />
+                      <span className="slider-value">{imageAlignment.x}</span>
+                    </div>
+                  </div>
+
+                  <div className="control-group">
+                    <label>Vertical Position</label>
+                    <div className="slider-container">
+                      <input
+                        type="range"
+                        min="-50"
+                        max="50"
+                        value={imageAlignment.y}
+                        onChange={(e) => handleAlignmentChange('y', parseInt(e.target.value))}
+                        className="alignment-slider"
+                      />
+                      <span className="slider-value">{imageAlignment.y}</span>
+                    </div>
+                  </div>
+
+                  <div className="control-group">
+                    <label>Zoom Level</label>
+                    <div className="slider-container">
+                      <input
+                        type="range"
+                        min="0.5"
+                        max="2"
+                        step="0.1"
+                        value={imageAlignment.scale}
+                        onChange={(e) => handleAlignmentChange('scale', parseFloat(e.target.value))}
+                        className="alignment-slider"
+                      />
+                      <span className="slider-value">{imageAlignment.scale.toFixed(1)}x</span>
+                    </div>
+                  </div>
+
+                  <div className="control-actions">
+                    <motion.button
+                      type="button"
+                      className="reset-btn"
+                      onClick={resetAlignment}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaUndo />
+                      Reset
+                    </motion.button>
+                  </div>
+                </div>
+
+                <div className="modal-actions">
+                  <motion.button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={cancelAlignment}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Cancel
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    className="apply-btn"
+                    onClick={applyAlignment}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <FaCrop />
+                    Apply Alignment
+                  </motion.button>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}

@@ -610,3 +610,313 @@
     align-items: center;
   }
 } 
+
+/* Image Editor Modal Styles */
+.image-editor-modal {
+  max-width: 800px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.image-editor-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.image-preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  padding: 2rem;
+  min-height: 300px;
+}
+
+.circular-crop-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+.profile-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  cursor: move;
+}
+
+.circular-crop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.alignment-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  color: var(--primary-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.alignment-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(212, 175, 55, 0.2);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.alignment-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-gold);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  transition: all 0.2s ease;
+}
+
+.alignment-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+.alignment-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-gold);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  transition: all 0.2s ease;
+}
+
+.alignment-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+.slider-value {
+  min-width: 40px;
+  text-align: center;
+  color: var(--primary-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.control-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.reset-btn {
+  background: rgba(205, 127, 50, 0.1);
+  color: var(--accent-bronze);
+  border: 1px solid var(--accent-bronze);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+  background: var(--accent-bronze);
+  color: #000;
+  box-shadow: 0 0 15px rgba(205, 127, 50, 0.3);
+}
+
+.apply-btn {
+  background: var(--gradient-gold);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.apply-btn:hover {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design for Image Editor */
+@media (max-width: 768px) {
+  .image-editor-modal {
+    width: 95vw;
+    margin: 1rem;
+  }
+  
+  .image-editor-content {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+  
+  .circular-crop-container {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .alignment-controls {
+    padding: 1rem;
+  }
+  
+  .slider-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .slider-value {
+    align-self: center;
+  }
+}
+
+/* Enhanced form styling for profile picture upload */
+.form-group .file-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.05);
+  transition: all 0.3s ease;
+}
+
+.form-group .file-input:hover {
+  border-color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.form-group .file-input::before {
+  content: '📷 Upload Profile Picture';
+  color: var(--primary-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-group .file-input::-webkit-file-upload-button {
+  background: var(--gradient-gold);
+  color: #000;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.form-group .file-input::-webkit-file-upload-button:hover {
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+/* Profile picture preview in form */
+.profile-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.profile-preview img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-gold);
+}
+
+.profile-preview .preview-info {
+  flex: 1;
+}
+
+.profile-preview .preview-info h4 {
+  color: var(--primary-gold);
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.profile-preview .preview-info p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.profile-preview .edit-btn {
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--primary-gold);
+  border: 1px solid var(--primary-gold);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-preview .edit-btn:hover {
+  background: var(--primary-gold);
+  color: #000;
+} 
