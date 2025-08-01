@@ -126,8 +126,8 @@ export default function CertificateVerifier() {
         width: 300,
         margin: 2,
         color: {
-          dark: '#d4af37',
-          light: '#000000'
+          dark: '#000000',
+          light: '#ffffff'
         }
       })
 
@@ -167,7 +167,7 @@ export default function CertificateVerifier() {
         width: 400,
         margin: 2,
         color: {
-          dark: '#00f9ff',
+          dark: '#000000',
           light: '#ffffff'
         }
       })
