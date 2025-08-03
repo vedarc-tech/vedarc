@@ -24,18 +24,7 @@ export default function FAQ() {
         </ul>
       </div>`
     },
-    {
-      question: "How much does it cost?",
-      answer: `<div class="faq-pricing">
-        <p>We offer multiple pricing tiers:</p>
-        <ul>
-          <li><strong>Free Tier:</strong> 3 AI agents with limited credits</li>
-          <li><strong>Starter Plan:</strong> ₹999/month - All personal + 5 business tools</li>
-          <li><strong>Pro Plan:</strong> ₹2699/month - Unlimited access with priority support</li>
-          <li><strong>Enterprise:</strong> Custom solutions with white-label options</li>
-        </ul>
-      </div>`
-    },
+
     {
       question: "How can I join the beta?",
       answer: "To join our beta program, simply sign up for our waitlist using the form above. We'll notify you when beta access becomes available. Beta participants will get early access to our platform and exclusive features before the public launch."
