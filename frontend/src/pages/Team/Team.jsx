@@ -13,13 +13,13 @@ export default function Team() {
   }
 
   const leadershipTeam = [
-    {
-      name: 'Srinivas Charan Koppolu',
-      role: 'CTO',
-      bio: 'Technical visionary with deep expertise in AI systems, cloud architecture, and scalable engineering solutions. Leading our technology strategy and product development with a focus on innovation and reliability.',
-      linkedin: 'https://www.linkedin.com/in/srinivascharank/',
-      image: 'https://i.ibb.co/Q3Wj103M/Whats-App-Image-2025-07-30-at-07-53-33-c3330b0c.jpg'
-    },
+    //{
+      //name: 'Srinivas Charan Koppolu',
+      //role: 'CTO',
+      //bio: 'Technical visionary with deep expertise in AI systems, cloud architecture, and scalable engineering solutions. Leading our technology strategy and product development with a focus on innovation and reliability.',
+      //linkedin: 'https://www.linkedin.com/in/srinivascharank/',
+      //image: 'https://i.ibb.co/Q3Wj103M/Whats-App-Image-2025-07-30-at-07-53-33-c3330b0c.jpg'
+    //},
     {
       name: 'Vuddagiri Naga Venkat',
       role: 'CSO',
