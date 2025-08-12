@@ -244,11 +244,11 @@ export default function Investors() {
           >
             <h2 className="section-title">Seed Round Investment</h2>
             <p className="section-subtitle">
-              We're seeking ₹60 Lakhs to ₹1 Crore in seed funding to accelerate our AI platform development and market entry.
+              We're seeking ₹5 Crores to ₹10 Crore in seed funding to accelerate our AI platform development and market entry.
             </p>
             <div className="investment-amount">
               <span className="amount-label">Investment Target:</span>
-              <span className="amount-value">₹60 Lakhs - ₹1 Crore</span>
+              <span className="amount-value">₹5 Crores - ₹10 Crores</span>
             </div>
           </motion.div>
 
