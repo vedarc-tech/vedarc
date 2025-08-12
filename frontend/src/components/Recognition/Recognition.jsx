@@ -6,13 +6,11 @@ export default function Recognition() {
     {
       name: 'Startup India',
       description: 'Recognized by Government of India',
-      logo: 'https://banner2.cleanpng.com/20180702/yir/kisspng-government-of-india-guru-g-learning-labs-startup-i-startup-5b39b31ab34b43.9800870715305080587344.jpg',
       delay: 0.1
     },
     {
       name: 'AICTE',
       description: 'All India Council for Technical Education',
-      logo: '/aicte-logo.svg',
       delay: 0.2
     }
   ]
@@ -42,7 +40,7 @@ export default function Recognition() {
             <span className="title-line">By</span>
           </h2>
           <p className="recognition-subtitle">
-            Trusted and endorsed by leading government institutions
+            Trusted by leading government institutions
           </p>
         </motion.div>
 
@@ -65,18 +63,6 @@ export default function Recognition() {
               }}
             >
               <div className="recognition-icon">
-                <img 
-                  src={recognition.logo} 
-                  alt={`${recognition.name} Logo`}
-                  className="recognition-logo"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'block';
-                  }}
-                />
-                <div className="logo-fallback" style={{ display: 'none' }}>
-                  {recognition.name}
-                </div>
                 <div className="icon-glow"></div>
               </div>
               
