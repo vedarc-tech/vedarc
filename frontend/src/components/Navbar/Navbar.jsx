@@ -71,8 +71,8 @@ export default function Navbar() {
       const currentScrollY = window.scrollY
       if (!ticking.current) {
         window.requestAnimationFrame(() => {
-          // Only apply logo-only mode on desktop devices
-          if (!isMobile && currentScrollY > lastScrollY.current && currentScrollY > 100) {
+          // Apply logo-only mode on all devices when scrolling down
+          if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
             setIsLogoOnly(true) // scrolling down
           } else {
             setIsLogoOnly(false) // scrolling up
@@ -85,7 +85,7 @@ export default function Navbar() {
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isMobile])
+  }, [])
 
   return (
     <motion.nav 
@@ -158,7 +158,7 @@ export default function Navbar() {
           <div className="nav-spacer" style={{ width: '200px', flexShrink: 0 }}></div>
         )}
         {/* Mobile Menu Button - Always visible on mobile, hidden in logo-only mode on desktop */}
-        {(!isLogoOnly || isMobile) && (
+        {isMobile && (
         <motion.div 
           className="mobile-menu-btn"
           onClick={() => setIsOpen(!isOpen)}
