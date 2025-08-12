@@ -4,7 +4,7 @@ import './Team.css'
 
 export default function Team() {
   const mainFounder = {
-    name: 'Likith Prabhu',
+    name: 'Pothana Likith Prabhu',
     role: 'Founder & CEO',
     company: 'Vedarc Technologies Private Limited',
     bio: 'Likith Prabhu is a young entrepreneur and technologist with a vision to make next-gen technology accessible, scalable, and impactful for businesses, institutions, and individuals. As the Founder and CEO of Vedarc Technologies, he is leading a team that\'s committed to building intelligent digital solutions powered by AI, cloud, and full-stack innovation.\n\nFrom conceptualizing smart websites and enterprise platforms to building a unified AI Suite with domain-specific AI agents, Likith is on a mission to transform how people interact with technology. His leadership style blends innovation with empathy & ensuring every project delivers real value to users.\n\nUnder his direction, Vedarc has not only become Startup India and AICTE Recognized, but is also gaining trust across domains through smart solutions and collaborative product development.\n\nLikith believes in empowering students, researchers, startups, and organizations with tools that are both futuristic and practical. His startup journey stands as a testimony to what\'s possible when ambition meets purpose building in India, for the world.',
@@ -33,6 +33,27 @@ export default function Team() {
       bio: 'Strategic HR leader with experience in building high-performing teams and fostering inclusive workplace cultures. Driving talent acquisition, development, and organizational growth at Vedarc Technologies.',
       linkedin: 'https://www.linkedin.com/in/krishna-saran-nc-2b53342b3/',
       image: 'https://media.licdn.com/dms/image/v2/D5603AQEsZ9y5t3PpJQ/profile-displayphoto-shrink_400_400/B56ZXEK5ImHQAk-/0/1742752945972?e=1756339200&v=beta&t=R00g93n3ADJipuhNwu-yNZ74Tfjas1yCNHOLAwoH0Gg'
+    },
+    {
+      name: 'Ashraf Shaik Mohammed',
+      role: 'CCO',
+      bio: 'Chief Communications Officer with expertise in strategic communications, public relations, and stakeholder engagement. Leading our external communications strategy and building strong relationships with partners, clients, and the broader community.',
+      linkedin: 'https://www.linkedin.com/in/ashraf-shaik-mohammed-713524315/',
+      image: 'https://media.licdn.com/dms/image/v2/D5603AQEJuj3Veu_RNw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1731507159330?e=1758153600&v=beta&t=t2dgY5fvTi_fRNirt0fpBaJn_XH76DCiJOzWLY7-gSg'
+    },
+    {
+      name: 'Pothana Krishna Kanthi',
+      role: 'CFO',
+      bio: 'Chief Financial Officer with expertise in financial planning, budgeting, and strategic financial management. Leading our financial operations and ensuring sustainable growth through sound fiscal policies and investment strategies.',
+      linkedin: null,
+      image: 'https://i.ibb.co/27bh7q9y/Whats-App-Image-2025-08-12-at-13-24-18-bd4ad3c4.jpg'
+    },
+    {
+      name: 'Nabid Akhtar',
+      role: 'COO',
+      bio: 'Chief Operational Officer with expertise in operational excellence, process optimization, and strategic execution. Leading our day-to-day operations and ensuring seamless delivery of services while maintaining high quality standards and operational efficiency.',
+      linkedin: null,
+      image: 'https://i.ibb.co/chWkrhv9/Screenshot-2025-08-12-132811.png'
     }
   ]
 
@@ -133,7 +154,7 @@ export default function Team() {
                         }}
                       />
                       <div className="image-placeholder" style={{ display: 'none' }}>
-                        {member.role === 'CTO' ? '👨‍💻' : member.role === 'CHRO' ? '👩‍💼' : member.role === 'CSO' ? '👨‍💼' : '👨‍💼'}
+                        {member.role === 'CTO' ? '👨‍💻' : member.role === 'CHRO' ? '👩‍💼' : member.role === 'CSO' ? '👨‍💼' : member.role === 'CCO' ? '📢' : member.role === 'CFO' ? '💰' : member.role === 'COO' ? '👔' : '👨‍💼'}
                       </div>
                     </>
                   ) : (
@@ -148,16 +169,18 @@ export default function Team() {
                   <p className="member-role">{member.role}</p>
                   <p className="member-bio">{member.bio}</p>
                   
-                  <motion.a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="linkedin-link"
-                    whileHover={{ scale: 1.1, color: 'var(--neon-cyan)' }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <FaLinkedin />
-                  </motion.a>
+                  {member.linkedin && (
+                    <motion.a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="linkedin-link"
+                      whileHover={{ scale: 1.1, color: 'var(--neon-cyan)' }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FaLinkedin />
+                    </motion.a>
+                  )}
                 </div>
               </motion.div>
             ))}

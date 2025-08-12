@@ -112,14 +112,14 @@ export default function Hero() {
 
       {/* Content */}
       <div className="hero-content">
-        {/* AgentX Main Heading */}
+        {/* ProX AI Main Heading */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="hero-title-pro"
         >
-          <span className="hero-line agentx">AgentX</span>
+          <span className="hero-line prox-ai">ProX AI</span>
         </motion.h1>
         
         {/* Clear Subheading */}
@@ -182,20 +182,20 @@ export default function Hero() {
           >
             <motion.div
               className="info-popup"
-              initial={{ scale: 0.8, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
               <button 
-                className="close-popup-btn"
+                className="popup-close"
                 onClick={() => setShowInfoPopup(false)}
               >
                 ×
               </button>
               
               <div className="popup-content">
-                <h2 className="popup-title">Meet Your AI Transformation Partner</h2>
+                <h2>Who is ProX AI for?</h2>
                 
                 <div className="popup-sections">
                   <motion.div 
@@ -206,7 +206,7 @@ export default function Hero() {
                   >
                     <h3>Business Owners & Entrepreneurs</h3>
                     <p>
-                      Customer support drowning your team? <strong>AgentX</strong> AI Receptionists handle 24/7 queries while your Sales Assistants never miss a follow-up. Business Analytics AI predicts your next revenue opportunity before competitors see it.
+                      Customer support drowning your team? <strong>ProX AI</strong> AI Receptionists handle 24/7 queries while your Sales Assistants never miss a follow-up. Business Analytics AI predicts your next revenue opportunity before competitors see it.
                     </p>
                   </motion.div>
 
@@ -218,7 +218,7 @@ export default function Hero() {
                   >
                     <h3>Students & Educators</h3>
                     <p>
-                      Assignment deadlines overwhelming you? <strong>AgentX</strong> Study Planners create personalized learning paths while Doubt Solvers explain complex concepts instantly. Exam Prep AI generates custom practice tests that adapt to your weak areas.
+                      Assignment deadlines overwhelming you? <strong>ProX AI</strong> Study Planners create personalized learning paths while Doubt Solvers explain complex concepts instantly. Exam Prep AI generates custom practice tests that adapt to your weak areas.
                     </p>
                   </motion.div>
 
@@ -230,7 +230,7 @@ export default function Hero() {
                   >
                     <h3>Professionals & Teams</h3>
                     <p>
-                      Email inbox chaos killing productivity? <strong>AgentX</strong> Daily Schedulers sync with your calendar while Smart Reminders understand context. Productivity AI helps you focus on high-impact work instead of administrative tasks.
+                      Email inbox chaos killing productivity? <strong>ProX AI</strong> Daily Schedulers sync with your calendar while Smart Reminders understand context. Productivity AI helps you focus on high-impact work instead of administrative tasks.
                     </p>
                   </motion.div>
 
@@ -242,7 +242,7 @@ export default function Hero() {
                   >
                     <h3>Developers & Tech Teams</h3>
                     <p>
-                      Debugging eating your development time? <strong>AgentX</strong> Code Helper AI explains complex algorithms while Bug Detection spots issues before they reach production. Documentation Generators create comprehensive docs in minutes, not hours.
+                      Debugging eating your development time? <strong>ProX AI</strong> Code Helper AI explains complex algorithms while Bug Detection spots issues before they reach production. Documentation Generators create comprehensive docs in minutes, not hours.
                     </p>
                   </motion.div>
                 </div>

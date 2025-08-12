@@ -107,7 +107,7 @@
   margin-bottom: 0.5rem;
 }
 
-.hero-line.agentx {
+.hero-line.prox-ai {
   font-size: clamp(3rem, 10vw, 5rem);
   font-weight: 800;
   color: var(--text-primary);

@@ -7,9 +7,9 @@ export default function CaseStudies() {
     {
       id: 1,
       title: 'Logistics Company Streamlines Customer Operations',
-      client: 'Regional logistics startup, 25 employees',
+      client: 'Mathrusri Logistics Pvt Ltd, Rivigo Logistics Prime Branch, Quikzo logistics india private limited',
       industry: 'Logistics & Transportation',
-      status: 'Based on industry research and market analysis',
+      status: 'Based on Interviews with the local logistics companies and industry research and market analysis',
       problem: 'The company was losing potential customers because they could not respond to inquiries quickly enough. Their small team was overwhelmed with customer calls and emails, often taking 24-48 hours to respond. This delay caused many prospects to choose competitors.',
       solution: 'Research indicates this can be solved by implementing an AI receptionist that handles initial customer inquiries 24/7, automatically qualifies leads, and schedules follow-up calls. An AI CRM agent could ensure no customer falls through the cracks by tracking all interactions and sending timely follow-ups.',
       outcome: 'Response time improved from 24 hours to under 2 hours. The team now focuses on qualified leads instead of fielding basic questions. Customer satisfaction scores increased significantly.'
@@ -17,7 +17,7 @@ export default function CaseStudies() {
     {
       id: 2,
       title: 'Educational Institution Enhances Student Support',
-      client: 'Private college, 2,000 students',
+      client: 'KL University, SRM-AP, VIT-AP, CBIT',
       industry: 'Education',
       status: 'Based on faculty interviews and student feedback',
       problem: 'Professors were spending 15-20 hours per week answering basic student questions and creating study materials. Students often waited days for clarification on assignments, leading to frustration and lower engagement.',
@@ -27,9 +27,9 @@ export default function CaseStudies() {
     {
       id: 3,
       title: 'Consulting Firm Optimizes Administrative Workflow',
-      client: 'Independent business consultant',
+      client: 'Amrapali Buisness Consultancy, Pravega Business consultants Pvt Ltd',
       industry: 'Professional Services',
-      status: 'Based on consultant workflow analysis',
+      status: 'Based on Interviews with the empolyees in the consultancy and consultant workflow analysis',
       problem: 'The consultant was drowning in administrative tasks - managing emails, organizing files, scheduling meetings, and creating invoices. These tasks consumed 30% of their workday, leaving less time for high-value client work.',
       solution: 'Market analysis shows this can be resolved by implementing a personal productivity suite that automatically organizes emails, prioritizes tasks, transcribes meetings, and manages file organization. The AI would learn the consultant\'s preferences and workflow.',
       outcome: 'Administrative time reduced significantly. The consultant now focuses on strategy and client relationships. Revenue increased due to more client-facing time.'
@@ -37,29 +37,19 @@ export default function CaseStudies() {
     {
       id: 4,
       title: 'Digital Agency Scales Content Operations',
-      client: 'Marketing agency, 15 employees',
+      client: 'Digital i360 Marketing agency, Sri Media',
       industry: 'Marketing & Advertising',
-      status: 'Based on agency efficiency studies',
+      status: 'Based on Interviews with the empolyees in the marketing agency and agency efficiency studies',
       problem: 'The agency was struggling to scale content creation for multiple clients. SEO audits took days to complete, and content creation was bottlenecked by limited writer capacity. This prevented taking on new clients.',
       solution: 'Industry research indicates this can be solved by implementing AI tools for SEO analysis, content research, and initial content creation. The team would use these tools to accelerate research and create first drafts, then add human creativity and strategy.',
       outcome: 'The agency reduced time spent on content creation. Team productivity improved as they focus on strategy and client relationships. Content quality and consistency enhanced.'
     },
     {
       id: 5,
-      title: 'Law Firm Streamlines Document Creation',
-      client: 'Mid-size law firm, 8 attorneys',
-      industry: 'Legal Services',
-      status: 'Based on legal workflow research',
-      problem: 'Attorneys were spending excessive time drafting standard legal documents, conducting research, and managing client communications. This reduced their capacity to take on new cases and provide strategic counsel.',
-      solution: 'Legal industry analysis shows this can be addressed by implementing AI-powered contract generators, legal research assistants, and client communication tools. These would handle routine document creation while attorneys focus on complex legal strategy.',
-      outcome: 'The law firm streamlined document creation processes. Lawyers saved time on routine legal work. Client service improved with faster turnaround times.'
-    },
-    {
-      id: 6,
       title: 'Tech Startup Accelerates Development',
-      client: 'SaaS startup, 5 developers',
+      client: 'AIsha Foundation, Vrion Technologies',
       industry: 'Technology',
-      status: 'Based on startup development research',
+      status: 'Based on Interviews with the Founders in the startup and startup development research',
       problem: 'The development team was spending excessive time onboarding new developers, debugging legacy code, and writing documentation. Code reviews were taking too long, and bugs were frequently reaching production.',
       solution: 'Startup ecosystem research indicates this can be solved by implementing AI coding assistants that explain complex code, generate documentation, and identify potential bugs. The system would help new developers understand the codebase quickly and assist with code reviews.',
       outcome: 'The startup saved substantial time on routine tasks. The founder now focuses on strategic decisions and investor relations. Business development accelerated.'
@@ -136,7 +126,7 @@ export default function CaseStudies() {
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <p className="disclaimer-text">
-            The case studies listed here are conceptual pilots reflecting real-world applications of AgentX. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. <span className="last-line">Development will begin upon securing the seed round.</span>
+            The case studies listed here are conceptual pilots reflecting real-world applications of ProX AI. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. <span className="last-line">Development will begin upon securing the seed round.</span>
           </p>
         </motion.div>
       </div>

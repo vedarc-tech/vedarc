@@ -204,16 +204,10 @@
 
 .leadership-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-}
-
-.leadership-card:nth-child(3) {
-  grid-column: 1 / -1;
-  justify-self: center;
-  max-width: 400px;
 }
 
 .leadership-card {
@@ -369,12 +363,6 @@
   .leadership-grid {
     grid-template-columns: 1fr;
     gap: 25px;
-  }
-  
-  .leadership-card:nth-child(3) {
-    grid-column: 1;
-    justify-self: stretch;
-    max-width: none;
   }
   
   .leadership-card {

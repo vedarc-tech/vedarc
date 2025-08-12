@@ -64,7 +64,7 @@ export default function Footer() {
             <span className="highlight">VEDARC</span> TECHNOLOGIES
           </h3>
           <p className="footer-text">
-            Building the future with AgentX - India's most comprehensive AI suite platform with 30+ specialized agents.
+            Building the future with ProX AI - India's most comprehensive AI suite platform with 30+ specialized agents.
           </p>
           <div className="social-links">
             <motion.a 

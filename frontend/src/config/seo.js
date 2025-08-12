@@ -2,9 +2,9 @@
 export const seoConfig = {
   // Default SEO settings
   default: {
-    title: "AgentX by Vedarc Technologies - India's Most Comprehensive AI Suite Platform | 30+ AI Agents",
-    description: "AgentX by Vedarc Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, personal productivity, development, marketing, finance, legal, and more. Transform your productivity across all domains with cutting-edge AI technology.",
-    keywords: "AgentX, Vedarc Technologies, AI Suite, Artificial Intelligence, AI Agents, Business AI, Education AI, Productivity AI, Developer Tools, Marketing AI, Finance AI, Legal AI, Machine Learning, Tech Solutions, India AI Platform, AI Automation, Smart Business Solutions, Digital Transformation, AI-Powered Tools, Enterprise AI, Startup AI Solutions",
+    title: "ProX AI by Vedarc Technologies - India's Most Comprehensive AI Suite Platform | 30+ AI Agents",
+    description: "ProX AI by Vedarc Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, personal productivity, development, marketing, finance, legal, and more. Transform your productivity across all domains with cutting-edge AI technology.",
+    keywords: "ProX AI, Vedarc Technologies, AI Suite, Artificial Intelligence, AI Agents, Business AI, Education AI, Productivity AI, Developer Tools, Marketing AI, Finance AI, Legal AI, Machine Learning, Tech Solutions, India AI Platform, AI Automation, Smart Business Solutions, Digital Transformation, AI-Powered Tools, Enterprise AI, Startup AI Solutions",
     image: "https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031",
     url: "https://www.vedarc.co.in",
     type: "website",
@@ -15,19 +15,19 @@ export const seoConfig = {
   // Page-specific SEO configurations
   pages: {
     home: {
-      title: "AgentX by Vedarc Technologies - India's Most Comprehensive AI Suite Platform | 30+ AI Agents",
-      description: "AgentX by Vedarc Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, personal productivity, development, marketing, finance, legal, and more. Transform your productivity across all domains with cutting-edge AI technology.",
-      keywords: "AgentX, Vedarc Technologies, AI Suite, Artificial Intelligence, AI Agents, Business AI, Education AI, Productivity AI, Developer Tools, Marketing AI, Finance AI, Legal AI, Machine Learning, Tech Solutions, India AI Platform",
+      title: "ProX AI by Vedarc Technologies - India's Most Comprehensive AI Suite Platform | 30+ AI Agents",
+      description: "ProX AI by Vedarc Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, personal productivity, development, marketing, finance, legal, and more. Transform your productivity across all domains with cutting-edge AI technology.",
+      keywords: "ProX AI, Vedarc Technologies, AI Suite, Artificial Intelligence, AI Agents, Business AI, Education AI, Productivity AI, Developer Tools, Marketing AI, Finance AI, Legal AI, Machine Learning, Tech Solutions, India AI Platform",
       url: "https://www.vedarc.co.in",
       structuredData: {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": "AgentX by Vedarc Technologies",
+        "name": "ProX AI by Vedarc Technologies",
         "description": "India's most comprehensive AI suite platform with 30+ specialized agents",
         "url": "https://www.vedarc.co.in",
         "mainEntity": {
           "@type": "SoftwareApplication",
-          "name": "AgentX",
+          "name": "ProX AI",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web Browser",
           "description": "Comprehensive AI suite platform with 30+ specialized agents"
@@ -35,164 +35,74 @@ export const seoConfig = {
       }
     },
 
+    about: {
+      title: "About ProX AI | VEDARC Technologies - AI Suite Platform",
+      description: "Learn about ProX AI by VEDARC Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, and personal productivity.",
+      keywords: "ProX AI, VEDARC Technologies, AI Suite, About Us, AI Platform, Artificial Intelligence, India AI",
+      url: "https://www.vedarc.co.in/about"
+    },
+
     useCases: {
-      title: "AI Use Cases & Applications | AgentX by Vedarc Technologies",
-      description: "Explore comprehensive AI use cases and applications across business, education, development, marketing, finance, and legal domains. Discover how AgentX AI agents can transform your workflow.",
-      keywords: "AI Use Cases, AI Applications, Business AI, Education AI, Development AI, Marketing AI, Finance AI, Legal AI, AI Solutions, AI Implementation, AI Automation",
-      url: "https://www.vedarc.co.in/use-cases",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "AI Use Cases & Applications",
-        "description": "Explore comprehensive AI use cases and applications",
-        "url": "https://www.vedarc.co.in/use-cases",
-        "mainEntity": {
-          "@type": "ItemList",
-          "name": "AI Use Cases",
-          "description": "Comprehensive list of AI applications and use cases"
-        }
-      }
-    },
-
-    investors: {
-      title: "Invest in AI Innovation | Vedarc Technologies - Investment Opportunities",
-      description: "Discover investment opportunities in Vedarc Technologies' cutting-edge AI platform. Join us in revolutionizing business automation and AI solutions across multiple industries.",
-      keywords: "AI Investment, Tech Investment, Startup Investment, AI Innovation, Vedarc Investment, Technology Investment, AI Platform Investment",
-      url: "https://www.vedarc.co.in/investors",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Investment Opportunities",
-        "description": "Investment opportunities in AI innovation",
-        "url": "https://www.vedarc.co.in/investors",
-        "mainEntity": {
-          "@type": "Organization",
-          "name": "VEDARC Technologies Private Limited",
-          "description": "AI innovation company seeking investment"
-        }
-      }
-    },
-
-    team: {
-      title: "Meet Our Team | Vedarc Technologies - AI Innovation Leaders",
-      description: "Meet the talented team behind Vedarc Technologies' AI innovation. Our experts are driving the future of AI-powered business solutions and automation.",
-      keywords: "Vedarc Team, AI Experts, Tech Team, Innovation Team, AI Leaders, Technology Experts, Startup Team",
-      url: "https://www.vedarc.co.in/team",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Our Team",
-        "description": "Meet the team behind Vedarc Technologies",
-        "url": "https://www.vedarc.co.in/team",
-        "mainEntity": {
-          "@type": "Organization",
-          "name": "VEDARC Technologies Private Limited",
-          "description": "AI innovation company team"
-        }
-      }
+      title: "AI Use Cases & Applications | ProX AI by Vedarc Technologies",
+      description: "Discover real-world applications and use cases of ProX AI across business, education, marketing, finance, and legal domains. See how ProX AI agents can transform your workflow.",
+      keywords: "ProX AI, AI Use Cases, AI Applications, Business AI, Education AI, Marketing AI, Finance AI, Legal AI, VEDARC Technologies",
+      url: "https://www.vedarc.co.in/use-cases"
     },
 
     contact: {
-      title: "Contact Us | Vedarc Technologies - Get in Touch",
-      description: "Get in touch with Vedarc Technologies for AI solutions, partnerships, or inquiries. We're here to help transform your business with cutting-edge AI technology.",
-      keywords: "Contact Vedarc, AI Support, Tech Support, Business Inquiry, Partnership, AI Consultation",
-      url: "https://www.vedarc.co.in/contact",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "ContactPage",
-        "name": "Contact Us",
-        "description": "Get in touch with Vedarc Technologies",
-        "url": "https://www.vedarc.co.in/contact",
-        "mainEntity": {
-          "@type": "Organization",
-          "name": "VEDARC Technologies Private Limited",
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "customer service",
-            "url": "https://www.vedarc.co.in/contact"
-          }
-        }
-      }
+      title: "Contact ProX AI | VEDARC Technologies - Get AI Solutions",
+      description: "Contact ProX AI by VEDARC Technologies for AI suite solutions, business automation, and AI agent implementation. Transform your business with cutting-edge AI technology.",
+      keywords: "Contact ProX AI, VEDARC Technologies, AI Solutions, Business AI, AI Consultation, AI Implementation",
+      url: "https://www.vedarc.co.in/contact"
     },
 
-    internshipRegistration: {
-      title: "Internship Registration | Vedarc Technologies - Join Our AI Innovation Team",
-      description: "Join Vedarc Technologies' internship program and work on cutting-edge AI projects. Gain hands-on experience in AI development, business automation, and technology innovation.",
-      keywords: "AI Internship, Tech Internship, Vedarc Internship, AI Development Internship, Technology Internship, Innovation Internship",
-      url: "https://www.vedarc.co.in/internship-registration",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Internship Registration",
-        "description": "Join our AI innovation internship program",
-        "url": "https://www.vedarc.co.in/internship-registration",
-        "mainEntity": {
-          "@type": "EducationalOccupationalProgram",
-          "name": "AI Innovation Internship",
-          "description": "Internship program in AI development and innovation"
-        }
-      }
+    team: {
+      title: "ProX AI Team | VEDARC Technologies - AI Experts & Innovators",
+      description: "Meet the ProX AI team at VEDARC Technologies - AI experts, developers, and innovators building India's most comprehensive AI suite platform.",
+      keywords: "ProX AI Team, VEDARC Technologies, AI Experts, AI Developers, AI Innovators, India AI Team",
+      url: "https://www.vedarc.co.in/team"
     },
 
-    aiInternshipApplication: {
-      title: "AI Role Application | Vedarc Technologies - Apply for AI Positions",
-      description: "Apply for AI roles at Vedarc Technologies. Join our team of AI experts and contribute to groundbreaking AI solutions and business automation projects.",
-      keywords: "AI Jobs, Tech Jobs, Vedarc Careers, AI Development Jobs, Technology Careers, AI Innovation Jobs",
-      url: "https://www.vedarc.co.in/airole-apply",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "AI Role Application",
-        "description": "Apply for AI positions at Vedarc Technologies",
-        "url": "https://www.vedarc.co.in/airole-apply",
-        "mainEntity": {
-          "@type": "JobPosting",
-          "title": "AI Developer",
-          "description": "AI development and innovation role"
-        }
-      }
+    projects: {
+      title: "ProX AI Projects | VEDARC Technologies - AI Solutions Portfolio",
+      description: "Explore ProX AI projects and solutions by VEDARC Technologies. See how our AI agents transform businesses across industries with intelligent automation.",
+      keywords: "ProX AI Projects, VEDARC Technologies, AI Solutions, AI Portfolio, Business AI, AI Automation",
+      url: "https://www.vedarc.co.in/projects"
     },
 
-    termsConditions: {
-      title: "Terms & Conditions | Vedarc Technologies",
-      description: "Read Vedarc Technologies' terms and conditions for using our AI platform and services. Understand our policies and guidelines for platform usage.",
-      keywords: "Terms and Conditions, Vedarc Terms, Platform Terms, Service Terms, Legal Terms",
-      url: "https://www.vedarc.co.in/terms-conditions",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Terms & Conditions",
-        "description": "Terms and conditions for Vedarc Technologies",
-        "url": "https://www.vedarc.co.in/terms-conditions"
-      }
+    testimonials: {
+      title: "ProX AI Testimonials | VEDARC Technologies - Client Success Stories",
+      description: "Read ProX AI testimonials and success stories from VEDARC Technologies clients. See how our AI suite platform transforms businesses and productivity.",
+      keywords: "ProX AI Testimonials, VEDARC Technologies, Client Success, AI Success Stories, Business Transformation",
+      url: "https://www.vedarc.co.in/testimonials"
     },
 
-    refundPolicy: {
-      title: "Refund Policy | Vedarc Technologies",
-      description: "Learn about Vedarc Technologies' refund policy and cancellation terms. Understand our commitment to customer satisfaction and service quality.",
-      keywords: "Refund Policy, Cancellation Policy, Vedarc Refunds, Service Refunds",
-      url: "https://www.vedarc.co.in/refund-policy",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Refund Policy",
-        "description": "Refund and cancellation policy",
-        "url": "https://www.vedarc.co.in/refund-policy"
-      }
+    faq: {
+      title: "ProX AI FAQ | VEDARC Technologies - Frequently Asked Questions",
+      description: "Find answers to common questions about ProX AI by VEDARC Technologies. Learn about our AI suite platform, features, and implementation.",
+      keywords: "ProX AI FAQ, VEDARC Technologies, AI Questions, AI Suite FAQ, AI Platform Help",
+      url: "https://www.vedarc.co.in/faq"
     },
 
-    privacyPolicy: {
-      title: "Privacy Policy | Vedarc Technologies",
-      description: "Read Vedarc Technologies' privacy policy to understand how we collect, use, and protect your personal information and data.",
-      keywords: "Privacy Policy, Data Protection, Vedarc Privacy, Information Security",
-      url: "https://www.vedarc.co.in/privacy-policy",
-      structuredData: {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Privacy Policy",
-        "description": "Privacy policy and data protection",
-        "url": "https://www.vedarc.co.in/privacy-policy"
-      }
+    privacy: {
+      title: "ProX AI Privacy Policy | VEDARC Technologies - Data Protection",
+      description: "ProX AI Privacy Policy by VEDARC Technologies. Learn how we protect your data and ensure privacy in our AI suite platform.",
+      keywords: "ProX AI Privacy, VEDARC Technologies, Data Protection, AI Privacy, Privacy Policy",
+      url: "https://www.vedarc.co.in/privacy"
+    },
+
+    terms: {
+      title: "ProX AI Terms & Conditions | VEDARC Technologies - Service Agreement",
+      description: "ProX AI Terms and Conditions by VEDARC Technologies. Read our service agreement and terms for using our AI suite platform.",
+      keywords: "ProX AI Terms, VEDARC Technologies, Service Agreement, Terms Conditions, AI Platform Terms",
+      url: "https://www.vedarc.co.in/terms"
+    },
+
+    refund: {
+      title: "ProX AI Refund Policy | VEDARC Technologies - Customer Satisfaction",
+      description: "ProX AI Refund Policy by VEDARC Technologies. Learn about our refund and cancellation policies for AI suite services.",
+      keywords: "ProX AI Refund, VEDARC Technologies, Refund Policy, Cancellation Policy, AI Services",
+      url: "https://www.vedarc.co.in/refund"
     }
   },
 
@@ -201,15 +111,9 @@ export const seoConfig = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "VEDARC Technologies Private Limited",
-    "alternateName": "VEDARC",
     "url": "https://www.vedarc.co.in",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://www.vedarc.co.in/LOGO%20VEDARC.png",
-      "width": 512,
-      "height": 512
-    },
-    "description": "AgentX by Vedarc Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, personal productivity, development, marketing, finance, legal, and more.",
+    "logo": "https://ik.imagekit.io/vedarc/Vedarc/vedarc-meta-banner.png?updatedAt=1751480791031",
+    "description": "ProX AI by Vedarc Technologies - India's most comprehensive AI suite platform with 30+ specialized agents for business, education, personal productivity, development, marketing, finance, legal, and more. Transform your productivity across all domains with cutting-edge AI technology.",
     "foundingDate": "2024",
     "address": {
       "@type": "PostalAddress",
@@ -219,8 +123,7 @@ export const seoConfig = {
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer service",
-      "url": "https://www.vedarc.co.in/contact",
-      "availableLanguage": ["English", "Hindi"]
+      "email": "contact@vedarc.co.in"
     },
     "sameAs": [
       "https://www.linkedin.com/company/vedarc-technologies",
@@ -262,7 +165,7 @@ export const seoConfig = {
   website: {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "AgentX by Vedarc Technologies",
+    "name": "ProX AI by Vedarc Technologies",
     "url": "https://www.vedarc.co.in",
     "description": "India's most comprehensive AI suite platform with 30+ specialized agents",
     "publisher": {
@@ -282,7 +185,7 @@ export const seoConfig = {
   softwareApplication: {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "AgentX",
+    "name": "ProX AI",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web Browser",
     "url": "https://www.vedarc.co.in",

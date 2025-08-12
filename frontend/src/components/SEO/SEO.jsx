@@ -76,7 +76,7 @@ const SEO = ({
     const defaultSiteName = 'VEDARC Technologies Private Limited';
 
     const ogTags = {
-      'og:title': title || 'AgentX by Vedarc Technologies',
+      'og:title': title || 'ProX AI by Vedarc Technologies',
       'og:description': description,
       'og:image': image || defaultImage,
       'og:url': url || defaultUrl,
@@ -100,7 +100,7 @@ const SEO = ({
     // Update Twitter tags
     const twitterTags = {
       'twitter:card': 'summary_large_image',
-      'twitter:title': title || 'AgentX by Vedarc Technologies',
+      'twitter:title': title || 'ProX AI by Vedarc Technologies',
       'twitter:description': description,
       'twitter:image': image || defaultImage,
       'twitter:site': '@vedarc_tech',

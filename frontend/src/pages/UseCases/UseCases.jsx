@@ -12,7 +12,7 @@ export default function UseCases() {
       problem: 'High lead drop-off due to late follow-ups and inconsistent communication',
       solution: 'Research indicates this can be solved by implementing an AI receptionist for 24/7 website chat and voice support, integrated with an AI CRM agent for automated follow-ups and meeting scheduling.',
       outcome: 'Lead response speed would improve significantly, manual follow-up time would be reduced substantially, and client retention would improve through consistent nurturing.',
-      context: 'This case study demonstrates how AgentX can transform lead management for small and medium businesses through intelligent automation.'
+      context: 'This case study demonstrates how ProX AI can transform lead management for small and medium businesses through intelligent automation.'
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ export default function UseCases() {
       problem: 'Struggled with managing citations and understanding technical papers quickly',
       solution: 'Market analysis shows this can be resolved by implementing a literature search agent and paper summarizer, integrated with an auto-citation tool for BibTeX and APA exports.',
       outcome: 'Literature review time would be reduced significantly, research pace would be enhanced, and citation accuracy would improve.',
-      context: 'AgentX accelerates research productivity by automating time-consuming literature review and citation management tasks.'
+      context: 'ProX AI accelerates research productivity by automating time-consuming literature review and citation management tasks.'
     },
     {
       id: 4,
@@ -45,7 +45,7 @@ export default function UseCases() {
       problem: 'Manual task handling, inbox overload, unstructured files',
       solution: 'Industry research indicates this can be solved by implementing a task prioritizer bot and mail organizer, along with file finder and meeting transcriber capabilities.',
       outcome: 'Significant time would be saved in admin tasks, faster turnaround on client proposals, and boosted client communication clarity.',
-      context: 'This case study shows how AgentX can be a game-changer for solo entrepreneurs and freelancers.'
+      context: 'This case study shows how ProX AI can be a game-changer for solo entrepreneurs and freelancers.'
     },
     {
       id: 5,
@@ -56,7 +56,7 @@ export default function UseCases() {
       problem: 'Manual SEO audits and repetitive content tasks',
       solution: 'Research suggests this can be addressed by implementing an SEO planner, competitor audit bot, and content rewriter, with a shared workspace featuring tailored AI tools.',
       outcome: 'SEO audit time would be reduced substantially, content generation could be scaled significantly, and campaign ROIs would improve through quicker turnarounds.',
-      context: 'AgentX enables marketing agencies to scale operations and deliver better results through intelligent automation.'
+      context: 'ProX AI enables marketing agencies to scale operations and deliver better results through intelligent automation.'
     },
     {
       id: 6,
@@ -67,7 +67,7 @@ export default function UseCases() {
       problem: 'High onboarding time, unclear legacy code, and repeated bug triage',
       solution: 'Startup ecosystem research indicates this can be solved by implementing an AI code explainer, boilerplate generator, and bug detection assistant, paired with API doc helper for clean documentation.',
       outcome: 'Onboarding for new developers would be faster, code review cycles would be reduced, and fewer post-deployment bugs would occur.',
-      context: 'This demonstrates how AgentX can significantly improve development efficiency and code quality.'
+      context: 'This demonstrates how ProX AI can significantly improve development efficiency and code quality.'
     }
   ]
 
@@ -89,7 +89,7 @@ export default function UseCases() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="hero-subtitle"
           >
-            Discover how AgentX transforms businesses across industries
+            Discover how ProX AI transforms businesses across industries
           </motion.p>
         </div>
       </section>
@@ -148,7 +148,7 @@ export default function UseCases() {
         >
           <div className="container">
             <p className="disclaimer-text">
-              The case studies listed here are conceptual pilots reflecting real-world applications of AgentX. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. <span className="last-line">Development will begin upon securing the seed round.</span>
+              The case studies listed here are conceptual pilots reflecting real-world applications of ProX AI. These use cases are validated through domain research, strategic consultation, and preliminary user interviews. <span className="last-line">Development will begin upon securing the seed round.</span>
             </p>
           </div>
         </motion.div>

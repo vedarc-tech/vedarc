@@ -107,7 +107,7 @@ export default function Navbar() {
               <span className="elegant-logo">
                 <img src={logo} alt="Vedarc Technologies" />
               </span>
-              <span className="brand-text">AgentX</span>
+              <span className="brand-text">ProX AI</span>
             </span>
           </button>
         </motion.div>

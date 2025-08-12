@@ -12,7 +12,7 @@ export default function About() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedService, setSelectedService] = useState(null)
 
-  // AgentX AI Suite Modules
+  // ProX AI Suite Modules
   const aiModules = [
     {
       icon: <FaRobot className="tech-icon" />,
@@ -67,7 +67,7 @@ export default function About() {
         <div className="hex-grid__inner"></div>
       </div>
 
-      {/* AgentX Title */}
+      {/* ProX AI Title */}
       <motion.h2 
         className="glitch-title"
         initial={{ opacity: 0, y: 20 }}
@@ -92,10 +92,10 @@ export default function About() {
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ delay: 0.3, duration: 0.6 }}
       >
-        AgentX: One platform. 7 AI suites. 30+ specialized agents. Transform your productivity across all domains.
+        ProX AI: One platform. 7 AI suites. 30+ specialized agents. Transform your productivity across all domains.
       </motion.p>
 
-      {/* AgentX AI Suite Modules Grid */}
+      {/* ProX AI Suite Modules Grid */}
       <div className="focus-grid">
         {aiModules.map((module, index) => (
           <motion.div

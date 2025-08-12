@@ -78,7 +78,7 @@ export default function Contact() {
         >
           <h1 className="contact-title">Get In Touch</h1>
           <p className="contact-subtitle">
-            Ready to transform your business with AI? Let's discuss how our AgentX - VEDARC AI Suite can help you achieve your goals.
+            Ready to transform your business with AI? Let's discuss how our ProX AI - VEDARC AI Suite can help you achieve your goals.
           </p>
         </motion.div>
 
