@@ -271,14 +271,23 @@
   }
   
   .mobile-menu-btn {
-    display: block !important;
+    display: flex !important;
     font-size: 1.8rem;
     height: 70px;
     width: 48px;
-    display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1100;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-menu-btn:hover {
+    color: var(--primary-gold);
+    background: rgba(212, 175, 55, 0.05);
   }
   
   .mobile-menu {
@@ -370,43 +379,6 @@
 .navbar.logo-only {
   background: transparent !important;
   box-shadow: none !important;
-  min-height: 60px;
-  height: 60px;
-  transition: background 0.4s, box-shadow 0.4s, min-height 0.3s, height 0.3s;
-}
-
-.navbar.logo-only .navbar-container {
-  justify-content: flex-start;
-}
-
-.logo.logo-center {
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.95);
-  border-radius: 0 0 18px 18px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  padding: 0 32px;
-  transition: background 0.4s, box-shadow 0.4s;
-}
-
-.navbar.logo-only .nav-menu,
-.navbar.logo-only .mobile-menu-btn {
-  display: none !important;
-}
-
-.navbar.logo-only {
-  top: 0;
-  background: transparent !important;
-  box-shadow: none !important;
   min-height: 68px;
   height: 68px;
   transition: background 0.4s, box-shadow 0.4s, min-height 0.3s, height 0.3s;
@@ -428,16 +400,26 @@
   align-items: center;
   justify-content: center;
   z-index: 10;
-  background: rgba(17, 17, 17, 0.95);
+  background: transparent;
   border-radius: 0 0 18px 18px;
-  box-shadow: var(--shadow-medium);
+  box-shadow: none;
   padding: 0 32px;
   transition: background 0.4s, box-shadow 0.4s;
 }
 
-.navbar.logo-only .nav-menu,
+.navbar.logo-only .nav-menu {
+  display: none !important;
+}
+
+/* Keep mobile menu button visible on mobile even in logo-only mode */
 .navbar.logo-only .mobile-menu-btn {
   display: none !important;
+}
+
+@media (max-width: 768px) {
+  .navbar.logo-only .mobile-menu-btn {
+    display: flex !important;
+  }
 }
 
 /* Animate nav links out */
