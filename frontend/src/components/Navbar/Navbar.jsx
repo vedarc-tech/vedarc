@@ -22,7 +22,6 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeLink, setActiveLink] = useState('home')
   const [isLogoOnly, setIsLogoOnly] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
   const lastScrollY = useRef(window.scrollY)
   const ticking = useRef(false)
   const navigate = useNavigate()
@@ -54,24 +53,12 @@ export default function Navbar() {
     setIsOpen(false)
   }
 
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
   // Show only logo when scrolling down, show full navbar when scrolling up
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       if (!ticking.current) {
         window.requestAnimationFrame(() => {
-          // Apply logo-only mode on all devices when scrolling down
           if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
             setIsLogoOnly(true) // scrolling down
           } else {
@@ -157,8 +144,8 @@ export default function Navbar() {
         {!isLogoOnly && (
           <div className="nav-spacer" style={{ width: '200px', flexShrink: 0 }}></div>
         )}
-        {/* Mobile Menu Button - Always visible on mobile, hidden in logo-only mode on desktop */}
-        {isMobile && (
+        {/* Mobile Menu Button (hidden in logo-only mode) */}
+        {!isLogoOnly && (
         <motion.div 
           className="mobile-menu-btn"
           onClick={() => setIsOpen(!isOpen)}
@@ -174,7 +161,7 @@ export default function Navbar() {
         )}
       </div>
       {/* Mobile Menu */}
-      {isOpen && (
+      {!isLogoOnly && isOpen && (
         <motion.div 
           className="mobile-menu"
           initial={{ opacity: 0, y: -20 }}

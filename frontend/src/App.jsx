@@ -28,6 +28,7 @@ const TermsConditions = lazy(() => import('./pages/TermsConditions/TermsConditio
 const RefundPolicy = lazy(() => import('./pages/RefundPolicy/RefundPolicy'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage/PrivacyPolicyPage'))
 const CertificateVerification = lazy(() => import('./pages/CertificateVerification/CertificateVerification'))
+const ProXDemo = lazy(() => import('./pages/ProXDemo/ProXDemo'))
 
 // Loading component
 const LoadingSpinner = () => (
@@ -225,6 +226,9 @@ export default function App() {
                 />
               </>
             } />
+            
+            {/* ProX Demo Route - Hidden from main navigation */}
+            <Route path="/demo-prox" element={<ProXDemo />} />
             
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />

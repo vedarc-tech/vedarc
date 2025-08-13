@@ -47,13 +47,6 @@ export default function Team() {
       bio: 'Chief Financial Officer with expertise in financial planning, budgeting, and strategic financial management. Leading our financial operations and ensuring sustainable growth through sound fiscal policies and investment strategies.',
       linkedin: null,
       image: 'https://i.ibb.co/27bh7q9y/Whats-App-Image-2025-08-12-at-13-24-18-bd4ad3c4.jpg'
-    },
-    {
-      name: 'Nabid Akhtar',
-      role: 'COO',
-      bio: 'Chief Operational Officer with expertise in operational excellence, process optimization, and strategic execution. Leading our day-to-day operations and ensuring seamless delivery of services while maintaining high quality standards and operational efficiency.',
-      linkedin: null,
-      image: 'https://i.ibb.co/chWkrhv9/Screenshot-2025-08-12-132811.png'
     }
   ]
 
@@ -154,7 +147,7 @@ export default function Team() {
                         }}
                       />
                       <div className="image-placeholder" style={{ display: 'none' }}>
-                        {member.role === 'CTO' ? '👨‍💻' : member.role === 'CHRO' ? '👩‍💼' : member.role === 'CSO' ? '👨‍💼' : member.role === 'CCO' ? '📢' : member.role === 'CFO' ? '💰' : member.role === 'COO' ? '👔' : '👨‍💼'}
+                        {member.role === 'CTO' ? '👨‍💻' : member.role === 'CHRO' ? '👩‍💼' : member.role === 'CSO' ? '👨‍💼' : member.role === 'CCO' ? '📢' : member.role === 'CFO' ? '💰' : '👨‍💼'}
                       </div>
                     </>
                   ) : (

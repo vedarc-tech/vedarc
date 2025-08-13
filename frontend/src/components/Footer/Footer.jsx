@@ -191,6 +191,7 @@ export default function Footer() {
                 </Link>
               </motion.div>
             </li>
+
             <li>
               <motion.div whileHover={{ x: 5, color: 'var(--neon-cyan)' }}>
                 <Link 

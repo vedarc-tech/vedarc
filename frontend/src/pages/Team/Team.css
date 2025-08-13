@@ -210,6 +210,11 @@
   margin: 0 auto;
 }
 
+.leadership-card:nth-child(4),
+.leadership-card:nth-child(5) {
+  grid-column: span 1.5;
+}
+
 .leadership-card {
   background: #000000;
   border: 1px solid #000000;
