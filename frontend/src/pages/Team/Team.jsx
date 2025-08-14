@@ -47,6 +47,13 @@ export default function Team() {
       bio: 'Chief Financial Officer with expertise in financial planning, budgeting, and strategic financial management. Leading our financial operations and ensuring sustainable growth through sound fiscal policies and investment strategies.',
       linkedin: null,
       image: 'https://i.ibb.co/27bh7q9y/Whats-App-Image-2025-08-12-at-13-24-18-bd4ad3c4.jpg'
+    },
+    {
+      name: 'Nabid Akhhtar',
+      role: 'COO',
+      bio: 'Chief Operating Officer with expertise in operational excellence, process optimization, and strategic execution. Leading our day-to-day operations and ensuring efficient delivery of our technology solutions while driving operational growth and organizational effectiveness.',
+      linkedin: null,
+      image: 'https://i.ibb.co/5xv4cwJh/Screenshot-2025-08-12-132811.png'
     }
   ]
 
