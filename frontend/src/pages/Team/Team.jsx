@@ -49,7 +49,7 @@ export default function Team() {
       image: 'https://i.ibb.co/27bh7q9y/Whats-App-Image-2025-08-12-at-13-24-18-bd4ad3c4.jpg'
     },
     {
-      name: 'Nabid Akhhtar',
+      name: 'Nabid Akhtar',
       role: 'COO',
       bio: 'Chief Operating Officer with expertise in operational excellence, process optimization, and strategic execution. Leading our day-to-day operations and ensuring efficient delivery of our technology solutions while driving operational growth and organizational effectiveness.',
       linkedin: null,
