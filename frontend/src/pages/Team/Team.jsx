@@ -32,7 +32,7 @@ export default function Team() {
       role: 'CHRO',
       bio: 'Strategic HR leader with experience in building high-performing teams and fostering inclusive workplace cultures. Driving talent acquisition, development, and organizational growth at Vedarc Technologies.',
       linkedin: 'https://www.linkedin.com/in/krishna-saran-nc-2b53342b3/',
-      image: 'https://media.licdn.com/dms/image/v2/D5603AQEsZ9y5t3PpJQ/profile-displayphoto-shrink_400_400/B56ZXEK5ImHQAk-/0/1742752945972?e=1756339200&v=beta&t=R00g93n3ADJipuhNwu-yNZ74Tfjas1yCNHOLAwoH0Gg'
+      image: 'https://media.licdn.com/dms/image/v2/D5603AQHCfcfO_lvMoA/profile-displayphoto-scale_400_400/B56Zi5CLafHcAk-/0/1755451014614?e=1758758400&v=beta&t=Cp9RazexGne55uHEoppeLwXS4lCp4Zhg17WADYYF99o'
     },
     {
       name: 'Ashraf Shaik Mohammed',
