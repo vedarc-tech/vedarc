@@ -21,13 +21,6 @@ export default function Team() {
       image: 'https://i.ibb.co/Q3Wj103M/Whats-App-Image-2025-07-30-at-07-53-33-c3330b0c.jpg'
     },
     {
-      name: 'Vuddagiri Naga Venkat',
-      role: 'CSO',
-      bio: 'Chief Strategic Officer with expertise in business strategy, market analysis, and strategic planning. Driving organizational growth and competitive positioning through innovative strategic initiatives and market expansion.',
-      linkedin: 'https://www.linkedin.com/in/vuddagiri-naga-venkat-769aa5257/',
-      image: 'https://media.licdn.com/dms/image/v2/D5603AQEEyOzdqbdTqQ/profile-displayphoto-scale_400_400/B56Zhay4EwHUAg-/0/1753869944011?e=1756944000&v=beta&t=goY9c4AjCSa8eu-9T61NnqRTkUEHwShI_5hyGbjxOMw'
-    },
-    {
       name: 'Krishna Saran NC',
       role: 'CHRO',
       bio: 'Strategic HR leader with experience in building high-performing teams and fostering inclusive workplace cultures. Driving talent acquisition, development, and organizational growth at Vedarc Technologies.',
