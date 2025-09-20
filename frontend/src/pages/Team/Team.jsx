@@ -9,7 +9,7 @@ export default function Team() {
     company: 'Vedarc Technologies Private Limited',
     bio: 'Likith Prabhu is a young entrepreneur and technologist with a vision to make next-gen technology accessible, scalable, and impactful for businesses, institutions, and individuals. As the Founder and CEO of Vedarc Technologies, he is leading a team that\'s committed to building intelligent digital solutions powered by AI, cloud, and full-stack innovation.\n\nFrom conceptualizing smart websites and enterprise platforms to building a unified AI Suite with domain-specific AI agents, Likith is on a mission to transform how people interact with technology. His leadership style blends innovation with empathy & ensuring every project delivers real value to users.\n\nUnder his direction, Vedarc has not only become Startup India and AICTE Recognized, but is also gaining trust across domains through smart solutions and collaborative product development.\n\nLikith believes in empowering students, researchers, startups, and organizations with tools that are both futuristic and practical. His startup journey stands as a testimony to what\'s possible when ambition meets purpose building in India, for the world.',
     linkedin: 'https://www.linkedin.com/in/likith-prabhu-739460296/',
-    image: 'https://media.licdn.com/dms/image/v2/D5603AQGlgw-a686HfQ/profile-displayphoto-scale_400_400/B56Zg6VmDSHcAw-/0/1753325396741?e=1761177600&v=beta&t=0ser-5Osl8KAtxlzDKa59EeFZzzOSttSiFKQh6SeJAY'
+    image: 'https://media.licdn.com/dms/image/v2/D5603AQH75Emp9xwRaw/profile-displayphoto-scale_400_400/B56ZloVF0eJwAk-/0/1758391983942?e=1761177600&v=beta&t=MKqDw9T8Pz0_ij5LnNfdEgKJxf8gjHYsSQJ4Jwvrx-s'
   }
 
   const leadershipTeam = [
